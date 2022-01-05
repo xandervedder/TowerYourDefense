@@ -24,12 +24,12 @@ function love.quit()
     Engine.quit()
 end
 
-function love.keypressed()
-    Engine.keyPressed()
+function love.keypressed(key)
+    Engine.keyPressed(key)
 end
 
-function love.keyreleased()
-    Engine.keyReleased()
+function love.keyreleased(key)
+    Engine.keyReleased(key)
 end
 
 function love.resize()
