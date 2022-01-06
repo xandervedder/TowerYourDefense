@@ -15,7 +15,7 @@ end
 
 function GameObject:draw() end
 
-function GameObject:update() end
+function GameObject:update(dt) end
 
 function GameObject:getPosition()
     return self.position
