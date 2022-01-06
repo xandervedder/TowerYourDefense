@@ -36,4 +36,8 @@ function Scene:getName()
     return self.name
 end
 
+function Scene:getCanvas()
+    return self.canvas
+end
+
 return Scene

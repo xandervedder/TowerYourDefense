@@ -21,6 +21,10 @@ function GameObject:getPosition()
     return self.position
 end
 
+function GameObject:setPosition(position)
+    self.position = position
+end
+
 function GameObject:getSize()
     return self.size
 end

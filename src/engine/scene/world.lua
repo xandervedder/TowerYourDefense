@@ -9,6 +9,7 @@ World = Scene:new({
 
 function World:initialize()
     self.player = Player:new()
+    self.player:setPosition({ x = 512, y = 512 })
     self.camera = Camera:new({screen = {love.graphics.getDimensions()}})
     self.camera:followObject(self.player)
     self.map = {
@@ -32,15 +33,18 @@ function World:initialize()
         D = love.graphics.newQuad(66, 0, 32, 32, self.sheet:getDimensions()),
         __error = love.graphics.newQuad(99, 0, 32, 32, self.sheet:getDimensions())
     }
+    self.canvas = love.graphics.newCanvas(
+        Constants.tile.height * Constants.scale * #self.map,
+        Constants.tile.width * Constants.scale * #self.map
+    )
 end
 
 function World:update(dt)
-    self.camera:update(dt)
     self.player:update(dt)
+    self.camera:update(dt)
 end
 
 function World:draw()
-    self.camera:draw()
     -- TODO: for now this will be drawn on the default layer, but we want
     -- TODO: to change this to a different rendering screen/canvas.
     love.graphics.setColor(1, 1, 1, 1)
@@ -67,6 +71,8 @@ function World:draw()
     end
 
     self.player:draw()
+    --! Important: only draw the camera when all the other things have rendered
+    self.camera:draw()
 end
 
 function World:keyPressed(key)

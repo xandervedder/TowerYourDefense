@@ -23,9 +23,6 @@ function Camera:update(dt)
 end
 
 function Camera:draw()
-    -- Not sure about this... If we don't do this, the camera 'lags' for a millisecond.
-    -- this fixes that, not sure if its nice..
-    self:update()
     love.graphics.translate(self.position.x, self.position.y)
 end
 

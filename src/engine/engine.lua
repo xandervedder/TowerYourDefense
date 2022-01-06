@@ -16,7 +16,15 @@ function Engine.load()
 end
 
 function Engine.draw()
-    Engine.scene:draw()
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.push()
+
+    Engine.scene:getCanvas():renderTo(function ()
+        Engine.scene:draw()
+    end)
+
+    love.graphics.draw(Engine.scene:getCanvas())
+    love.graphics.pop()
 
     -- For debugging
     love.graphics.setColor(0, 1, 0, 1)
