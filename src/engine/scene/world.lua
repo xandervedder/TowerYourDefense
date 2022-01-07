@@ -1,5 +1,6 @@
 local Camera = require("src.engine.camera.camera")
 local Constants = require("src.engine.constants")
+local Map = require("src.engine.map.map")
 local Scene = require("src.engine.scene.scene")
 local Player = require("src.engine.object.player")
 
@@ -12,18 +13,14 @@ function World:initialize()
     self.player:setPosition({ x = 512, y = 512 })
     self.camera = Camera:new({screen = {love.graphics.getDimensions()}})
     self.camera:followObject(self.player)
-    self.map = {
-        -- TODO: move to a text file
-        {"W", "W", "W", "W", "W", "W", "W", "W", "W"},
-        {"W", "D", "D", "D", "D", "D", "D", "D", "W"},
-        {"W", "D", "W", "W", "D", "S", "S", "D", "W"},
-        {"W", "D", "W", "W", "D", "S", "S", "D", "W"},
-        {"W", "D", "D", "D", "D", "S", "S", "D", "W"},
-        {"W", "D", "D", "D", "D", "S", "S", "D", "W"},
-        {"W", "D", "D", "D", "D", "S", "S", "D", "W"},
-        {"W", "D", "D", "D", "D", "D", "D", "D", "W"},
-        {"W", "W", "W", "W", "W", "W", "W", "W", "W"}
+
+    self.maps = {
+        Map.read("/assets/map/main.map"),
+        Map.read("/assets/map/mountain.map"),
+        Map.read("/assets/map/overview.map"),
     }
+    self.activeMap = 1
+
     self.sheet = love.graphics.newImage("/assets/graphics/tile-spritesheet.png")
     self.sheet:setFilter("nearest", "nearest")
     self.quads = {
@@ -33,9 +30,13 @@ function World:initialize()
         D = love.graphics.newQuad(66, 0, 32, 32, self.sheet:getDimensions()),
         __error = love.graphics.newQuad(99, 0, 32, 32, self.sheet:getDimensions())
     }
-    self.canvas = love.graphics.newCanvas(
-        Constants.tile.height * Constants.scale * #self.map,
-        Constants.tile.width * Constants.scale * #self.map
+    self.canvas = self.generateCanvas(#self.maps[self.activeMap])
+end
+
+function World.generateCanvas(mapSize)
+    return love.graphics.newCanvas(
+        Constants.tile.height * Constants.scale * mapSize,
+        Constants.tile.height * Constants.scale * mapSize
     )
 end
 
@@ -45,13 +46,11 @@ function World:update(dt)
 end
 
 function World:draw()
-    -- TODO: for now this will be drawn on the default layer, but we want
-    -- TODO: to change this to a different rendering screen/canvas.
     love.graphics.setColor(1, 1, 1, 1)
 
-    for i = 1, #self.map, 1 do
-        for j = 1, #self.map[i], 1 do
-            local quad = self.quads[self.map[i][j]]
+    for i = 1, #self.maps[self.activeMap], 1 do
+        for j = 1, #self.maps[self.activeMap][i], 1 do
+            local quad = self.quads[self.maps[self.activeMap][i][j]]
             if not quad then
                 quad = self.quads.__error
             end
@@ -77,6 +76,20 @@ end
 
 function World:keyPressed(key)
     self.player:keyPressed(key)
+
+    --? For debugging purposes
+    if key == "l" then
+        self:switchMaps()
+    end
+end
+
+function World:switchMaps()
+    self.activeMap = self.activeMap + 1
+    if self.activeMap > #self.maps then
+        self.activeMap = 1
+    end
+
+    self.canvas = self.generateCanvas(#self.maps[self.activeMap])
 end
 
 function World:keyReleased(key)
