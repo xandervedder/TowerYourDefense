@@ -30,13 +30,16 @@ function World:initialize()
         D = love.graphics.newQuad(66, 0, 32, 32, self.sheet:getDimensions()),
         __error = love.graphics.newQuad(99, 0, 32, 32, self.sheet:getDimensions())
     }
-    self.canvas = self.generateCanvas(#self.maps[self.activeMap])
+    self.canvas = self.canvasFromMap(self.maps[self.activeMap])
 end
 
-function World.generateCanvas(mapSize)
+function World.canvasFromMap(map)
+    local width = #map
+    local height = #map[1]
+
     return love.graphics.newCanvas(
-        Constants.tile.height * Constants.scale * mapSize,
-        Constants.tile.height * Constants.scale * mapSize
+        Constants.tile.width * Constants.scale * width,
+        Constants.tile.height * Constants.scale * height
     )
 end
 
@@ -48,20 +51,20 @@ end
 function World:draw()
     love.graphics.setColor(1, 1, 1, 1)
 
-    for i = 1, #self.maps[self.activeMap], 1 do
-        for j = 1, #self.maps[self.activeMap][i], 1 do
-            local quad = self.quads[self.maps[self.activeMap][i][j]]
+    local map = self.maps[self.activeMap]
+    for x = 1, #map, 1 do
+        for y = 1, #map, 1 do
+            local quad = self.quads[map[x][y]]
             if not quad then
                 quad = self.quads.__error
             end
 
-            local xIndex = i - 1
-            local yIndex = j - 1
             love.graphics.draw(
                 self.sheet,
                 quad,
-                xIndex * Constants.tile.width * Constants.scale,
-                yIndex * Constants.tile.height * Constants.scale,
+                -- Remove 1 from the current index, since coordinates are starting at 0
+                (y - 1) * Constants.tile.scaledWidth(),
+                (x - 1) * Constants.tile.scaledHeight(),
                 0,
                 Constants.scale,
                 Constants.scale
@@ -89,7 +92,7 @@ function World:switchMaps()
         self.activeMap = 1
     end
 
-    self.canvas = self.generateCanvas(#self.maps[self.activeMap])
+    self.canvas = self.canvasFromMap(self.maps[self.activeMap])
 end
 
 function World:keyReleased(key)
