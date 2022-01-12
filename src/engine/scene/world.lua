@@ -1,8 +1,9 @@
 local Camera = require("src.engine.camera.camera")
 local Constants = require("src.engine.constants")
 local Map = require("src.engine.map.map")
-local Scene = require("src.engine.scene.scene")
 local Player = require("src.engine.object.player")
+local Scene = require("src.engine.scene.scene")
+local Tower = require("src.engine.object.tower")
 
 World = Scene:new({
     name = "World Scene",
@@ -13,6 +14,22 @@ function World:initialize()
     self.player:setPosition({ x = 512, y = 512 })
     self.camera = Camera:new({screen = {love.graphics.getDimensions()}})
     self.camera:followObject(self.player)
+    self.gameObjects = { self.player }
+
+    for i = 1, 10, 1 do
+        for j = 1, 10, 1 do
+            local tower = Tower:new({
+                position = {
+                    y = (j - 1) * Constants.tile.scaledWidth(),
+                    x = (i - 1) * Constants.tile.scaledHeight()
+                },
+                player = self.player
+            })
+
+            tower:initialize()
+            table.insert(self.gameObjects, tower)
+        end
+    end
 
     self.maps = {
         Map.read("/assets/map/main.map"),
@@ -44,13 +61,27 @@ function World.canvasFromMap(map)
 end
 
 function World:update(dt)
-    self.player:update(dt)
+    for i = 1, #self.gameObjects, 1 do
+        self.gameObjects[i]:update(dt)
+    end
+
     self.camera:update(dt)
 end
 
 function World:draw()
     love.graphics.setColor(1, 1, 1, 1)
 
+    self:drawMap()
+
+    for i = 1, #self.gameObjects, 1 do
+        self.gameObjects[i]:draw()
+    end
+
+    --! Important: only draw the camera when all the other things have rendered
+    self.camera:draw()
+end
+
+function World:drawMap()
     local map = self.maps[self.activeMap]
     for x = 1, #map, 1 do
         for y = 1, #map, 1 do
@@ -71,10 +102,6 @@ function World:draw()
             )
         end
     end
-
-    self.player:draw()
-    --! Important: only draw the camera when all the other things have rendered
-    self.camera:draw()
 end
 
 function World:keyPressed(key)

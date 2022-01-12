@@ -1,6 +1,9 @@
 --[[
 Base Object used for any game object in the game.
 Whether it be an enemy or tower, every object inherits from GameObject.
+
+TODO: In the future we should probably use some kind of
+TODO: OOP library that makes things like inheritance easier
 ]]--
 GameObject = {}
 
@@ -12,6 +15,8 @@ function GameObject:new(o)
     self.size = o.size or 0
     return o
 end
+
+function GameObject:initialize() end
 
 function GameObject:draw() end
 
