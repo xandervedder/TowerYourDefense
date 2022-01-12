@@ -6,6 +6,7 @@ function Engine.configure(t)
     t.window.title = "Tower Your Defense"
     t.window.width = 1024
     t.window.height = 1024
+    t.window.display = 2 --* For now...
     t.vsync = 1
 end
 
