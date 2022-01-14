@@ -1,3 +1,5 @@
+local Publisher = require("src.engine.event.publisher")
+local Menu = require("src.engine.scene.menu")
 local World = require("src.engine.scene.world")
 
 Engine = {}
@@ -11,29 +13,53 @@ function Engine.configure(t)
 end
 
 function Engine.load()
-    -- Should eventually be a table of scenes
-    Engine.scene = World:new()
-    Engine.scene:initialize()
+    Publisher.register(Engine.on)
+
+    Engine.scenes = {
+        menu = Menu:new(),
+        world = World:new(),
+    }
+
+    Engine.scenes.menu:initialize()
+    Engine.scenes.world:initialize()
+    -- Is the current active scene
+    Engine.scene = Engine.scenes.menu
 end
 
 function Engine.draw()
-    love.graphics.setColor(1, 1, 1, 1)
     love.graphics.push()
 
     Engine.scene:getCanvas():renderTo(function ()
         Engine.scene:draw()
     end)
 
+    love.graphics.setColor(1, 1, 1)
     love.graphics.draw(Engine.scene:getCanvas())
     love.graphics.pop()
 
     -- For debugging
-    love.graphics.setColor(0, 1, 0, 1)
-    love.graphics.print("Current FPS: " .. tostring(love.timer.getFPS()), 10, 10)
+    love.graphics.setColor(0, 1, 0)
+    love.graphics.print("FPS: " .. tostring(love.timer.getFPS()), 5, 5)
 end
 
 function Engine.update(dt)
     Engine.scene:update(dt)
+end
+
+function Engine.on(event)
+    if event:getName() == "events.scene.switch" then
+        if Engine.scene == Engine.scenes.menu then
+            Engine.scene = Engine.scenes.world
+        else
+            Engine.scene = Engine.scenes.menu
+        end
+    end
+
+    if event:getName() == "events.game.quit" then
+        love.event.quit()
+    end
+
+    Engine.scene:on(event)
 end
 
 function Engine.resize()
@@ -45,6 +71,10 @@ function Engine.quit()
 end
 
 function Engine.keyPressed(key)
+    if key == "escape" then
+        Engine.scene = Engine.scenes.menu
+    end
+
     Engine.scene:keyPressed(key)
 end
 

@@ -8,11 +8,11 @@ function Scene:new(o)
     return o
 end
 
--- TODO: Would be nice to have a mixin that has all these boilerplate methods
-
 function Scene:initialize() end
 
 function Scene:update(dt) end
+
+function Scene:on(event) end
 
 function Scene:draw(dt) end
 
