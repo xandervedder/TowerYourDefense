@@ -3,6 +3,7 @@ local Constants = require("src.engine.constants")
 local Map = require("src.engine.map.map")
 local Player = require("src.engine.object.player")
 local Scene = require("src.engine.scene.scene")
+local Spawner = require("src.engine.object.spawner")
 local Tower = require("src.engine.object.tower")
 
 World = Scene:new({
@@ -14,22 +15,18 @@ function World:initialize()
     self.player:setPosition({ x = 512, y = 512 })
     self.camera = Camera:new({screen = {love.graphics.getDimensions()}})
     self.camera:followObject(self.player)
-    self.gameObjects = { self.player }
+    self.gameObjects = {
+        Tower:new({ position = { x = 0, y = Constants.tile.scaledHeight() } }),
+        Tower:new({ position = { x = 0, y = Constants.tile.scaledHeight() * 2 } }),
+        Tower:new({ position = { x = 0, y = Constants.tile.scaledHeight() * 3 } }),
+        Spawner:new({ position = { x = Constants.tile.scaledWidth() * 4, y = 0 }})
+    }
 
-    for i = 1, 10, 1 do
-        for j = 1, 10, 1 do
-            local tower = Tower:new({
-                position = {
-                    y = (j - 1) * Constants.tile.scaledWidth(),
-                    x = (i - 1) * Constants.tile.scaledHeight()
-                },
-                player = self.player
-            })
-
-            tower:initialize()
-            table.insert(self.gameObjects, tower)
-        end
+    for i = 1, #self.gameObjects, 1 do
+        self.gameObjects[i]:initialize()
     end
+
+    table.insert(self.gameObjects, self.player)
 
     self.maps = {
         Map.read("/assets/map/main.map"),
