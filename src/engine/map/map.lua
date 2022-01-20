@@ -18,7 +18,7 @@ function Map.split(input, seperator)
     seperator = seperator or "%s"
 
     local matches = {}
-    for str in string.gmatch(input, "([^"..seperator.."]+)") do
+    for str in string.gmatch(input, "([^" .. seperator .. "]+)") do
         table.insert(matches, str)
     end
 

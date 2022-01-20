@@ -1,5 +1,6 @@
 local Publisher = require("src.engine.event.publisher")
 local Menu = require("src.engine.scene.menu")
+local Tiles = require("src.engine.graphics.tiles")
 local World = require("src.engine.scene.world")
 
 Engine = {}
@@ -14,6 +15,7 @@ end
 
 function Engine.load()
     Publisher.register(Engine.on)
+    Tiles.initialize()
 
     Engine.scenes = {
         menu = Menu:new(),

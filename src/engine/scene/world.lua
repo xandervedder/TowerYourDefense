@@ -4,6 +4,7 @@ local Map = require("src.engine.map.map")
 local Player = require("src.engine.object.player")
 local Scene = require("src.engine.scene.scene")
 local Spawner = require("src.engine.object.spawner")
+local Tiles = require("src.engine.graphics.tiles")
 local Tower = require("src.engine.object.tower")
 
 World = Scene:new({
@@ -16,10 +17,10 @@ function World:initialize()
     self.camera = Camera:new({screen = {love.graphics.getDimensions()}})
     self.camera:followObject(self.player)
     self.gameObjects = {
-        Tower:new({ position = { x = 0, y = Constants.tile.scaledHeight() } }),
-        Tower:new({ position = { x = 0, y = Constants.tile.scaledHeight() * 2 } }),
-        Tower:new({ position = { x = 0, y = Constants.tile.scaledHeight() * 3 } }),
-        Spawner:new({ position = { x = Constants.tile.scaledWidth() * 4, y = 0 }})
+        -- Tower:new({ position = { x = 0, y = Constants.tile.scaledHeight() } }),
+        -- Tower:new({ position = { x = 0, y = Constants.tile.scaledHeight() * 2 } }),
+        -- Tower:new({ position = { x = 0, y = Constants.tile.scaledHeight() * 3 } }),
+        -- Spawner:new({ position = { x = Constants.tile.scaledWidth() * 4, y = 0 }})
     }
 
     for i = 1, #self.gameObjects, 1 do
@@ -30,20 +31,8 @@ function World:initialize()
 
     self.maps = {
         Map.read("/assets/map/main.map"),
-        Map.read("/assets/map/mountain.map"),
-        Map.read("/assets/map/overview.map"),
     }
     self.activeMap = 1
-
-    self.sheet = love.graphics.newImage("/assets/graphics/tile-spritesheet.png")
-    self.sheet:setFilter("nearest", "nearest")
-    self.quads = {
-        -- TODO: this should come from something else, maybe even in a different way...
-        S = love.graphics.newQuad(0, 0, 32, 32, self.sheet:getDimensions()),
-        W = love.graphics.newQuad(33, 0, 32, 32, self.sheet:getDimensions()),
-        D = love.graphics.newQuad(66, 0, 32, 32, self.sheet:getDimensions()),
-        __error = love.graphics.newQuad(99, 0, 32, 32, self.sheet:getDimensions())
-    }
     self.canvas = self.canvasFromMap(self.maps[self.activeMap])
 end
 
@@ -81,14 +70,11 @@ end
 function World:drawMap()
     local map = self.maps[self.activeMap]
     for x = 1, #map, 1 do
-        for y = 1, #map, 1 do
-            local quad = self.quads[map[x][y]]
-            if not quad then
-                quad = self.quads.__error
-            end
+        for y = 1, #map[1], 1 do
+            local quad = Tiles.tile[tonumber(map[x][y])]
 
             love.graphics.draw(
-                self.sheet,
+                Tiles.spriteSheet,
                 quad,
                 -- Remove 1 from the current index, since coordinates are starting at 0
                 (y - 1) * Constants.tile.scaledWidth(),

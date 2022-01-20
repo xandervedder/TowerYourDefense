@@ -1,11 +1,10 @@
 Constants = {}
 
 -- Not sure if this is large enough, maybe this should be a configurable property
-Constants.scale = 4
-
+Constants.scale = 8
 Constants.tile = {
-    height = 32,
-    width = 32,
+    height = 16,
+    width = 16,
 }
 
 function Constants.tile.scaledHeight()
