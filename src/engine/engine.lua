@@ -22,10 +22,10 @@ function Engine.load()
         world = World:new(),
     }
 
-    Engine.scenes.menu:initialize()
-    Engine.scenes.world:initialize()
     -- Is the current active scene
     Engine.scene = Engine.scenes.menu
+    Engine.scenes.menu:initialize()
+    Engine.scenes.world:initialize()
 end
 
 function Engine.draw()

@@ -1,7 +1,9 @@
 local Camera = require("src.engine.camera.camera")
 local Constants = require("src.engine.constants")
+local Event = require("src.engine.event.event")
 local Map = require("src.engine.map.map")
 local Player = require("src.engine.object.player")
+local Publisher = require("src.engine.event.publisher")
 local Scene = require("src.engine.scene.scene")
 local Spawner = require("src.engine.object.spawner")
 local Tiles = require("src.engine.graphics.tiles")
@@ -17,9 +19,9 @@ function World:initialize()
     self.camera = Camera:new({screen = {love.graphics.getDimensions()}})
     self.camera:followObject(self.player)
     self.gameObjects = {
-        -- Tower:new({ position = { x = 0, y = Constants.tile.scaledHeight() } }),
-        -- Tower:new({ position = { x = 0, y = Constants.tile.scaledHeight() * 2 } }),
-        -- Tower:new({ position = { x = 0, y = Constants.tile.scaledHeight() * 3 } }),
+        Tower:new({ position = { x = 0, y = Constants.tile.scaledHeight() } }),
+        Tower:new({ position = { x = 0, y = Constants.tile.scaledHeight() * 2 } }),
+        Tower:new({ position = { x = 0, y = Constants.tile.scaledHeight() * 3 } }),
         -- Spawner:new({ position = { x = Constants.tile.scaledWidth() * 4, y = 0 }})
     }
 
@@ -34,6 +36,7 @@ function World:initialize()
     }
     self.activeMap = 1
     self.canvas = self.canvasFromMap(self.maps[self.activeMap])
+    Publisher.publish(Event:new({ name = "events.enemy.follow", data = self.player }))
 end
 
 function World.canvasFromMap(map)

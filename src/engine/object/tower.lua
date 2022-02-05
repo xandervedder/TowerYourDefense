@@ -3,14 +3,14 @@ local GameObject = require("src.engine.object.gameobject")
 local Publisher = require("src.engine.event.publisher")
 
 Tower = GameObject:new({ degree = 1 })
-Tower.size = 32
+Tower.size = 16
 
 -- For now, do it like this, but I really would like constructor overloading...
 function Tower:initialize()
     self.sheet = love.graphics.newImage("/assets/graphics/turret-spritesheet.png")
     self.sheet:setFilter("nearest", "nearest")
     self.turretBaseQuad = love.graphics.newQuad(0, 0, Tower.size, Tower.size, self.sheet:getDimensions())
-    self.turretBarrelQuad = love.graphics.newQuad(32, 0, Tower.size, Tower.size, self.sheet:getDimensions())
+    self.turretBarrelQuad = love.graphics.newQuad(16, 0, Tower.size, Tower.size, self.sheet:getDimensions())
     self.scaled = {
         x = self.position.x + Constants.tile.scaledWidth() / 2,
         y = self.position.y + Constants.tile.scaledHeight() / 2,
