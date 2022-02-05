@@ -18,7 +18,7 @@ function Tower:initialize()
         y = self.position.y + Constants.tile.scaledHeight() / 2,
     }
 
-    Publisher.register(function (event) self:onTargetChange(event) end)
+    Publisher.register(self, "events.enemy.follow", function (event) self:onTargetChange(event) end)
 end
 
 function Tower:draw()
@@ -42,8 +42,6 @@ function Tower:draw()
 end
 
 function Tower:onTargetChange(event)
-    if event:getName() ~= "events.enemy.follow" then return end
-
     self.object = event:getData()
 end
 

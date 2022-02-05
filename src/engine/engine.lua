@@ -14,7 +14,7 @@ function Engine.configure(t)
 end
 
 function Engine.load()
-    Publisher.register(Engine.on)
+    Publisher.register(Engine, "*", Engine.on)
     Tiles.initialize()
 
     Engine.scenes = {
