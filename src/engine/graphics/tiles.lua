@@ -13,8 +13,6 @@ function Tiles.initialize()
     local xTiles = width / tileWidth
     local yTiles = height / tileHeight
 
-    print(xTiles, yTiles)
-
     for y = 1, yTiles, 1 do
         for x = 1, xTiles, 1 do
             table.insert(

@@ -13,8 +13,7 @@ Player = GameObject:new({
 
 function Player:draw()
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.circle("fill", self.position.x, self.position.y, self.size)
-    love.graphics.circle("line", self.position.x, self.position.y, self.size)
+    love.graphics.rectangle("fill", self.position.x, self.position.y, self.size, self.size)
 end
 
 function Player:update(dt)
