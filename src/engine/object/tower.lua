@@ -4,16 +4,25 @@ local Publisher = require("src.engine.event.publisher")
 
 Tower = GameObject:new({ degree = 1 })
 Tower.size = 16
+Tower.bulletSize = 0.75
 
--- For now, do it like this, but I really would like constructor overloading...
 function Tower:initialize()
+    -- Time related
+    self.delay = 0.2
+    self.elapsedTime = 0
+
+    -- Firing related
+    self.activeBullets = {}
+    self.hitBullets = {}
     self.range = self.range or 200 -- For now in pixels
-    self.rotation = 0
+
+    -- Graphics related setup
     self.sheet = love.graphics.newImage("/assets/graphics/turret-spritesheet.png")
     self.sheet:setFilter("nearest", "nearest")
     self.turretBaseQuad = love.graphics.newQuad(0, 0, Tower.size, Tower.size, self.sheet:getDimensions())
     self.turretBarrelQuad = love.graphics.newQuad(16, 0, Tower.size, Tower.size, self.sheet:getDimensions())
-    self.scaled = {
+    self.rotation = 0
+    self.scaled = { -- This is just the center, name should reflect that...
         x = self.position.x + Constants.tile.scaledWidth() / 2,
         y = self.position.y + Constants.tile.scaledHeight() / 2,
     }
@@ -26,6 +35,19 @@ function Tower:draw()
     love.graphics.circle("fill", self.scaled.x, self.scaled.y, self.range)
     love.graphics.setColor(1, 1, 1)
 
+    for i = 1, #self.hitBullets, 1 do
+        local bullet = self.hitBullets[i]
+        love.graphics.setColor(1, 0, 0)
+        love.graphics.circle("fill", bullet.x, bullet.y, Tower.bulletSize * Constants.scale)
+    end
+
+    for i = 1, #self.activeBullets, 1 do
+        local bullet = self.activeBullets[i]
+        love.graphics.setColor(0, 0, 1)
+        love.graphics.circle("fill", bullet.x, bullet.y, Tower.bulletSize * Constants.scale)
+    end
+
+    love.graphics.setColor(1, 1, 1)
     love.graphics.draw(self.sheet, self.turretBaseQuad, self.position.x, self.position.y, 0, Constants.scale, Constants.scale)
     love.graphics.draw(
         self.sheet,
@@ -41,6 +63,46 @@ function Tower:draw()
     )
 end
 
+function Tower:update(dt)
+    self:updateBullets()
+
+    self.elapsedTime = self.elapsedTime + dt
+    if not (self.elapsedTime >= self.delay) then return end
+    self.elapsedTime = 0
+
+    if self:withinRange() then
+        self:shoot()
+    end
+end
+
+function Tower:updateBullets()
+    if #self.activeBullets == 0 then return end
+
+    local enemy = self.object:getPosition()
+    local size = self.object:getSize()
+    for i = #self.activeBullets, 1, -1 do
+        local bullet = self.activeBullets[i]
+        bullet.x = bullet.x + bullet.velocity.x
+        bullet.y = bullet.y + bullet.velocity.y
+
+        local diffX = (enemy.x + size / 2) - bullet.x
+        local diffY = (enemy.y + size / 2) - bullet.y
+
+        local height, width = love.graphics.getDimensions()
+        local x = bullet.x
+        local y = bullet.y
+
+        local offset = size / 2
+        if (diffX < offset and diffX > -offset) and (diffY < offset and diffY > -offset) then
+            table.insert(self.hitBullets, bullet)
+            table.remove(self.activeBullets, i)
+        elseif (x > width or x < 0) or (y > height or y < 0) then
+            table.remove(self.activeBullets, i)
+        end
+    end
+end
+
+-- TODO: this should probably be changed
 function Tower:onTargetChange(event)
     self.object = event:getData()
 end
@@ -54,9 +116,12 @@ function Tower:barrelRotation()
         return self.rotation
     end
 
+    local size = self.object:getSize()
     local position = self.object:getPosition()
+    local x = position.x + size / 2
+    local y = position.y + size / 2
     -- TODO might want to rotate the images in the spritesheet, so we don't need this offset
-    self.rotation = math.atan2(self.scaled.y - position.y, self.scaled.x - position.x) + math.rad(-90)
+    self.rotation = math.atan2(self.scaled.y - y, self.scaled.x - x) + math.rad(-90)
     return self.rotation
 end
 
@@ -75,6 +140,27 @@ function Tower:withinRange()
     local trX = dx - size / 2
     local trY = dy - size / 2
     return trX * trX + trY * trY <= self.range * self.range
+end
+
+function Tower:shoot()
+    local bullet = {
+        x = self.scaled.x,
+        y = self.scaled.y,
+        velocity = { x = 0, y = 0 },
+        speed = 4, -- Should be a tower stat
+    }
+
+    -- https://stackoverflow.com/a/16756618
+    local enemy = self.object:getPosition()
+    local size = self.object:getSize()
+    local diffX = (enemy.x + size / 2) - bullet.x
+    local diffY = (enemy.y + size / 2) - bullet.y
+    local mag = math.sqrt(diffX * diffX + diffY * diffY)
+
+    bullet.velocity.x = (diffX / mag) * bullet.speed
+    bullet.velocity.y = (diffY / mag) * bullet.speed
+
+    table.insert(self.activeBullets, bullet)
 end
 
 return Tower
