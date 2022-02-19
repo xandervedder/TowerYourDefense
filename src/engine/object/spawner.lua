@@ -4,11 +4,16 @@ local GameObject = require("src.engine.object.gameobject")
 local Publisher = require("src.engine.event.publisher")
 
 Spawner = GameObject:new()
+-- Table with tables
+Spawner.enemies = {}
 
 function Spawner:initialize()
     self.deltaPassed = 0
-    self.spawnRate = 2 -- In seconds
-    self.enemies = {}
+    self.spawnRate = 1 -- In seconds
+
+    self.register(self)
+    self.enemies = self.getEnemies(self)
+
 end
 
 function Spawner:draw()
@@ -49,11 +54,11 @@ function Spawner:spawn()
         position = {
             x = self.position.x + Constants.tile.scaledWidth() / 2,
             y = self.position.y + Constants.tile.scaledHeight() / 2
-        }
+        },
+        parent = self,
     })
+    enemy:initialize()
     table.insert(self.enemies, enemy)
-
-    Publisher.publish(Event:new({ name = "events.enemy.follow", data = enemy }))
 end
 
 function Spawner:despawnOutOfBoundsEnemies()
@@ -71,5 +76,36 @@ function Spawner:updateSpawnedEnemies(dt)
         self.enemies[i]:update(dt)
     end
 end
+
+function Spawner.register(instance)
+    Spawner.enemies[instance] = {}
+end
+
+function Spawner.removeEnemy(event)
+    local enemyRef = event:getData()
+    local eTable = Spawner.enemies[enemyRef.parent]
+    for i = #eTable, 1, -1 do
+        local enemy = eTable[i]
+        if enemy == enemyRef then
+            table.remove(eTable, i)
+        end
+    end
+end
+
+function Spawner.getEnemies(instance)
+    return Spawner.enemies[instance]
+end
+
+function Spawner.allEnemies()
+    local flatEnemiesList = {}
+    for _, eTable in pairs(Spawner.enemies) do
+        for _, enemy in pairs(eTable) do
+            table.insert(flatEnemiesList, enemy)
+        end
+    end
+    return flatEnemiesList
+end
+
+Publisher.register(Spawner, "enemy.death", Spawner.removeEnemy)
 
 return Spawner

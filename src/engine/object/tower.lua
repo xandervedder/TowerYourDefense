@@ -1,6 +1,6 @@
 local Constants = require("src.engine.constants")
 local GameObject = require("src.engine.object.gameobject")
-local Publisher = require("src.engine.event.publisher")
+local Spawner = require("src.engine.object.spawner")
 
 Tower = GameObject:new({ degree = 1 })
 Tower.size = 16
@@ -13,7 +13,7 @@ function Tower:initialize()
 
     -- Firing related
     self.activeBullets = {}
-    self.hitBullets = {}
+    self.damage = 25
     self.range = self.range or 200 -- For now in pixels
     self.rotationSpeed = 1
     self.turning = false
@@ -28,8 +28,6 @@ function Tower:initialize()
         x = self.position.x + Constants.tile.scaledWidth() / 2,
         y = self.position.y + Constants.tile.scaledHeight() / 2,
     }
-
-    Publisher.register(self, "events.enemy.follow", function (event) self:onTargetChange(event) end)
 end
 
 function Tower:draw()
@@ -37,15 +35,9 @@ function Tower:draw()
     love.graphics.circle("fill", self.scaled.x, self.scaled.y, self.range)
     love.graphics.setColor(1, 1, 1)
 
-    for i = 1, #self.hitBullets, 1 do
-        local bullet = self.hitBullets[i]
-        love.graphics.setColor(1, 0, 0)
-        love.graphics.circle("fill", bullet.x, bullet.y, Tower.bulletSize * Constants.scale)
-    end
-
     for i = 1, #self.activeBullets, 1 do
         local bullet = self.activeBullets[i]
-        love.graphics.setColor(0, 0, 1)
+        love.graphics.setColor(0, 0, 0)
         love.graphics.circle("fill", bullet.x, bullet.y, Tower.bulletSize * Constants.scale)
     end
 
@@ -56,7 +48,7 @@ function Tower:draw()
         self.turretBarrelQuad,
         self.scaled.x,
         self.scaled.y,
-        self:barrelRotation(),
+        self.rotation,
         Constants.scale,
         Constants.scale,
         -- Origin points will be in the center of the image:
@@ -68,58 +60,54 @@ end
 function Tower:update(dt)
     self:updateBullets()
 
+    if self.enemy == nil then
+        self:findNextEnemy()
+    elseif not self:withinRange(self.enemy) then
+        self:findNextEnemy()
+    elseif self.enemy:isDead() then
+        self.enemy = nil
+    end
+
+    -- Enemy could still be empty
+    if self.enemy == nil then return end
+
+    self:rotateBarrel()
+    self:checkCollision()
+
     self.elapsedTime = self.elapsedTime + dt
     if not (self.elapsedTime >= self.delay) then return end
     self.elapsedTime = 0
 
-    if self:withinRange() and not self.turning then
+    if self:withinRange(self.enemy) and not self.enemy:isDead() then
         self:shoot()
+    end
+end
+
+function Tower:findNextEnemy()
+    local enemies = Spawner.allEnemies()
+    for _, enemy in pairs(enemies) do
+        if self:withinRange(enemy) then
+            self.enemy = enemy
+            break
+        end
     end
 end
 
 function Tower:updateBullets()
     if #self.activeBullets == 0 then return end
 
-    local enemy = self.object:getPosition()
-    local size = self.object:getSize()
     for i = #self.activeBullets, 1, -1 do
         local bullet = self.activeBullets[i]
         bullet.x = bullet.x + bullet.velocity.x
-        bullet.y = bullet.y + bullet.velocity.y
-
-        local diffX = (enemy.x + size / 2) - bullet.x
-        local diffY = (enemy.y + size / 2) - bullet.y
-
-        local height, width = love.graphics.getDimensions()
-        local x = bullet.x
-        local y = bullet.y
-
-        local offset = size / 2
-        if (diffX < offset and diffX > -offset) and (diffY < offset and diffY > -offset) then
-            table.insert(self.hitBullets, bullet)
-            table.remove(self.activeBullets, i)
-        elseif (x > width or x < 0) or (y > height or y < 0) then
-            table.remove(self.activeBullets, i)
-        end
+        bullet.y = bullet.y + bullet.velocity.y        
     end
 end
 
--- TODO: this should probably be changed
-function Tower:onTargetChange(event)
-    self.object = event:getData()
-end
+function Tower:rotateBarrel()
+    if not self:withinRange(self.enemy) then return end
 
-function Tower:barrelRotation()
-    if self.object == nil then
-        return self.rotation
-    end
-
-    if not self:withinRange() then
-        return self.rotation
-    end
-
-    local size = self.object:getSize()
-    local position = self.object:getPosition()
+    local size = self.enemy:getSize()
+    local position = self.enemy:getPosition()
     local x = position.x + size / 2
     local y = position.y + size / 2
     local radians = math.atan2(self.scaled.y - y, self.scaled.x - x)
@@ -141,9 +129,32 @@ function Tower:barrelRotation()
     return self.rotation
 end
 
-function Tower:withinRange()
-    local position = self.object:getPosition()
-    local size = self.object:getSize()
+function Tower:checkCollision()
+    local enemy = self.enemy:getPosition()
+    local size = self.enemy:getSize()
+
+    for i = #self.activeBullets, 1, -1 do
+        local bullet = self.activeBullets[i]
+        local diffX = (enemy.x + size / 2) - bullet.x
+        local diffY = (enemy.y + size / 2) - bullet.y
+
+        local height, width = love.graphics.getDimensions()
+        local x = bullet.x
+        local y = bullet.y
+
+        local offset = size / 2
+        if (diffX < offset and diffX > -offset) and (diffY < offset and diffY > -offset) then -- Target hit
+            self.enemy:damage(self.damage)
+            table.remove(self.activeBullets, i)
+        elseif (x > width or x < 0) or (y > height or y < 0) then -- Off screen
+            table.remove(self.activeBullets, i)
+        end
+    end
+end
+
+function Tower:withinRange(enemy)
+    local position = enemy:getPosition()
+    local size = enemy:getSize()
     local dx = math.abs(self.scaled.x - position.x - size / 2)
     local dy = math.abs(self.scaled.y - position.y - size / 2)
 
@@ -167,8 +178,8 @@ function Tower:shoot()
     }
 
     -- https://stackoverflow.com/a/16756618
-    local enemy = self.object:getPosition()
-    local size = self.object:getSize()
+    local enemy = self.enemy:getPosition()
+    local size = self.enemy:getSize()
     local diffX = (enemy.x + size / 2) - bullet.x
     local diffY = (enemy.y + size / 2) - bullet.y
     local mag = math.sqrt(diffX * diffX + diffY * diffY)
