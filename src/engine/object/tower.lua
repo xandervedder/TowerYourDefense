@@ -15,6 +15,8 @@ function Tower:initialize()
     self.activeBullets = {}
     self.hitBullets = {}
     self.range = self.range or 200 -- For now in pixels
+    self.rotationSpeed = 1
+    self.turning = false
 
     -- Graphics related setup
     self.sheet = love.graphics.newImage("/assets/graphics/turret-spritesheet.png")
@@ -70,7 +72,7 @@ function Tower:update(dt)
     if not (self.elapsedTime >= self.delay) then return end
     self.elapsedTime = 0
 
-    if self:withinRange() then
+    if self:withinRange() and not self.turning then
         self:shoot()
     end
 end
@@ -120,8 +122,22 @@ function Tower:barrelRotation()
     local position = self.object:getPosition()
     local x = position.x + size / 2
     local y = position.y + size / 2
-    -- TODO might want to rotate the images in the spritesheet, so we don't need this offset
-    self.rotation = math.atan2(self.scaled.y - y, self.scaled.x - x) + math.rad(-90)
+    local radians = math.atan2(self.scaled.y - y, self.scaled.x - x)
+    if radians < 0 then
+        radians = radians + (2 * math.pi)
+    end
+
+    local diff = self.rotation - radians
+    if math.abs(diff) < 0.02 then
+        self.turning = false
+    elseif diff < 0 then
+        self.turning = true
+        self.rotation = self.rotation + (0.01 * self.rotationSpeed)
+    else
+        self.turning = true
+        self.rotation = self.rotation + (-0.01 * self.rotationSpeed)
+    end
+
     return self.rotation
 end
 
