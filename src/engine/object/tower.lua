@@ -191,16 +191,10 @@ function Tower:shoot()
         speed = 4, -- Should be a tower stat
     }
 
-    -- https://stackoverflow.com/a/16756618
-    -- TODO: this logic can be simplified if we reuse barrelRotation for firing direction
-    local enemy = self.enemy:getPosition()
-    local size = self.enemy:getSize()
-    local diffX = (enemy.x + size / 2) - bullet.x
-    local diffY = (enemy.y + size / 2) - bullet.y
-    local mag = math.sqrt(diffX * diffX + diffY * diffY)
-
-    bullet.velocity.x = (diffX / mag) * bullet.speed
-    bullet.velocity.y = (diffY / mag) * bullet.speed
+    -- https://stackoverflow.com/a/14857424
+    -- TODO: this works now, it shoots with the barrel but it can still be improved...
+    bullet.velocity.x = -math.cos(self.rotation) * bullet.speed
+    bullet.velocity.y = -math.sin(self.rotation) * bullet.speed
 
     table.insert(self.activeBullets, bullet)
 end
