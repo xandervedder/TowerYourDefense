@@ -34,6 +34,9 @@ function Tower:draw()
     love.graphics.circle("fill", self.scaled.x, self.scaled.y, self.range)
     love.graphics.setColor(1, 1, 1)
 
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.draw(self.sheet, self.turretBaseQuad, self.position.x, self.position.y, 0, Constants.scale, Constants.scale)
+
     for i = 1, #self.activeBullets, 1 do
         local bullet = self.activeBullets[i]
         love.graphics.setColor(0, 0, 0)
@@ -41,7 +44,6 @@ function Tower:draw()
     end
 
     love.graphics.setColor(1, 1, 1)
-    love.graphics.draw(self.sheet, self.turretBaseQuad, self.position.x, self.position.y, 0, Constants.scale, Constants.scale)
     love.graphics.draw(
         self.sheet,
         self.turretBarrelQuad,
