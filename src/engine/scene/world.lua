@@ -19,9 +19,10 @@ function World:initialize()
     self.camera = Camera:new({screen = {love.graphics.getDimensions()}})
     self.camera:followObject(self.player)
     self.gameObjects = {
-        Spawner:new({ position = { x = Constants.tile.scaledHeight() * 3, y = Constants.tile.scaledHeight() * 1 } }),
+        Spawner:new({ spawnRate = 1, position = { x = Constants.tile.scaledHeight() * 3, y = Constants.tile.scaledHeight() } }),
+        Spawner:new({ spawnRate = 2, position = { x = Constants.tile.scaledHeight() * 4, y = Constants.tile.scaledHeight() } }),
         Tower:new({ position = { x = Constants.tile.scaledHeight() * 2, y = Constants.tile.scaledHeight() * 2 } }),
-        Tower:new({ position = { x = Constants.tile.scaledHeight() * 2, y = Constants.tile.scaledHeight() * 3 } }),
+        Tower:new({ position = { x = Constants.tile.scaledHeight() * 4, y = Constants.tile.scaledHeight() * 4 } }),
     }
 
     for i = 1, #self.gameObjects, 1 do

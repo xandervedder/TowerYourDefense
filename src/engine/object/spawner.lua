@@ -9,7 +9,7 @@ Spawner.enemies = {}
 
 function Spawner:initialize()
     self.deltaPassed = 0
-    self.spawnRate = 1 -- In seconds
+    self.spawnRate = self.spawnRate or 1 -- In seconds
 
     self.register(self)
     self.enemies = self.getEnemies(self)

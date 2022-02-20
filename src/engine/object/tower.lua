@@ -14,7 +14,7 @@ function Tower:initialize()
     -- Firing related
     self.activeBullets = {}
     self.damage = 25
-    self.range = self.range or 200 -- For now in pixels
+    self.range = self.range or 250 -- For now in pixels
     self.rotationSpeed = 1
 
     -- Graphics related setup
@@ -148,15 +148,14 @@ end
 function Tower:checkCollision()
     local enemy = self.enemy:getPosition()
     local size = self.enemy:getSize()
+    local height, width = love.graphics.getDimensions()
 
     for i = #self.activeBullets, 1, -1 do
         local bullet = self.activeBullets[i]
-        local diffX = (enemy.x + size / 2) - bullet.x
-        local diffY = (enemy.y + size / 2) - bullet.y
-
-        local height, width = love.graphics.getDimensions()
         local x = bullet.x
         local y = bullet.y
+        local diffX = (enemy.x + size / 2) - (x + Tower.bulletSize * Constants.scale)
+        local diffY = (enemy.y + size / 2) - (y + Tower.bulletSize * Constants.scale)
 
         local offset = size / 2
         if (diffX < offset and diffX > -offset) and (diffY < offset and diffY > -offset) then -- Target hit
