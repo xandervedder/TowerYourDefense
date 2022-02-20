@@ -16,7 +16,6 @@ function Tower:initialize()
     self.damage = 25
     self.range = self.range or 200 -- For now in pixels
     self.rotationSpeed = 1
-    self.turning = false
 
     -- Graphics related setup
     self.sheet = love.graphics.newImage("/assets/graphics/turret-spritesheet.png")
@@ -99,7 +98,7 @@ function Tower:updateBullets()
     for i = #self.activeBullets, 1, -1 do
         local bullet = self.activeBullets[i]
         bullet.x = bullet.x + bullet.velocity.x
-        bullet.y = bullet.y + bullet.velocity.y        
+        bullet.y = bullet.y + bullet.velocity.y
     end
 end
 
@@ -115,15 +114,30 @@ function Tower:rotateBarrel()
         radians = radians + (2 * math.pi)
     end
 
-    local diff = self.rotation - radians
-    if math.abs(diff) < 0.02 then
-        self.turning = false
-    elseif diff < 0 then
-        self.turning = true
-        self.rotation = self.rotation + (0.01 * self.rotationSpeed)
-    else
-        self.turning = true
-        self.rotation = self.rotation + (-0.01 * self.rotationSpeed)
+    -- We don't want rotation above 360 (a.k.a. full circle):
+    if math.deg(self.rotation) > 360 then
+        self.rotation = math.rad(0)
+    -- We also don't want this the other way around:
+    elseif math.deg(self.rotation) < 0 then
+        self.rotation = math.rad(360)
+    end
+
+    local target = math.deg(radians)
+    local current = math.deg(self.rotation)
+    local diff = current - target
+
+    if math.abs(diff) > 1 then
+        -- When the barrel needs to move from 20 -> 290
+        if 360 - target + current < 180 then
+            self.rotation = self.rotation + (-0.01 * self.rotationSpeed)
+        -- When the barrel needs to move from 290 -> 20
+        elseif math.abs(diff) > 180 then
+            self.rotation = self.rotation + (0.01 * self.rotationSpeed)
+        elseif target > current then
+            self.rotation = self.rotation + (0.01 * self.rotationSpeed)
+        else
+            self.rotation = self.rotation + (-0.01 * self.rotationSpeed)
+        end
     end
 
     return self.rotation
@@ -178,6 +192,7 @@ function Tower:shoot()
     }
 
     -- https://stackoverflow.com/a/16756618
+    -- TODO: this logic can be simplified if we reuse barrelRotation for firing direction
     local enemy = self.enemy:getPosition()
     local size = self.enemy:getSize()
     local diffX = (enemy.x + size / 2) - bullet.x
