@@ -1,4 +1,4 @@
-Map = {}
+local Map = {}
 
 function Map.read(asset)
     local rawData = love.filesystem.read(asset)

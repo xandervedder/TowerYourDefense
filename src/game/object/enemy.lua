@@ -3,13 +3,27 @@ local Event = require("src.game.event.event")
 local GameObject = require("src.game.object.gameobject")
 local Publisher = require("src.game.event.publisher")
 
-Enemy = GameObject:new({ speed = 3 })
+local Enemy = {}
+Enemy.__index = Enemy
 
-function Enemy:initialize()
-    self.size = 2 * Constants.scale
-    self.health = 100
+setmetatable(Enemy, {
+    __index = GameObject,
+    __call = function(cls, ...)
+        local self = setmetatable({}, cls)
+        self:init(...)
+        return self
+    end
+})
+
+function Enemy:init(o)
+    GameObject.init(self, o)
+
     self.dead = false
+    self.health = 100
     self.originalHealth = self.health
+    self.parent = o.parent
+    self.size = 2 * Constants.scale
+    self.speed = 3
 end
 
 function Enemy:draw()

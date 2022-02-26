@@ -1,19 +1,27 @@
 local Enemy = require("src.game.object.enemy")
-local Event = require("src.game.event.event")
 local GameObject = require("src.game.object.gameobject")
 local Publisher = require("src.game.event.publisher")
 
-Spawner = GameObject:new()
--- Table with tables
+local Spawner = {}
 Spawner.enemies = {}
+Spawner.__index = Spawner
 
-function Spawner:initialize()
+setmetatable(Spawner, {
+    __index = GameObject,
+    __call = function(cls, ...)
+        local self = setmetatable({}, cls)
+        self:init(...)
+        return self
+    end
+})
+
+function Spawner:init(o)
+    GameObject.init(self, o)
+
     self.deltaPassed = 0
     self.spawnRate = self.spawnRate or 1 -- In seconds
-
     self.register(self)
     self.enemies = self.getEnemies(self)
-
 end
 
 function Spawner:draw()
@@ -22,8 +30,8 @@ function Spawner:draw()
         "fill",
         self.position.x,
         self.position.y,
-        Constants.tile.scaledWidth(),
-        Constants.tile.scaledHeight()
+        self.size.w,
+        self.size.h
     )
 
     love.graphics.setColor(0, 0, 0)
@@ -50,14 +58,13 @@ function Spawner:update(dt)
 end
 
 function Spawner:spawn()
-    local enemy = Enemy:new({
+    local enemy = Enemy({
         position = {
-            x = self.position.x + Constants.tile.scaledWidth() / 2,
-            y = self.position.y + Constants.tile.scaledHeight() / 2
+            x = self.position.x + self.size.w / 2,
+            y = self.position.y + self.size.h / 2
         },
         parent = self,
     })
-    enemy:initialize()
     table.insert(self.enemies, enemy)
 end
 

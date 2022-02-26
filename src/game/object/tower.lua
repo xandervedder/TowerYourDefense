@@ -2,31 +2,45 @@ local Constants = require("src.game.constants")
 local GameObject = require("src.game.object.gameobject")
 local Spawner = require("src.game.object.spawner")
 
-Tower = GameObject:new({ degree = 1 })
-Tower.size = 16
+local Tower = {}
+Tower.__index = Tower
+
+setmetatable(Tower, {
+    __index = GameObject,
+    __call = function(cls, ...)
+        local self = setmetatable({}, cls)
+        self:init(...)
+        return self
+    end
+})
+
 Tower.bulletSize = 0.75
 
-function Tower:initialize()
+function Tower:init(o)
+    GameObject.init(self, o)
+
     -- Time related
     self.delay = 0.2
     self.elapsedTime = 0
-
     -- Firing related
     self.activeBullets = {}
     self.damage = 25
-    self.range = self.range or 250 -- For now in pixels
+    -- This should be based on grid, maybe?
+    self.range = self.range or 250
     self.rotationSpeed = 1
+    self.scaled = { -- This is just the center, name should reflect that...
+        x = self.position.x + self.size.w / 2,
+        y = self.position.y + self.size.h / 2,
+    }
+end
 
+function Tower:prepare()
     -- Graphics related setup
     self.sheet = love.graphics.newImage("/assets/graphics/turret-spritesheet.png")
     self.sheet:setFilter("nearest", "nearest")
-    self.turretBaseQuad = love.graphics.newQuad(0, 0, Tower.size, Tower.size, self.sheet:getDimensions())
-    self.turretBarrelQuad = love.graphics.newQuad(16, 0, Tower.size, Tower.size, self.sheet:getDimensions())
+    self.turretBaseQuad = love.graphics.newQuad(0, 0, Constants.tile.w, Constants.tile.h, self.sheet:getDimensions())
+    self.turretBarrelQuad = love.graphics.newQuad(16, 0, Constants.tile.w, Constants.tile.h, self.sheet:getDimensions())
     self.rotation = 0
-    self.scaled = { -- This is just the center, name should reflect that...
-        x = self.position.x + Constants.tile.scaledWidth() / 2,
-        y = self.position.y + Constants.tile.scaledHeight() / 2,
-    }
 end
 
 function Tower:draw()
@@ -53,8 +67,8 @@ function Tower:draw()
         Constants.scale,
         Constants.scale,
         -- Origin points will be in the center of the image:
-        Tower.size / 2,
-        Tower.size / 2
+        Constants.tile.w / 2,
+        Constants.tile.h / 2
     )
 end
 

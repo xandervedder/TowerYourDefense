@@ -7,8 +7,8 @@ function Tiles.initialize()
     Tiles.spriteSheet = love.graphics.newImage("/assets/graphics/tile-spritesheet.png")
     Tiles.spriteSheet:setFilter("nearest", "nearest")
 
-    local tileWidth = Constants.tile.width
-    local tileHeight = Constants.tile.height
+    local tileWidth = Constants.tile.w
+    local tileHeight = Constants.tile.h
     local width, height = Tiles.spriteSheet:getDimensions()
     local xTiles = width / tileWidth
     local yTiles = height / tileHeight

@@ -1,4 +1,4 @@
-Scene = {}
+local Scene = {}
 
 function Scene:new(o)
     o = o or {}

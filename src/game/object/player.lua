@@ -1,19 +1,32 @@
 local GameObject = require("src.game.object.gameobject")
 
-Player = GameObject:new({
-    position = { x = 128, y = 128 },
-    controls = {
+local Player = {}
+Player.__index = Player
+
+setmetatable(Player, {
+    __index = GameObject,
+    __call = function(cls, ...)
+        local self = setmetatable({}, cls)
+        self:init(...)
+        return self
+    end
+})
+
+function Player:init(o)
+    GameObject.init(self, o)
+
+    self.controls = {
         up = false,
         down = false,
         left = false,
         right = false,
-    },
-    size = 32,
-})
+    }
+end
 
 function Player:draw()
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.rectangle("fill", self.position.x, self.position.y, self.size, self.size)
+
+    love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.w, self.size.h)
 end
 
 function Player:update(dt)

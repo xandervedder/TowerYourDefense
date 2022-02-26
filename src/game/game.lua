@@ -3,7 +3,7 @@ local Menu = require("src.game.scene.menu")
 local Tiles = require("src.game.graphics.tiles")
 local World = require("src.game.scene.world")
 
-Game = {}
+local Game = {}
 
 function Game.configure(t)
     t.window.title = "Tower Your Defense"

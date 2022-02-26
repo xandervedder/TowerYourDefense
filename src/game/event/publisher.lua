@@ -1,4 +1,4 @@
-Publisher = {}
+local Publisher = {}
 Publisher.listeners = {}
 
 function Publisher.register(identifier, topic, func)

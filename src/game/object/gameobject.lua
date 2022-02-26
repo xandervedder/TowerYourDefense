@@ -1,19 +1,26 @@
+local Util = require("src.game.util.util")
+
 --[[
 Base Object used for any game object in the game.
 Whether it be an enemy or tower, every object inherits from GameObject.
 ]]--
-GameObject = {}
+local GameObject = {}
+GameObject.__index = GameObject
 
-function GameObject:new(o)
-    o = o or {}
-    setmetatable(o, self)
-    self.__index = self
-    self.position = o.position or { x = 0, y = 0 }
-    self.size = o.size or 0
-    return o
+setmetatable(GameObject, {
+    __call = function(cls, ...)
+        local self = setmetatable({}, cls)
+        self:init(...)
+        return self
+    end
+})
+
+function GameObject:init(o)
+    self.position = o.position
+    self.size = o.size or Util.size()
 end
 
-function GameObject:initialize() end
+function GameObject:prepare() end
 
 function GameObject:draw() end
 

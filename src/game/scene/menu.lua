@@ -2,7 +2,7 @@ local Button = require("src.game.gui.button")
 local Event = require("src.game.event.event")
 local Scene = require("src.game.scene.scene")
 
-Menu = Scene:new({ name = "Menu" })
+local Menu = Scene:new({ name = "Menu" })
 
 function Menu:initialize()
     self.canvas = love.graphics.newCanvas(love.graphics.getDimensions())

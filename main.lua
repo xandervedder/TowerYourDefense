@@ -1,4 +1,4 @@
-Game = require("src.game.game")
+local Game = require("src.game.game")
 
 --[[
 Every method here is passed to the game defined above, we want to keep

@@ -8,25 +8,27 @@ local Scene = require("src.game.scene.scene")
 local Spawner = require("src.game.object.spawner")
 local Tiles = require("src.game.graphics.tiles")
 local Tower = require("src.game.object.tower")
+local Util = require("src.game.util.util")
 
-World = Scene:new({
+local World = Scene:new({
     name = "World Scene",
 })
 
 function World:initialize()
-    self.player = Player:new()
-    self.player:setPosition({ x = 512, y = 512 })
-    self.camera = Camera:new({screen = {love.graphics.getDimensions()}})
+    self.player = Player(Util.position(0, 1))
+    self.camera = Camera:new({ screen = { love.graphics.getDimensions() } })
     self.camera:followObject(self.player)
     self.gameObjects = {
-        Spawner:new({ spawnRate = 1, position = { x = Constants.tile.scaledHeight() * 3, y = Constants.tile.scaledHeight() } }),
-        Spawner:new({ spawnRate = 2, position = { x = Constants.tile.scaledHeight() * 4, y = Constants.tile.scaledHeight() } }),
-        Tower:new({ position = { x = Constants.tile.scaledHeight() * 2, y = Constants.tile.scaledHeight() * 2 } }),
-        Tower:new({ position = { x = Constants.tile.scaledHeight() * 4, y = Constants.tile.scaledHeight() * 4 } }),
+        Spawner(Util.position(0, 0)),
+        Spawner(Util.position(5, 0)),
+        Tower(Util.position(1, 2)),
+        Tower(Util.position(1, 3)),
+        Tower(Util.position(4, 2)),
+        Tower(Util.position(4, 3)),
     }
 
     for i = 1, #self.gameObjects, 1 do
-        self.gameObjects[i]:initialize()
+        self.gameObjects[i]:prepare()
     end
 
     table.insert(self.gameObjects, self.player)
@@ -44,8 +46,8 @@ function World.canvasFromMap(map)
     local height = #map[1]
 
     return love.graphics.newCanvas(
-        Constants.tile.width * Constants.scale * width,
-        Constants.tile.height * Constants.scale * height
+        Constants.tile.scaledWidth() * width,
+        Constants.tile.scaledHeight() * height
     )
 end
 
@@ -66,7 +68,7 @@ function World:draw()
         self.gameObjects[i]:draw()
     end
 
-    --! Important: only draw the camera when all the other things have rendered
+    --! Important: only draw the camera when all the other objects have rendered
     self.camera:draw()
 end
 

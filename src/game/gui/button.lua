@@ -1,7 +1,7 @@
 local Event = require("src.game.event.event")
 local Publisher = require("src.game.event.publisher")
 
-Button = {}
+local Button = {}
 
 function Button:new(o)
     o = o or {}

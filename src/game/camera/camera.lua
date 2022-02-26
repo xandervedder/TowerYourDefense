@@ -1,4 +1,4 @@
-Camera = {}
+local Camera = {}
 
 -- Requires a 'screen' attribute
 -- e.g. Camera:new({ screen = { love.graphics.getDimensions() } })
@@ -28,8 +28,8 @@ end
 
 function Camera:followObject(object)
     self.object = object
-    self.position.x = self.center.x - object:getSize() / 2 -- In the middle of the object
-    self.position.y = self.center.y - object:getSize()
+    self.position.x = self.center.x - object:getSize().w / 2 -- In the middle of the object
+    self.position.y = self.center.y - object:getSize().h
 end
 
 function Camera:getFollowObject()

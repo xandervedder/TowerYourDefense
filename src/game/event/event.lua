@@ -1,4 +1,4 @@
-Event = {}
+local Event = {}
 
 function Event:new(o)
     o = o or {}
