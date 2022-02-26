@@ -1,6 +1,6 @@
-local Button = require("src.engine.gui.button")
-local Event = require("src.engine.event.event")
-local Scene = require("src.engine.scene.scene")
+local Button = require("src.game.gui.button")
+local Event = require("src.game.event.event")
+local Scene = require("src.game.scene.scene")
 
 Menu = Scene:new({ name = "Menu" })
 

@@ -1,7 +1,7 @@
-local Enemy = require("src.engine.object.enemy")
-local Event = require("src.engine.event.event")
-local GameObject = require("src.engine.object.gameobject")
-local Publisher = require("src.engine.event.publisher")
+local Enemy = require("src.game.object.enemy")
+local Event = require("src.game.event.event")
+local GameObject = require("src.game.object.gameobject")
+local Publisher = require("src.game.event.publisher")
 
 Spawner = GameObject:new()
 -- Table with tables

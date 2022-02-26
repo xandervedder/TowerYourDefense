@@ -1,4 +1,4 @@
-local Constants = require("src.engine.constants")
+local Constants = require("src.game.constants")
 
 local Tiles = {}
 Tiles.tile = {}

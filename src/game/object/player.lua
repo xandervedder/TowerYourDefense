@@ -1,4 +1,4 @@
-local GameObject = require("src.engine.object.gameobject")
+local GameObject = require("src.game.object.gameobject")
 
 Player = GameObject:new({
     position = { x = 128, y = 128 },

@@ -1,53 +1,53 @@
-Engine = require("src.engine.engine")
+Game = require("src.game.game")
 
 --[[
-Every method here is passed to the engine defined above, we want to keep
+Every method here is passed to the game defined above, we want to keep
 main.lua file clean, since everything is in the src/ folder.
 ]]--
 function love.conf(t)
-    Engine.configure()
+    Game.configure()
 end
 
 function love.load()
-    Engine.load()
+    Game.load()
 end
 
 function love.draw()
-    Engine.draw()
+    Game.draw()
 end
 
 function love.update(dt)
-    Engine.update(dt)
+    Game.update(dt)
 end
 
 function love.quit()
-    Engine.quit()
+    Game.quit()
 end
 
 function love.keypressed(key)
-    Engine.keyPressed(key)
+    Game.keyPressed(key)
 end
 
 function love.keyreleased(key)
-    Engine.keyReleased(key)
+    Game.keyReleased(key)
 end
 
 function love.resize()
-    Engine.resize()
+    Game.resize()
 end
 
 function love.mousemoved()
-    Engine.mouseMoved()
+    Game.mouseMoved()
 end
 
 function love.mousepressed()
-    Engine.mousePressed()
+    Game.mousePressed()
 end
 
 function love.mousereleased()
-    Engine.mouseReleased()
+    Game.mouseReleased()
 end
 
 function love.wheelmoved()
-    Engine.mouseWheelMoved()
+    Game.mouseWheelMoved()
 end

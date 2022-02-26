@@ -1,13 +1,13 @@
-local Camera = require("src.engine.camera.camera")
-local Constants = require("src.engine.constants")
-local Event = require("src.engine.event.event")
-local Map = require("src.engine.map.map")
-local Player = require("src.engine.object.player")
-local Publisher = require("src.engine.event.publisher")
-local Scene = require("src.engine.scene.scene")
-local Spawner = require("src.engine.object.spawner")
-local Tiles = require("src.engine.graphics.tiles")
-local Tower = require("src.engine.object.tower")
+local Camera = require("src.game.camera.camera")
+local Constants = require("src.game.constants")
+local Event = require("src.game.event.event")
+local Map = require("src.game.map.map")
+local Player = require("src.game.object.player")
+local Publisher = require("src.game.event.publisher")
+local Scene = require("src.game.scene.scene")
+local Spawner = require("src.game.object.spawner")
+local Tiles = require("src.game.graphics.tiles")
+local Tower = require("src.game.object.tower")
 
 World = Scene:new({
     name = "World Scene",

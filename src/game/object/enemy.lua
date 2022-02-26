@@ -1,7 +1,7 @@
-local Constants = require("src.engine.constants")
-local Event = require("src.engine.event.event")
-local GameObject = require("src.engine.object.gameobject")
-local Publisher = require("src.engine.event.publisher")
+local Constants = require("src.game.constants")
+local Event = require("src.game.event.event")
+local GameObject = require("src.game.object.gameobject")
+local Publisher = require("src.game.event.publisher")
 
 Enemy = GameObject:new({ speed = 3 })
 

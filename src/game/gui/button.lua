@@ -1,5 +1,5 @@
-local Event = require("src.engine.event.event")
-local Publisher = require("src.engine.event.publisher")
+local Event = require("src.game.event.event")
+local Publisher = require("src.game.event.publisher")
 
 Button = {}
 

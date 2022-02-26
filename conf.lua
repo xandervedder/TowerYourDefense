@@ -1,5 +1,5 @@
-Engine = require("src.engine.engine")
+Game = require("src.game.game")
 
 function love.conf(t)
-    Engine.configure(t)
+    Game.configure(t)
 end

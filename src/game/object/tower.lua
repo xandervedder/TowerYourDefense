@@ -1,6 +1,6 @@
-local Constants = require("src.engine.constants")
-local GameObject = require("src.engine.object.gameobject")
-local Spawner = require("src.engine.object.spawner")
+local Constants = require("src.game.constants")
+local GameObject = require("src.game.object.gameobject")
+local Spawner = require("src.game.object.spawner")
 
 Tower = GameObject:new({ degree = 1 })
 Tower.size = 16
