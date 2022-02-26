@@ -1,3 +1,4 @@
+local Base = require("src.game.object.base")
 local Camera = require("src.game.camera.camera")
 local Constants = require("src.game.constants")
 local Event = require("src.game.event.event")
@@ -15,14 +16,17 @@ local World = Scene:new({
 })
 
 function World:initialize()
-    self.player = Player(Util.position(0, 1))
+    self.player = Player(Util.position(3, 3))
     self.camera = Camera:new({ screen = { love.graphics.getDimensions() } })
     self.camera:followObject(self.player)
+    local base = Base(Util.position(3, 5))
+
     self.gameObjects = {
-        Spawner(Util.position(0, 0)),
-        Spawner(Util.position(5, 0)),
-        Tower(Util.position(1, 2)),
-        Tower(Util.position(1, 3)),
+        Spawner({ position = Util.position(0, 0).position, base = base, }),
+        Spawner({ position = Util.position(5, 0).position, base = base, }),
+        base,
+        Tower(Util.position(2, 2)),
+        Tower(Util.position(2, 3)),
         Tower(Util.position(4, 2)),
         Tower(Util.position(4, 3)),
     }
@@ -42,8 +46,8 @@ function World:initialize()
 end
 
 function World.canvasFromMap(map)
-    local width = #map
-    local height = #map[1]
+    local height = #map
+    local width = #map[1]
 
     return love.graphics.newCanvas(
         Constants.tile.scaledWidth() * width,

@@ -18,6 +18,7 @@ setmetatable(Spawner, {
 function Spawner:init(o)
     GameObject.init(self, o)
 
+    self.base = o.base
     self.deltaPassed = 0
     self.spawnRate = self.spawnRate or 1 -- In seconds
     self.register(self)
@@ -64,6 +65,7 @@ function Spawner:spawn()
             y = self.position.y + self.size.h / 2
         },
         parent = self,
+        base = self.base,
     })
     table.insert(self.enemies, enemy)
 end
@@ -79,8 +81,8 @@ function Spawner:despawnOutOfBoundsEnemies()
 end
 
 function Spawner:updateSpawnedEnemies(dt)
-    for i = 1, #self.enemies, 1 do
-        self.enemies[i]:update(dt)
+    for _, enemy in pairs(self.enemies) do
+        enemy:update(dt)
     end
 end
 

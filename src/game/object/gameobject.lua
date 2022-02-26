@@ -30,6 +30,13 @@ function GameObject:getPosition()
     return self.position
 end
 
+function GameObject:getMiddle()
+    return {
+        x = self.position.x + (self.size.w / 2),
+        y = self.position.y + (self.size.h / 2)
+    }
+end
+
 function GameObject:setPosition(position)
     self.position = position
 end

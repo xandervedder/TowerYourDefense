@@ -20,13 +20,15 @@ function Player:init(o)
         down = false,
         left = false,
         right = false,
+        hide = false,
     }
 end
 
 function Player:draw()
-    love.graphics.setColor(1, 1, 1, 1)
+    if self.controls.hide then return end
 
-    love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.w, self.size.h)
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.w / 2, self.size.h / 2)
 end
 
 function Player:update(dt)
@@ -49,6 +51,7 @@ function Player:keyProcessor(key, on)
     if key == "down" then self.controls.down = on end
     if key == "left" then self.controls.left = on end
     if key == "right" then self.controls.right = on end
+    if key == "h" then self.controls.hide = on end
 end
 
 return Player
