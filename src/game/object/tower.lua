@@ -30,7 +30,7 @@ function Tower:init(o)
     -- This should be based on grid, maybe?
     self.range = self.range or 250
     self.rotationSpeed = 1
-    self.center = { -- This is just the center, name should reflect that...
+    self.center = {
         x = self.position.x + self.size.w / 2,
         y = self.position.y + self.size.h / 2,
     }
