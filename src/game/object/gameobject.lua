@@ -18,6 +18,7 @@ setmetatable(GameObject, {
 function GameObject:init(o)
     self.position = o.position
     self.size = o.size or Util.size()
+    self.speed = o.speed or 1
 end
 
 function GameObject:prepare() end
@@ -25,6 +26,8 @@ function GameObject:prepare() end
 function GameObject:draw() end
 
 function GameObject:update(dt) end
+
+function GameObject:fixedUpdate(dt) end
 
 function GameObject:getPosition()
     return self.position
@@ -41,8 +44,8 @@ function GameObject:setPosition(position)
     self.position = position
 end
 
-function GameObject:getSize()
-    return self.size
-end
+function GameObject:getSize() return self.size end
+
+function GameObject:getSpeed() return self.speed end
 
 return GameObject

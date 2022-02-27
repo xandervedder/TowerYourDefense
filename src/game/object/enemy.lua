@@ -21,31 +21,33 @@ function Enemy:init(o)
 
     self.base = o.base
     self.dead = false
+    self.direction = ""
     self.dmg = 25
     self.health = 100
     self.originalHealth = self.health
     self.parent = o.parent
-    self.size = 2 * Constants.scale
-    self.speed = 1
+    self.size = Util.size(6)
+    self.speed = 0.25
 end
 
 function Enemy:draw()
     if self.dead then return end
 
     love.graphics.setColor(1, 0, 0)
-    love.graphics.circle(
+    love.graphics.rectangle(
         "fill",
         self.position.x,
         self.position.y,
-        self.size
+        self.size.w,
+        self.size.h
     )
 
     love.graphics.setColor(1, 0, 0)
     love.graphics.rectangle(
         "fill",
-        self.position.x - self.size,
-        self.position.y + self.size + 10, -- Offset
-        self.size * 2,
+        self.position.x,
+        self.position.y + self.size.h + 5, -- Offset
+        self.size.w,
         10
     )
 
@@ -53,9 +55,9 @@ function Enemy:draw()
     love.graphics.setColor(0, 1, 0)
     love.graphics.rectangle(
         "fill",
-        self.position.x - self.size,
-        self.position.y + self.size + 10, -- Offset
-        (self.size * 2) * percentage,
+        self.position.x,
+        self.position.y + self.size.h + 5, -- Offset
+        self.size.w * percentage,
         10
     )
 end
@@ -67,17 +69,27 @@ function Enemy:update()
         return
     end
 
+    -- TODO: enemies are not moving towards the middle of the base (offset)
     local bPosition = self.base:getMiddle()
     if bPosition.x > self.position.x then
-        self.position.x = self.position.x + (0.5 * self.speed)
+        self.position.x = self.position.x + self.speed
+        self.direction = "right"
     elseif bPosition.x < self.position.x then
-        self.position.x = self.position.x - (0.5 * self.speed)
+        self.position.x = self.position.x - self.speed
+        self.direction = "left"
     elseif bPosition.y > self.position.y then
-        self.position.y = self.position.y + (0.5 * self.speed)
+        self.position.y = self.position.y + self.speed
+        self.direction = "bottom"
     else
-        self.position.y = self.position.y - (0.5 * self.speed)
+        self.position.y = self.position.y - self.speed
+        self.direction = "top"
     end
 end
+
+-- TODO: This should be based on the current force... improve:
+function Enemy:getDirection() return self.direction end
+
+function Enemy:getPosition() return GameObject.getMiddle(self) end
 
 function Enemy:damage(dmg)
     self.health = self.health - dmg

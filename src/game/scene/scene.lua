@@ -1,3 +1,5 @@
+-- TODO: Maybe have some other type of object with these base
+-- methods and such:
 local Scene = {}
 
 function Scene:new(o)
@@ -11,6 +13,8 @@ end
 function Scene:initialize() end
 
 function Scene:update(dt) end
+
+function Scene:fixedUpdate(dt) end
 
 function Scene:on(event) end
 

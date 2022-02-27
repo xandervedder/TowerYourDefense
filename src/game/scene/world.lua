@@ -63,6 +63,12 @@ function World:update(dt)
     self.camera:update(dt)
 end
 
+function World:fixedUpdate(dt)
+    for i = 1, #self.gameObjects, 1 do
+        self.gameObjects[i]:fixedUpdate(dt)
+    end
+end
+
 function World:draw()
     love.graphics.setColor(1, 1, 1, 1)
 

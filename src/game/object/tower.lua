@@ -1,6 +1,7 @@
 local Constants = require("src.game.constants")
 local GameObject = require("src.game.object.gameobject")
 local Spawner = require("src.game.object.spawner")
+local Util = require("src.game.util.util")
 
 local Tower = {}
 Tower.__index = Tower
@@ -25,13 +26,15 @@ function Tower:init(o)
     -- Firing related
     self.activeBullets = {}
     self.damage = 25
+    self.firingSpeed = 3
     -- This should be based on grid, maybe?
     self.range = self.range or 250
     self.rotationSpeed = 1
-    self.scaled = { -- This is just the center, name should reflect that...
+    self.center = { -- This is just the center, name should reflect that...
         x = self.position.x + self.size.w / 2,
         y = self.position.y + self.size.h / 2,
     }
+    self.projectedEnemyPosition = nil
 end
 
 function Tower:prepare()
@@ -45,7 +48,7 @@ end
 
 function Tower:draw()
     love.graphics.setColor(1, 0, 0, 0.25)
-    love.graphics.circle("fill", self.scaled.x, self.scaled.y, self.range)
+    love.graphics.circle("fill", self.center.x, self.center.y, self.range)
     love.graphics.setColor(1, 1, 1)
 
     love.graphics.setColor(1, 1, 1)
@@ -61,8 +64,8 @@ function Tower:draw()
     love.graphics.draw(
         self.sheet,
         self.turretBarrelQuad,
-        self.scaled.x,
-        self.scaled.y,
+        self.center.x,
+        self.center.y,
         self.rotation,
         Constants.scale,
         Constants.scale,
@@ -86,7 +89,7 @@ function Tower:update(dt)
     -- Enemy could still be empty
     if self.enemy == nil then return end
 
-    self:rotateBarrel()
+    self:rotateBarrel(dt)
     self:checkCollision()
 
     self.elapsedTime = self.elapsedTime + dt
@@ -118,14 +121,14 @@ function Tower:updateBullets()
     end
 end
 
-function Tower:rotateBarrel()
+function Tower:rotateBarrel(dt)
     if not self:withinRange(self.enemy) then return end
 
     local size = self.enemy:getSize()
-    local position = self.enemy:getPosition()
-    local x = position.x + size / 2
-    local y = position.y + size / 2
-    local radians = math.atan2(self.scaled.y - y, self.scaled.x - x)
+    local position = self:predictPosition(dt)
+    local x = position.x + size.w / 2
+    local y = position.y + size.h / 2
+    local radians = math.atan2(self.center.y - y, self.center.x - x)
     if radians < 0 then
         radians = radians + (2 * math.pi)
     end
@@ -159,20 +162,36 @@ function Tower:rotateBarrel()
     return self.rotation
 end
 
+function Tower:predictPosition(dt)
+    local position = self.enemy:getPosition()
+    local distance = math.sqrt(math.pow(self.center.x - position.x, 2) + math.pow(self.center.y - position.y, 2))
+    local time = dt * distance / self.firingSpeed
+    local steps = time / dt
+
+    local direction = self.enemy:getDirection()
+    --! Will be improved at a later time:
+    if direction == "right" then
+        self.projectedEnemyPosition = { x = position.x + (steps * self.enemy:getSpeed()), y = position.y }
+    elseif direction == "left" then
+        self.projectedEnemyPosition = { x = position.x - (steps * self.enemy:getSpeed()), y = position.y }
+    elseif direction == "top" then
+        self.projectedEnemyPosition = { x = position.x, y = position.y - (steps * self.enemy:getSpeed()) }
+    elseif direction == "bottom" then
+        self.projectedEnemyPosition = { x = position.x, y = position.y + (steps * self.enemy:getSpeed()) }
+    end
+
+    return self.projectedEnemyPosition
+end
+
 function Tower:checkCollision()
-    local enemy = self.enemy:getPosition()
-    local size = self.enemy:getSize()
     local height, width = love.graphics.getDimensions()
 
     for i = #self.activeBullets, 1, -1 do
         local bullet = self.activeBullets[i]
         local x = bullet.x
         local y = bullet.y
-        local diffX = (enemy.x + size / 2) - (x + Tower.bulletSize * Constants.scale)
-        local diffY = (enemy.y + size / 2) - (y + Tower.bulletSize * Constants.scale)
 
-        local offset = size / 2
-        if (diffX < offset and diffX > -offset) and (diffY < offset and diffY > -offset) then -- Target hit
+        if Util.isWithin(bullet, self.enemy) then
             self.enemy:damage(self.damage)
             table.remove(self.activeBullets, i)
         elseif (x > width or x < 0) or (y > height or y < 0) then -- Off screen
@@ -184,27 +203,31 @@ end
 function Tower:withinRange(enemy)
     local position = enemy:getPosition()
     local size = enemy:getSize()
-    local dx = math.abs(self.scaled.x - position.x - size / 2)
-    local dy = math.abs(self.scaled.y - position.y - size / 2)
+    local dx = math.abs(self.center.x - position.x - size.w / 2)
+    local dy = math.abs(self.center.y - position.y - size.h / 2)
 
     -- Great visual guide: https://jsfiddle.net/exodus4d/94mxLvqh/2691/
-    if dx > (size / 2 + self.range) then return false end
-    if dy > (size / 2 + self.range) then return false end
-    if dx <= (size / 2) then return true end
-    if dy <= (size / 2) then return true end
+    if dx > (size.w / 2 + self.range) then return false end
+    if dy > (size.h / 2 + self.range) then return false end
+    if dx <= (size.w / 2) then return true end
+    if dy <= (size.h / 2) then return true end
 
-    local trX = dx - size / 2
-    local trY = dy - size / 2
+    local trX = dx - size.w / 2
+    local trY = dy - size.h / 2
     return trX * trX + trY * trY <= self.range * self.range
 end
 
 function Tower:shoot()
+    -- TODO: bullet should be its own object in a different file
     local bullet = {
-        x = self.scaled.x,
-        y = self.scaled.y,
+        x = self.center.x,
+        y = self.center.y,
         velocity = { x = 0, y = 0 },
-        speed = 4, -- Should be a tower stat
+        speed = self.firingSpeed,
     }
+    bullet.getPosition = function ()
+        return { x = bullet.x, y = bullet.y }
+    end
 
     -- https://stackoverflow.com/a/14857424
     -- TODO: this works now, it shoots with the barrel but it can still be improved...
