@@ -2,8 +2,10 @@ local Publisher = require("src.game.event.publisher")
 local Menu = require("src.game.scene.menu")
 local Tiles = require("src.game.graphics.tiles")
 local World = require("src.game.scene.world")
+local Constants = require("src.game.constants")
 
 local Game = {}
+Game.dt = 0
 
 function Game.configure(t)
     t.window.title = "Tower Your Defense"
@@ -46,6 +48,16 @@ end
 
 function Game.update(dt)
     Game.scene:update(dt)
+
+    Game.dt = Game.dt + dt
+    if Game.dt >= Constants.physics.timing then
+        Game.fixedUpdate(dt)
+        Game.dt = 0
+    end
+end
+
+function Game.fixedUpdate(dt)
+    Game.scene:fixedUpdate(dt)
 end
 
 function Game.on(event)

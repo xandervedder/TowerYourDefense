@@ -1,5 +1,7 @@
 local Constants = {}
-
+Constants.physics = {}
+Constants.physics.rate = 60
+Constants.physics.timing = 1 / Constants.physics.rate
 -- Not sure if this is large enough, maybe this should be a configurable property
 Constants.scale = 8
 Constants.tile = {
