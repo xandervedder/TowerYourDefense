@@ -237,4 +237,12 @@ function Tower:shoot()
     table.insert(self.activeBullets, bullet)
 end
 
+function Tower:getSheet()
+    return self.sheet
+end
+
+function Tower:getQuads()
+    return { self.turretBaseQuad, self.turretBarrelQuad }
+end
+
 return Tower

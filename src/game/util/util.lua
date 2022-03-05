@@ -3,13 +3,21 @@ local Constants = require("src.game.constants")
 local Util = {}
 
 function Util.position(x, y)
-    local yPos = y * Constants.tile.scaledHeight()
     local xPos = x * Constants.tile.scaledWidth()
+    local yPos = y * Constants.tile.scaledHeight()
 
     return {
         grid = { x = x, y = y },
         position = { x = xPos, y = yPos, },
     }
+end
+
+-- TODO naming is a bit wierd here...
+function Util.positionFromXY(x, y)
+    local xPos = math.floor(x / Constants.tile.scaledWidth())
+    local yPos = math.floor(y / Constants.tile.scaledHeight())
+
+    return Util.position(xPos, yPos)
 end
 
 function Util.size(scale)

@@ -36,4 +36,12 @@ function Camera:getFollowObject()
     return self.object
 end
 
+function Camera:getCenter()
+    return self.center
+end
+
+function Camera:getPosition()
+    return self.position
+end
+
 return Camera

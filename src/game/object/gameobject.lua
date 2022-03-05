@@ -16,7 +16,7 @@ setmetatable(GameObject, {
 })
 
 function GameObject:init(o)
-    self.position = o.position
+    self.position = o.position or { x = 0, y = 0 }
     self.size = o.size or Util.size()
     self.speed = o.speed or 1
 end
@@ -47,5 +47,9 @@ end
 function GameObject:getSize() return self.size end
 
 function GameObject:getSpeed() return self.speed end
+
+function GameObject:getSheet() end
+
+function GameObject:getQuads() end
 
 return GameObject

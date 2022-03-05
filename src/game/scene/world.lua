@@ -1,10 +1,9 @@
 local Base = require("src.game.object.base")
 local Camera = require("src.game.camera.camera")
 local Constants = require("src.game.constants")
-local Event = require("src.game.event.event")
 local Map = require("src.game.map.map")
 local Player = require("src.game.object.player")
-local Publisher = require("src.game.event.publisher")
+local PlacementTool = require("src.game.tool.placement-tool")
 local Scene = require("src.game.scene.scene")
 local Spawner = require("src.game.object.spawner")
 local Tiles = require("src.game.graphics.tiles")
@@ -25,10 +24,6 @@ function World:initialize()
         Spawner({ position = Util.position(0, 0).position, base = base, }),
         Spawner({ position = Util.position(5, 0).position, base = base, }),
         base,
-        Tower(Util.position(2, 2)),
-        Tower(Util.position(2, 3)),
-        Tower(Util.position(4, 2)),
-        Tower(Util.position(4, 3)),
     }
 
     for i = 1, #self.gameObjects, 1 do
@@ -42,7 +37,8 @@ function World:initialize()
     }
     self.activeMap = 1
     self.canvas = self.canvasFromMap(self.maps[self.activeMap])
-    Publisher.publish(Event:new({ name = "events.enemy.follow", data = self.player }))
+
+    PlacementTool.initialize(self.gameObjects, Tower, self.camera)
 end
 
 function World.canvasFromMap(map)
@@ -60,6 +56,7 @@ function World:update(dt)
         self.gameObjects[i]:update(dt)
     end
 
+    PlacementTool.update()
     self.camera:update(dt)
 end
 
@@ -77,6 +74,8 @@ function World:draw()
     for i = 1, #self.gameObjects, 1 do
         self.gameObjects[i]:draw()
     end
+
+    PlacementTool.draw()
 
     --! Important: only draw the camera when all the other objects have rendered
     self.camera:draw()
@@ -108,6 +107,8 @@ function World:keyPressed(key)
     --? For debugging purposes
     if key == "l" then
         self:switchMaps()
+    elseif key == "b" then
+        PlacementTool.toggleActive()
     end
 end
 
@@ -122,6 +123,14 @@ end
 
 function World:keyReleased(key)
     self.player:keyReleased(key)
+end
+
+function World:mouseMoved(x, y, dx, dy, touch)
+    PlacementTool.mouseMoved(x, y, dx, dy, touch)
+end
+
+function World:mousePressed(x, y, button, touch, presses)
+    PlacementTool.mousePressed(x, y, button, touch, presses)
 end
 
 return World

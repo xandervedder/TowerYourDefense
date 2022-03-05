@@ -96,12 +96,12 @@ function Game.keyReleased(key)
     Game.scene:keyReleased(key)
 end
 
-function Game.mouseMoved()
-    Game.scene:mouseMoved()
+function Game.mouseMoved(x, y, dx, dy, touch)
+    Game.scene:mouseMoved(x, y, dx, dy, touch)
 end
 
-function Game.mousePressed()
-    Game.scene:mousePressed()
+function Game.mousePressed(x, y, button, touch, presses)
+    Game.scene:mousePressed(x, y, button, touch, presses)
 end
 
 function Game.mouseReleased()

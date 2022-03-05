@@ -36,12 +36,12 @@ function love.resize()
     Game.resize()
 end
 
-function love.mousemoved()
-    Game.mouseMoved()
+function love.mousemoved(x, y, dx, dy, touch)
+    Game.mouseMoved(x, y, dx, dy, touch)
 end
 
-function love.mousepressed()
-    Game.mousePressed()
+function love.mousepressed(x, y, button, touch, presses)
+    Game.mousePressed(x, y, button, touch, presses)
 end
 
 function love.mousereleased()

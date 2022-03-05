@@ -28,9 +28,9 @@ function Scene:keyPressed(key) end
 
 function Scene:keyReleased(key) end
 
-function Scene:mouseMoved() end
+function Scene:mouseMoved(x, y, dx, dy, touch) end
 
-function Scene:mousePressed() end
+function Scene:mousePressed(x, y, button, touch, presses) end
 
 function Scene:mouseReleased() end
 
