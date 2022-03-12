@@ -1,4 +1,4 @@
-local Button = require("src.game.gui.button")
+local Button = require("src.gui.button")
 local Event = require("src.game.event.event")
 local Scene = require("src.game.scene.scene")
 

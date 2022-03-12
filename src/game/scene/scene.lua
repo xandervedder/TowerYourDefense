@@ -1,5 +1,3 @@
--- TODO: Maybe have some other type of object with these base
--- methods and such:
 local Scene = {}
 
 function Scene:new(o)
