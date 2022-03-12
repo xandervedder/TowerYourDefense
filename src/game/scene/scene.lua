@@ -8,6 +8,10 @@ function Scene:new(o)
     return o
 end
 
+function Scene:_getCanvas()
+    return love.graphics.newCanvas(love.graphics.getDimensions())
+end
+
 function Scene:initialize() end
 
 function Scene:update(dt) end

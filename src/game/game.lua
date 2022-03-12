@@ -12,6 +12,7 @@ function Game.configure(t)
     t.window.width = 1024
     t.window.height = 1024
     t.window.display = 2 --* For now...
+    t.window.resizable = true
     t.vsync = 1
 end
 
