@@ -27,14 +27,13 @@ function Container:init(o)
 end
 
 function Container:draw()
-    -- TODO: this needs to be figured out:
     local margin = self.style.margin
 
     love.graphics.setColor(self.style.color.r, self.style.color.g, self.style.color.b, self.style.color.a)
     love.graphics.rectangle(
         "fill",
-        self.style.position.x,
-        self.style.position.y,
+        self.style.position.x + margin.l,
+        self.style.position.y + margin.t,
         self.style.size.w,
         self.style.size.h
     )
@@ -61,16 +60,17 @@ function Container:updateSelf()
         if self.style.grow.y then self:growY(height) end
     else
         local parent = self.parent.style
+
         if self.style.center.x then
             self:updateCenterX(parent.size.w, parent.position.x)
         else
-            self.style.position.x = parent.position.x + parent.padding.l -- We do not care about the right side
+            self.style.position.x = parent.position.x + parent.margin.l + parent.padding.l
         end
 
         if self.style.center.y then
             self:updateCenterY(parent.size.h, parent.position.y)
         else
-            self.style.position.y = parent.position.y + parent.padding.t -- We do not care about the bottom side
+           self.style.position.y = parent.position.y + parent.margin.t + parent.padding.t
         end
 
         if self.style.grow.x then self:growX(parent.size.w, parent.padding.r + parent.padding.l) end

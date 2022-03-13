@@ -11,13 +11,15 @@ function Menu:initialize()
     self.canvas = self:_getCanvas()
     self.element = Container({
         style = Style({
-            center = { x = true, y = true, },
+            center = { x = true, y = false, },
+            margin = 20,
             padding = 20,
             size = { w = 600, h = 600, },
         }),
         children = {
             Container({
                 style = Style({
+                    margin = SideProperty({ t = 20, l = 50 }),
                     center = { x = false, y = false, },
                     color = { r = 0, g = 1, b = 0, a = 1, },
                     grow = { x = true, y = false },
@@ -26,8 +28,10 @@ function Menu:initialize()
                 children = {
                     Container({
                         style = Style({
-                            center = { x = true, y = true, },
+                            center = { x = false, y = false, },
                             color = { r = 0, g = 0, b = 1, a = 1, },
+                            grow = { x = false },
+                            margin = SideProperty({ t = 20, l = 20, r = 20, }),
                             size = { w = 50, h = 50, },
                         }),
                     }),
