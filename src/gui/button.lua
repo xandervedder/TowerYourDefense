@@ -1,51 +1,55 @@
-local Event = require("src.game.event.event")
-local Publisher = require("src.game.event.publisher")
+local Element = require("src.gui.element")
 
+---@class Button : Element
 local Button = {}
+Button.__index = Button
 
-function Button:new(o)
-    o = o or {}
-    setmetatable(o, self)
-    self.__index = self
+setmetatable(Button, {
+    __index = Element,
+    __call = function(cls, ...)
+        local self = setmetatable({}, cls)
+        self:init(...)
+        return self
+    end
+})
+
+function Button:init(o)
+    Element.init(self, o)
+
+    self.method = o.method
     self.text = o.text or ""
-    self.event = o.event or Event:new({ name = "events.unknown" })
-    self.size = { w = 350, h = 150 }
-    self.position = o.position or { x = 25, y = 25 }
     self.mouseWithinBounds = false
-    return o
-end
-
-function Button:initialize()
     local x, _ = love.graphics.getDimensions()
-    self.position.x = (x / 2) - (self.size.w / 2)
+    self.style.position.x = (x / 2) - (self.style.size.w / 2)
 end
 
 function Button:draw()
-    love.graphics.setColor(1, 1, 1)
+    Element.setColor(self)
+
     love.graphics.rectangle(
         "fill",
-        self.position.x,
-        self.position.y,
-        self.size.w,
-        self.size.h
+        self.style.position.x,
+        self.style.position.y,
+        self.style.size.w,
+        self.style.size.h
     )
 
     local text = love.graphics.newText(love.graphics.newFont(24), self.text)
     love.graphics.setColor(0, 0, 0)
     love.graphics.draw(
         text,
-        self.position.x + (self.size.w / 2) - (text:getWidth() / 2),
-        self.position.y + (self.size.h / 2) - 12
+        self.style.position.x + (self.style.size.w / 2) - (text:getWidth() / 2),
+        self.style.position.y + (self.style.size.h / 2) - 12
     )
 end
 
 function Button:mousePressed()
     local x, y = love.mouse.getPosition()
-    if x < self.position.x then return end
-    if y < self.position.y then return end
+    if x < self.style.position.x then return end
+    if y < self.style.position.y then return end
 
-    if (x == self.position.x or x < self.position.x + self.size.w) and
-       (y == self.position.y or y < self.position.y + self.size.h)
+    if (x == self.style.position.x or x < self.style.position.x + self.style.size.w) and
+       (y == self.style.position.y or y < self.style.position.y + self.style.size.h)
     then
         self.mouseWithinBounds = true
     else
@@ -54,8 +58,8 @@ function Button:mousePressed()
 end
 
 function Button:mouseReleased()
-    if self.mouseWithinBounds then
-        Publisher.publish(self.event)
+    if self.mouseWithinBounds and self.method then
+        self.method()
     end
 end
 

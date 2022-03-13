@@ -1,10 +1,11 @@
-local Style = require("src.gui.style.style")
+local Element = require("src.gui.element")
 
----@class Container
+---@class Container : Element
 local Container = {}
 Container.__index = Container
 
 setmetatable(Container, {
+    __index = Element,
     __call = function(cls, ...)
         local self = setmetatable({}, cls)
         self:init(...)
@@ -13,13 +14,9 @@ setmetatable(Container, {
 })
 
 function Container:init(o)
-    ---@type Container[] should be the root element tbh
-    self.children = o.children or {}
-    ---@type Container
-    self.parent = nil
-    ---@type Style
-    self.style = o.style or Style({})
+    Element.init(self, o)
 
+    --? limit to one element?
     for _, child in pairs(self.children) do
         child:setPosition(self.style.position.x, self.style.position.y)
         child:setParent(self)

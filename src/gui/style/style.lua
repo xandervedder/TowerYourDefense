@@ -30,11 +30,31 @@ function Style:init(o)
         end
     end
 
-    self.color = o.color or { r = 1, g = 1, b = 1, a = 1, }
+    self.color = o.color or { r = 1, g = 1, b = 1, a = 0, }
     self.center = o.center or { x = false, y = false }
     self.grow = o.grow or { x = false, y = false }
     self.position = o.position or { x = 0, y = 0 }
     self.size = o.size or { w = 0, h = 0 }
+end
+
+---@return number
+function Style:horizontalMargin()
+    return self.margin.l + self.margin.r
+end
+
+---@return number
+function Style:horizontalPadding()
+    return self.padding.l + self.padding.r
+end
+
+---@return number
+function Style:verticalMargin()
+    return self.margin.t + self.margin.b
+end
+
+---@return number
+function Style:verticalPadding()
+    return self.padding.t + self.padding.b
 end
 
 return Style

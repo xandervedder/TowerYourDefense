@@ -1,67 +1,62 @@
+local Event = require("src.game.event.event")
+local Publisher = require("src.game.event.publisher")
+local Scene = require("src.game.scene.scene")
+
 local Button = require("src.gui.button")
 local Container = require("src.gui.container")
-local Event = require("src.game.event.event")
-local Scene = require("src.game.scene.scene")
-local Style = require("src.gui.style.style")
 local SideProperty = require("src.gui.style.side-property")
+local Style = require("src.gui.style.style")
+local VBox = require("src.gui.layout.v-box")
 
 local Menu = Scene:new({ name = "Menu" })
 
 function Menu:initialize()
     self.canvas = self:_getCanvas()
+    ---@type Element
     self.element = Container({
         style = Style({
             center = { x = true, y = false, },
-            margin = 20,
             padding = 20,
             size = { w = 600, h = 600, },
         }),
         children = {
-            Container({
-                style = Style({
-                    margin = SideProperty({ t = 20, l = 50 }),
-                    center = { x = false, y = false, },
-                    color = { r = 0, g = 1, b = 0, a = 1, },
-                    grow = { x = true, y = false },
-                    size = { w = 100, h = 250, },
-                }),
+            VBox({
+                style = Style({ grow = { x = true, y = true, }, size =  { w = 600, h = 600, } }),
                 children = {
-                    Container({
+                    Button({
+                        text = "Play",
+                        method = function()
+                            Publisher.publish(Event:new({ name = "events.scene.switch" })) 
+                        end,
                         style = Style({
-                            center = { x = false, y = false, },
-                            color = { r = 0, g = 0, b = 1, a = 1, },
-                            grow = { x = false },
-                            margin = SideProperty({ t = 20, l = 20, r = 20, }),
-                            size = { w = 50, h = 50, },
+                            size = { w = 0, h = 100 },
+                            color = { r = 1, g = 0, b = 0, a = 1},
+                            margin = 20
+                        }),
+                    }),
+                    Button({
+                        text = "Settings",
+                        style = Style({
+                            size = { w = 0, h = 100 },
+                            color = { r = 0, g = 1, b = 0, a = 1},
+                            margin = 20
+                        }),
+                    }),
+                    Button({
+                        text = "Quit",
+                        method = function()
+                            Publisher.publish(Event:new({ name = "events.game.quit" }))
+                        end,
+                        style = Style({
+                            size = { w = 0, h = 100 },
+                            color = { r = 0, g = 0, b = 1, a = 1},
+                            margin = 20
                         }),
                     }),
                 }
-            }),
+            })
         },
     })
-
-    -- TODO:
-    -- self.buttons = {
-    --     Button:new({
-    --         text = "Play",
-    --         position = { x = 25, y = 25 },
-    --         event = Event:new({ name = "events.scene.switch" })
-    --     }),
-    --     Button:new({
-    --         text = "Settings",
-    --         position = { x = 25, y = 200 },
-    --         event = Event:new({ name = "events.scene.switch" })
-    --     }),
-    --     Button:new({
-    --         text = "Quit",
-    --         position = { x = 25, y = 375 },
-    --         event = Event:new({ name = "events.game.quit" })
-    --     }),
-    -- }
-
-    -- for i = 1, #self.buttons, 1 do
-    --     self.buttons[i]:initialize()
-    -- end
 end
 
 function Menu:draw()
@@ -79,9 +74,11 @@ function Menu:resize()
 end
 
 function Menu:mousePressed()
+    self.element:mousePressed()
 end
 
 function Menu:mouseReleased()
+    self.element:mouseReleased()
 end
 
 return Menu
