@@ -3,8 +3,7 @@ local Publisher = require("src.game.event.publisher")
 local Scene = require("src.game.scene.scene")
 
 local Button = require("src.gui.button")
-local Container = require("src.gui.container")
-local SideProperty = require("src.gui.style.side-property")
+local Container = require("src.gui.layout.container")
 local Style = require("src.gui.style.style")
 local VBox = require("src.gui.layout.v-box")
 
@@ -14,14 +13,16 @@ function Menu:initialize()
     self.canvas = self:_getCanvas()
     ---@type Element
     self.element = Container({
+        root = true,
         style = Style({
-            center = { x = true, y = false, },
+            center = { x = true, y = true, },
+            color = { r = 1, g = 0, b = 0, a = 1, },
             padding = 20,
             size = { w = 600, h = 600, },
         }),
         children = {
             VBox({
-                style = Style({ grow = { x = true, y = true, }, size =  { w = 600, h = 600, } }),
+                style = Style({ grow = { x = true, y = true, } }),
                 children = {
                     Button({
                         text = "Play",
@@ -30,7 +31,7 @@ function Menu:initialize()
                         end,
                         style = Style({
                             size = { w = 0, h = 100 },
-                            color = { r = 1, g = 0, b = 0, a = 1},
+                            color = { r = 1, g = 1, b = 1, a = 1},
                             margin = 20
                         }),
                     }),
@@ -38,7 +39,7 @@ function Menu:initialize()
                         text = "Settings",
                         style = Style({
                             size = { w = 0, h = 100 },
-                            color = { r = 0, g = 1, b = 0, a = 1},
+                            color = { r = 1, g = 1, b = 1, a = 1},
                             margin = 20
                         }),
                     }),
@@ -49,12 +50,12 @@ function Menu:initialize()
                         end,
                         style = Style({
                             size = { w = 0, h = 100 },
-                            color = { r = 0, g = 0, b = 1, a = 1},
+                            color = { r = 1, g = 1, b = 1, a = 1},
                             margin = 20
                         }),
                     }),
                 }
-            })
+            }),
         },
     })
 end

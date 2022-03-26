@@ -18,8 +18,14 @@ setmetatable(Element, {
 function Element:init(o)
     ---@type Element[]
     self.children = o.children or {}
-    ---@type Element
-    self.parent = nil
+    for _, child in pairs(self.children) do
+        if child:isRoot() then
+            error("Child can't be root.")
+        end
+    end
+
+    ---@type boolean
+    self.root = o.root or false
     ---@type Style
     self.style = o.style or Style({})
 end
@@ -86,16 +92,35 @@ function Element:setPosition(x, y)
     self.style.position.y = y
 end
 
----@param ref Element
-function Element:setParent(ref)
-    self.parent = ref
-end
-
 ---@param w number
 ---@param h number
 function Element:setSize(w, h)
     self.style.size.w = w
     self.style.size.h = h
+end
+
+---Sets the width of the element
+---@param w number
+function Element:setWidth(w)
+    self.style.size.w = w
+end
+
+---Sets the height of the element
+---@param h number
+function Element:setHeight(h)
+    self.style.size.h = h
+end
+
+---Returns whether the element is the root
+---@return boolean
+function Element:isRoot()
+    return self.root
+end
+
+---Returns the grow property
+---@return boolean
+function Element:getGrow()
+    return self.style.grow
 end
 
 ---Convenience method that sets the color according to what's in the 'color' property.
