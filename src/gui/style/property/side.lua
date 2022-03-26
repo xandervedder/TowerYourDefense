@@ -13,15 +13,15 @@ setmetatable(Side, {
     end
 })
 
-function Side:init(o)
+function Side:init(t, r, b, l)
     ---@type number
-    self.t = o.t or 0
+    self.t = t or 0
     ---@type number
-    self.r = o.r or 0
+    self.r = r or 0
     ---@type number
-    self.b = o.b or 0
+    self.b = b or 0
     ---@type number
-    self.l = o.l or 0
+    self.l = l or 0
 end
 
 return Side

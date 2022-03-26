@@ -20,9 +20,9 @@ setmetatable(Style, {
 })
 
 function Style:init(o)
-    ---@type SideProperty
+    ---@type Side
     self.margin = {}
-    ---@type SideProperty
+    ---@type Side
     self.padding = {}
 
     local sideProperties = { margin = o.margin or 0, padding = o.padding or 0 }
@@ -30,7 +30,7 @@ function Style:init(o)
         if type(property) == "table"  then
             self[key] = property
         else
-            self[key] = Side({ t = property, r = property, b = property, l = property })
+            self[key] = Side(property, property, property, property)
         end
     end
 

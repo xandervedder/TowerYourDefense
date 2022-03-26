@@ -99,6 +99,11 @@ function Element:setSize(w, h)
     self.style.size.h = h
 end
 
+---@return Size
+function Element:getSize()
+    return self.style.size
+end
+
 ---Sets the width of the element
 ---@param w number
 function Element:setWidth(w)
