@@ -69,7 +69,7 @@ function Container:updateRoot()
 end
 
 function Container:resize()
-    self:updateSelf()
+    self:update()
 end
 
 function Container:setPosition(x, y)
