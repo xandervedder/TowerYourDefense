@@ -52,9 +52,12 @@ function Container:update(dt)
     self.child:setPosition(position.x + padding.l, position.y + padding.t)
 
     local grow = self.child:getGrow()
+    local center = self.child:getCenter()
     local size = self.style.size
     if grow.x then self.child:setWidth(size.w - (padding.l + padding.r)) end
     if grow.y then self.child:setHeight(size.h - (padding.t + padding.b)) end
+    if center.x then self.child:setPosition((size.w - self.child.style.size.w + self.child.style:horizontalPadding()) / 2, self.child.style.position.y) end
+    if center.y then self.child:setPosition(self.child.style.position.x, (size.h - self.child.style.size.h + self.child.style:verticalPadding()) / 2) end
 
     self.child:update(dt)
 end

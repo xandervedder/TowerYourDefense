@@ -20,70 +20,79 @@ function Menu:initialize()
     self.element = Container({
         root = true,
         style = Style({
-            center = DirBool(true, true),
-            color = Color(1, 0, 0, 1),
+            color = Color(35, 35, 35, 1),
             padding = 20,
-            size = Size(600, 600),
+            grow = DirBool(true, true),
         }),
         children = {
-            VBox({
-                style = Style({ grow = DirBool(true, true) }),
+            Container({
+                style = Style({
+                    center = DirBool(true, true),
+                    color = Color(76, 76, 76, 1),
+                    padding = 20,
+                    size = Size(600, 600),
+                }),
                 children = {
-                    Button({
-                        text = "Play",
-                        method = function()
-                            Publisher.publish(Event:new({ name = "events.scene.switch" }))
-                        end,
-                        style = Style({
-                            size = Size(0, 100),
-                            color = Color(1, 1, 1, 1),
-                            margin = 20
-                        }),
-                    }),
-                    HBox({
-                        style = Style({ grow = DirBool(true, false), size = Size(100, 100), margin = 20 }),
+                    VBox({
+                        style = Style({ grow = DirBool(true, true) }),
                         children = {
                             Button({
-                                text = "Se",
+                                text = "Play",
+                                method = function()
+                                    Publisher.publish(Event:new({ name = "events.scene.switch" }))
+                                end,
                                 style = Style({
-                                    size = Size(100, 100),
-                                    color = Color(1, 1, 1, 1),
-                                    margin = Side(0, 20, 0, 0)
+                                    size = Size(0, 100),
+                                    color = Color(127, 127, 127, 1),
+                                    margin = 20
                                 }),
+                            }),
+                            HBox({
+                                style = Style({ grow = DirBool(true, false), size = Size(100, 100), margin = 20 }),
+                                children = {
+                                    Button({
+                                        text = "Se",
+                                        style = Style({
+                                            size = Size(100, 100),
+                                            color = Color(127, 127, 127, 1),
+                                            margin = Side(0, 20, 0, 0)
+                                        }),
+                                    }),
+                                    Button({
+                                        text = "tt",
+                                        style = Style({
+                                            size = Size(100, 100),
+                                            color = Color(127, 127, 127, 1),
+                                            margin = Side(0, 20, 0, 0)
+                                        }),
+                                    }),
+                                    Button({
+                                        text = "ings",
+                                        style = Style({
+                                            size = Size(100, 100),
+                                            color = Color(127, 127, 127, 1),
+                                            margin = Side(0, 20, 0, 0)
+                                        }),
+                                    }),
+                                }
                             }),
                             Button({
-                                text = "tt",
+                                text = "Quit",
+                                method = function()
+                                    Publisher.publish(Event:new({ name = "events.game.quit" }))
+                                end,
                                 style = Style({
-                                    size = Size(100, 100),
-                                    color = Color(1, 1, 1, 1),
-                                    margin = Side(0, 20, 0, 0)
+                                    size = Size(0, 100),
+                                    color = Color(127, 127, 127, 1),
+                                    margin = 20
                                 }),
                             }),
-                            Button({
-                                text = "ings",
-                                style = Style({
-                                    size = Size(100, 100),
-                                    color = Color(1, 1, 1, 1),
-                                    margin = Side(0, 20, 0, 0)
-                                }),
-                            }),
+
                         }
                     }),
-                    Button({
-                        text = "Quit",
-                        method = function()
-                            Publisher.publish(Event:new({ name = "events.game.quit" }))
-                        end,
-                        style = Style({
-                            size = Size(0, 100),
-                            color = Color(1, 1, 1, 1),
-                            margin = 20
-                        }),
-                    }),
-
-                }
-            }),
-        },
+                },
+            })
+        }
     })
 end
 

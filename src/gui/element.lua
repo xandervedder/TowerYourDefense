@@ -128,6 +128,12 @@ function Element:getGrow()
     return self.style.grow
 end
 
+---Returns the center property
+---@return DirBool
+function Element:getCenter()
+    return self.style.center
+end
+
 ---Convenience method that sets the color according to what's in the 'color' property.
 function Element:setColor()
     local color = self.style.color

@@ -15,13 +15,19 @@ setmetatable(Color, {
 
 function Color:init(r, g, b, a)
     ---@type number
-    self.r = r or 0
+    self.r = self:_getColor(r or 0)
     ---@type number
-    self.g = g or 0
+    self.g = self:_getColor(g or 0)
     ---@type number
-    self.b = b or 0
+    self.b = self:_getColor(b or 0)
     ---@type number
     self.a = a or 0
+end
+
+---Converts the normal rgb range (0-255) and converts it to a value that LÖVE can use.
+---@param value number
+function Color:_getColor(value)
+    return value / 255
 end
 
 ---Returns a tuple of all color values (rgba)
