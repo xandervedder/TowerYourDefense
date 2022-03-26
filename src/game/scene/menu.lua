@@ -3,7 +3,10 @@ local Publisher = require("src.game.event.publisher")
 local Scene = require("src.game.scene.scene")
 
 local Button = require("src.gui.button")
+local Color = require("src.gui.style.property.color")
 local Container = require("src.gui.layout.container")
+local DirBool = require("src.gui.style.property.dir-bool")
+local Size = require("src.gui.style.property.size")
 local Style = require("src.gui.style.style")
 local VBox = require("src.gui.layout.v-box")
 
@@ -15,14 +18,14 @@ function Menu:initialize()
     self.element = Container({
         root = true,
         style = Style({
-            center = { x = true, y = true, },
-            color = { r = 1, g = 0, b = 0, a = 1, },
+            center = DirBool(true, true),
+            color = Color(1, 0, 0, 1),
             padding = 20,
-            size = { w = 600, h = 600, },
+            size = Size(600, 600),
         }),
         children = {
             VBox({
-                style = Style({ grow = { x = true, y = true, } }),
+                style = Style({ grow = DirBool(true, true) }),
                 children = {
                     Button({
                         text = "Play",
@@ -30,16 +33,16 @@ function Menu:initialize()
                             Publisher.publish(Event:new({ name = "events.scene.switch" })) 
                         end,
                         style = Style({
-                            size = { w = 0, h = 100 },
-                            color = { r = 1, g = 1, b = 1, a = 1},
+                            size = Size(0, 100),
+                            color = Color(1, 1, 1, 1),
                             margin = 20
                         }),
                     }),
                     Button({
                         text = "Settings",
                         style = Style({
-                            size = { w = 0, h = 100 },
-                            color = { r = 1, g = 1, b = 1, a = 1},
+                            size = Size(0, 100),
+                            color = Color(1, 1, 1, 1),
                             margin = 20
                         }),
                     }),
@@ -49,8 +52,8 @@ function Menu:initialize()
                             Publisher.publish(Event:new({ name = "events.game.quit" }))
                         end,
                         style = Style({
-                            size = { w = 0, h = 100 },
-                            color = { r = 1, g = 1, b = 1, a = 1},
+                            size = Size(0, 100),
+                            color = Color(1, 1, 1, 1),
                             margin = 20
                         }),
                     }),

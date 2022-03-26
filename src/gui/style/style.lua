@@ -1,4 +1,8 @@
-local SideProperty = require("src.gui.style.side-property")
+local Color = require("src.gui.style.property.color")
+local DirBool = require("src.gui.style.property.dir-bool")
+local Position = require("src.gui.style.property.position")
+local Side = require("src.gui.style.property.side")
+local Size = require("src.gui.style.property.size")
 
 --[[
     Class used for styling, with defaults for everything.
@@ -26,15 +30,20 @@ function Style:init(o)
         if type(property) == "table"  then
             self[key] = property
         else
-            self[key] = SideProperty({ t = property, r = property, b = property, l = property })
+            self[key] = Side({ t = property, r = property, b = property, l = property })
         end
     end
 
-    self.color = o.color or { r = 1, g = 1, b = 1, a = 0, }
-    self.center = o.center or { x = false, y = false }
-    self.grow = o.grow or { x = false, y = false }
-    self.position = o.position or { x = 0, y = 0 }
-    self.size = o.size or { w = 0, h = 0 }
+    ---@type Color
+    self.color = o.color or Color()
+    ---@type DirBool
+    self.center = o.center or DirBool()
+    ---@type DirBool
+    self.grow = o.grow or DirBool()
+    ---@type Position
+    self.position = o.position or Position()
+    ---@type Size
+    self.size = o.size or Size()
 end
 
 ---@return number

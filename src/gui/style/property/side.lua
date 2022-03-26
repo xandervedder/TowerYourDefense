@@ -1,11 +1,11 @@
 --[[
-    Simple data class for getting and setting side properties.
+    Property that can be used to retrieve sides of something.
 ]]
----@class SideProperty
-local SideProperty = {}
-SideProperty.__index = SideProperty
+---@class Side
+local Side = {}
+Side.__index = Side
 
-setmetatable(SideProperty, {
+setmetatable(Side, {
     __call = function(cls, ...)
         local self = setmetatable({}, cls)
         self:init(...)
@@ -13,7 +13,7 @@ setmetatable(SideProperty, {
     end
 })
 
-function SideProperty:init(o)
+function Side:init(o)
     ---@type number
     self.t = o.t or 0
     ---@type number
@@ -24,4 +24,4 @@ function SideProperty:init(o)
     self.l = o.l or 0
 end
 
-return SideProperty
+return Side
