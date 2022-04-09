@@ -7,7 +7,7 @@ local PlacementTool = require("src.game.tool.placement-tool")
 local Scene = require("src.game.scene.scene")
 local Spawner = require("src.game.object.spawner")
 local Tiles = require("src.game.graphics.tiles")
-local Tower = require("src.game.object.tower")
+local Tower = require("src.game.object.tower.tower")
 local Util = require("src.game.util.util")
 
 local World = Scene:new({
@@ -25,10 +25,6 @@ function World:initialize()
         Spawner({ position = Util.position(5, 0).position, base = base, }),
         base,
     }
-
-    for i = 1, #self.gameObjects, 1 do
-        self.gameObjects[i]:prepare()
-    end
 
     table.insert(self.gameObjects, self.player)
 

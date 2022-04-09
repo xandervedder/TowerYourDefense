@@ -10,12 +10,11 @@ self.canPlace = true
 self.mouse = { x = 0, y = 0 }
 self.untranslated = { x = 0, y = 0 }
 
-
 function PlacementTool.initialize(pool, object, camera)
     self.objectPool = pool -- We will add objects to this once we place them
     self.ref = object
+    ---@type GameObject
     self.object = object({})
-    self.object:prepare()
     self.camera = camera
 end
 
@@ -29,10 +28,12 @@ function PlacementTool.draw()
     end
 
     local grid = Util.positionFromXY(self.mouse.x, self.mouse.y).position
-    local sheet = self.object:getSheet()
+    local sheets = self.object:getSheets()
     local quads = self.object:getQuads()
     for _, quad in pairs(quads) do
-        love.graphics.draw(sheet, quad, grid.x, grid.y, 0, Constants.scale, Constants.scale)
+        for _, sheet in pairs(sheets) do
+            love.graphics.draw(sheet, quad, grid.x, grid.y, 0, Constants.scale, Constants.scale)
+        end
     end
 end
 
@@ -79,7 +80,6 @@ function PlacementTool.mousePressed(_, _, _, _, _)
     if not self.canPlace then return end
 
     local placeable = self.ref(Util.positionFromXY(self.mouse.x, self.mouse.y))
-    placeable:prepare()
     table.insert(self.objectPool, placeable)
     self.active = false
 end

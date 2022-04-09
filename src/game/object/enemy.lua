@@ -4,6 +4,7 @@ local GameObject = require("src.game.object.gameobject")
 local Publisher = require("src.game.event.publisher")
 local Util = require("src.game.util.util")
 
+---@class Enemy : GameObject
 local Enemy = {}
 Enemy.__index = Enemy
 
