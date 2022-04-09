@@ -30,10 +30,9 @@ function PlacementTool.draw()
     local grid = Util.positionFromXY(self.mouse.x, self.mouse.y).position
     local sheets = self.object:getSheets()
     local quads = self.object:getQuads()
-    for _, quad in pairs(quads) do
-        for _, sheet in pairs(sheets) do
-            love.graphics.draw(sheet, quad, grid.x, grid.y, 0, Constants.scale, Constants.scale)
-        end
+
+    for i = 1, #sheets, 1 do
+        love.graphics.draw(sheets[i], quads[i], grid.x, grid.y, 0, Constants.scale, Constants.scale)
     end
 end
 
