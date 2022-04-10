@@ -131,7 +131,9 @@ function Turret:rotateBarrel(dt)
     if not self:withinRange(self.enemy) then return end
 
     local size = self.enemy:getSize()
-    local position = self.enemy:getPosition() --self:predictPosition(dt)
+    -- TODO: move this to the child class:
+    -- Reason for this is, not all turrets should be accurate
+    local position = self:predictPosition(dt)
     local x = position.x + size.w / 2
     local y = position.y + size.h / 2
     local radians = math.atan2(self.center.y - y, self.center.x - x)

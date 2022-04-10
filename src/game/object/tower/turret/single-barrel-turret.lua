@@ -1,3 +1,4 @@
+local C = require("src.game.constants")
 local Turret = require("src.game.object.tower.turret.turret")
 
 ---@class SingleBarrelTurret : Turret
@@ -39,8 +40,9 @@ end
 function SingleBarrelTurret:shoot()
     -- TODO: shell should be its own object in a different file
     local shell = {
-        x = self.center.x,
-        y = self.center.y,
+        -- https://math.stackexchange.com/a/3534251
+        x = self.center.x + ((8 * C.scale) * -math.cos(self.rotation)),
+        y = self.center.y + ((8 * C.scale) * -math.sin(self.rotation)),
         velocity = { x = 0, y = 0 },
         speed = self.shotSpeed,
     }

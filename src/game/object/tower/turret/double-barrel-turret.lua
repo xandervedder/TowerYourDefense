@@ -1,10 +1,11 @@
+local C = require("src.game.constants")
 local Turret = require("src.game.object.tower.turret.turret")
 
 ---@class DoubleBarrelTurret : Turret
 local DoubleBarrelTurret = {}
 DoubleBarrelTurret.__index = DoubleBarrelTurret
-DoubleBarrelTurret.LEFT = 18
-DoubleBarrelTurret.RIGHT = 18
+DoubleBarrelTurret.LEFT = 2 * C.scale
+DoubleBarrelTurret.RIGHT = 2 * C.scale
 
 setmetatable(DoubleBarrelTurret, {
     __index = Turret,
@@ -38,18 +39,20 @@ end
 
 function DoubleBarrelTurret:shoot()
     -- TODO: shell should be its own object in a different file
-    local leftBarrelShell = self:configureShell(self.center.x - self.LEFT, self.center.y)
-    local rightBarrelShell = self:configureShell(self.center.x + self.RIGHT, self.center.y)
+    local leftBarrelShell = self:configureShell(self.LEFT, math.rad(-90))
+    local rightBarrelShell = self:configureShell(self.RIGHT, math.rad(90))
 
     table.insert(self.activeShells, leftBarrelShell)
     table.insert(self.activeShells, rightBarrelShell)
 end
 
-function DoubleBarrelTurret:configureShell(x, y)
-    -- TODO: shoot from tip of barrel
+function DoubleBarrelTurret:configureShell(addition, radians)
+    local middlePointX = self.center.x + ((8 * C.scale) * -math.cos(self.rotation))
+    local middlePointY = self.center.y + ((8 * C.scale) * -math.sin(self.rotation))
+
     local shell = {
-        x = x,
-        y = y,
+        x = middlePointX + (addition * -math.cos(self.rotation + radians)),
+        y = middlePointY + (addition * -math.sin(self.rotation + radians)),
         velocity = { x = 0, y = 0 },
         speed = self.shotSpeed,
     }

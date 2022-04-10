@@ -5,9 +5,11 @@ local Map = require("src.game.map.map")
 local Player = require("src.game.object.player")
 local PlacementTool = require("src.game.tool.placement-tool")
 local Scene = require("src.game.scene.scene")
+local SingleBarrelTurret = require("src.game.object.tower.turret.single-barrel-turret")
 local Spawner = require("src.game.object.spawner")
 local Tiles = require("src.game.graphics.tiles")
 local Tower = require("src.game.object.tower.tower")
+local TowerBase = require("src.game.object.tower.base.base")
 local Util = require("src.game.util.util")
 
 local World = Scene:new({
@@ -23,6 +25,10 @@ function World:initialize()
     self.gameObjects = {
         Spawner({ position = Util.position(0, 0).position, base = base, }),
         Spawner({ position = Util.position(5, 0).position, base = base, }),
+        Tower({
+            position = Util.position(2, 1).position,
+            turret = SingleBarrelTurret({ position = Util.position(2, 1).position }),
+        }),
         base,
     }
 

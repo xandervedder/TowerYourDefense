@@ -30,6 +30,7 @@ function Base:init(o)
 end
 
 function Base:draw()
+    love.graphics.setColor(1, 1, 1)
     love.graphics.draw(self.sheet, self.quad, self.position.x, self.position.y, 0, C.scale, C.scale)
 end
 
