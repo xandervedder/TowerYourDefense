@@ -9,7 +9,7 @@ local SingleBarrelTurret = require("src.game.object.tower.turret.single-barrel-t
 local Spawner = require("src.game.object.spawner")
 local Tiles = require("src.game.graphics.tiles")
 local Tower = require("src.game.object.tower.tower")
-local TowerBase = require("src.game.object.tower.base.base")
+local TripleBarrelTurret = require("src.game.object.tower.turret.triple-barrel-turret")
 local Util = require("src.game.util.util")
 
 local World = Scene:new({
@@ -28,6 +28,10 @@ function World:initialize()
         Tower({
             position = Util.position(2, 1).position,
             turret = SingleBarrelTurret({ position = Util.position(2, 1).position }),
+        }),
+        Tower({
+            position = Util.position(4, 1).position,
+            turret = TripleBarrelTurret({ position = Util.position(4, 1).position }),
         }),
         base,
     }
