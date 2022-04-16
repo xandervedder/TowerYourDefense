@@ -12,10 +12,21 @@ local Size = require("src.gui.style.property.size")
 local Style = require("src.gui.style.style")
 local VBox = require("src.gui.layout.v-box")
 
-local Menu = Scene:new({ name = "Menu" })
+local Menu = {}
+Menu.__index = Menu
 
-function Menu:initialize()
+setmetatable(Menu, {
+    __index = Scene,
+    __call = function(cls, ...)
+        local self = setmetatable({}, cls)
+        self:init(...)
+        return self
+    end
+})
+
+function Menu:init()
     self.canvas = self:_getCanvas()
+
     ---@type Element
     self.element = Container({
         root = true,

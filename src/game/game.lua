@@ -21,8 +21,8 @@ function Game.load()
     Tiles.initialize()
 
     Game.scenes = {
-        menu = Menu:new(),
-        world = World:new(),
+        menu = Menu(),
+        world = World(),
     }
 
     -- Is the current active scene

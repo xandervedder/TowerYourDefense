@@ -12,16 +12,27 @@ local Tower = require("src.game.object.tower.tower")
 local TripleBarrelTurret = require("src.game.object.tower.turret.triple-barrel-turret")
 local Util = require("src.game.util.util")
 
-local World = Scene:new({
-    name = "World Scene",
+---@class World : Scene
+local World = {}
+World.__index = World
+
+setmetatable(World, {
+    __index = Scene,
+    __call = function(cls, ...)
+        local self = setmetatable({}, cls)
+        self:init(...)
+        return self
+    end
 })
 
-function World:initialize()
+function World:init()
+    Scene.init(self, { name = "World Scene" })
+
     self.player = Player(Util.position(3, 3))
     self.camera = Camera:new({ screen = { love.graphics.getDimensions() } })
     self.camera:followObject(self.player)
-    local base = Base(Util.position(3, 5))
 
+    local base = Base(Util.position(3, 5))
     self.gameObjects = {
         Spawner({ position = Util.position(0, 0).position, base = base, }),
         Spawner({ position = Util.position(5, 0).position, base = base, }),

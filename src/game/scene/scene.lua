@@ -1,11 +1,18 @@
+---@class Scene
 local Scene = {}
+Scene.__index = Scene
 
-function Scene:new(o)
-    o = o or {}
-    setmetatable(o, self)
-    self.__index = self
+setmetatable(Scene, {
+    __index = Scene,
+    __call = function(cls, ...)
+        local self = setmetatable({}, cls)
+        self:init(...)
+        return self
+    end
+})
+
+function Scene:init(o)
     self.name = o.name or "unknown"
-    return o
 end
 
 function Scene:_getCanvas()
