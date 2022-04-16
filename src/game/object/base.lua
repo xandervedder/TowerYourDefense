@@ -1,6 +1,6 @@
 local GameObject = require("src.game.object.gameobject")
 
-Base = {}
+local Base = {}
 Base.__index = Base
 
 setmetatable(Base, {
