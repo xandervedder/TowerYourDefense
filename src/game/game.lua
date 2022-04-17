@@ -32,15 +32,7 @@ function Game.load()
 end
 
 function Game.draw()
-    love.graphics.push()
-
-    Game.scene:getCanvas():renderTo(function ()
-        Game.scene:draw()
-    end)
-
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.draw(Game.scene:getCanvas())
-    love.graphics.pop()
+    Game.scene:draw()
 
     -- For debugging
     love.graphics.setColor(0, 1, 0)

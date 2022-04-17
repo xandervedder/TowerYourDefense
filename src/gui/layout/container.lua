@@ -27,7 +27,6 @@ end
 
 function Container:draw()
     local margin = self.style.margin
-
     love.graphics.setColor(self.style.color.r, self.style.color.g, self.style.color.b, self.style.color.a)
     love.graphics.rectangle(
         "fill",
@@ -59,6 +58,7 @@ function Container:update(dt)
     if center.x then self.child:setPosition((size.w - self.child.style.size.w) / 2, self.child.style.position.y) end
     if center.y then self.child:setPosition(self.child.style.position.x, (size.h - self.child.style.size.h) / 2) end
 
+    self:handleChildAlignment()
     self.child:update(dt)
 end
 
@@ -69,6 +69,26 @@ function Container:updateRoot()
     if self.style.grow.y then self.style.size.h = h end
     if self.style.center.x then self.style.position.x = (w - self.style.size.w) / 2 end
     if self.style.center.y then self.style.position.y = (h - self.style.size.h) / 2 end
+end
+
+function Container:handleChildAlignment()
+    local alignment = self.child:getAlignment()
+    local padding = self.style.padding
+    local position = self.style.position
+    local size = self.style.size
+
+    if alignment.t then
+        self.child:setPosition(self.child.style.position.x, position.y + padding.t)
+    end
+    if alignment.b then
+        local cSize = self.child.style.size
+        local parentY = position.y + size.h - padding.b
+        self.child:setPosition(self.child.style.position.x, parentY - cSize.h)
+    end
+
+    -- TODO: These will be done later as I do not need these right now
+    -- if alignment.r then end
+    -- if alignment.l then end
 end
 
 function Container:resize()

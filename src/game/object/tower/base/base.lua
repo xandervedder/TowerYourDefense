@@ -34,4 +34,8 @@ function Base:draw()
     love.graphics.draw(self.sheet, self.quad, self.position.x, self.position.y, 0, C.scale, C.scale)
 end
 
+function Base:getQuads()
+    return { self.quad }
+end
+
 return Base

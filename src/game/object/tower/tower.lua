@@ -3,6 +3,7 @@ local GameObject = require("src.game.object.gameobject")
 local SingleBarrelTurret = require("src.game.object.tower.turret.single-barrel-turret")
 local DoubleBarrelTurret = require("src.game.object.tower.turret.double-barrel-turret")
 
+---@class Tower
 local Tower = {}
 Tower.__index = Tower
 
@@ -46,6 +47,16 @@ end
 
 function Tower:getQuads()
     return { self.turret.quad, self.base.quad }
+end
+
+function Tower:toImage()
+    local baseImages = GameObject.imagesFromQuads(self.base.sheetData, self.base:getQuads())
+    local turretImages = GameObject.imagesFromQuads(self.turret.sheetData, self.turret:getQuads())
+    for _, value in pairs(turretImages) do
+        table.insert(baseImages, value)
+    end
+
+    return baseImages
 end
 
 return Tower

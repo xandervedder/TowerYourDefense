@@ -1,3 +1,4 @@
+local Align = require("src.gui.style.property.align")
 local Color = require("src.gui.style.property.color")
 local DirBool = require("src.gui.style.property.dir-bool")
 local Position = require("src.gui.style.property.position")
@@ -44,6 +45,8 @@ function Style:init(o)
     self.position = o.position or Position()
     ---@type Size
     self.size = o.size or Size()
+    ---@type Align
+    self.align = o.align or Align()
 end
 
 ---@return number

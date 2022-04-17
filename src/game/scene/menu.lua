@@ -121,8 +121,8 @@ function Menu:resize()
     self.element:resize()
 end
 
-function Menu:mousePressed()
-    self.element:mousePressed()
+function Menu:mousePressed(x, y, button, touch, presses)
+    self.element:mousePressed(x, y, button, touch, presses)
 end
 
 function Menu:mouseReleased()

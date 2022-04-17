@@ -51,14 +51,14 @@ function HBox:align()
 
             local prevPosition = nextPosition
             nextPosition = Position(
-                prevPosition.x + style.size.w + style:horizontalMargin() + style:horizontalMargin(),
+                prevPosition.x + style.size.w + style:horizontalMargin(),
                 position.y
             )
         else
             child:setPosition(position.x, position.y)
 
             nextPosition = Position(
-                position.x + style.size.w + style:horizontalMargin() + style:horizontalMargin(),
+                position.x + style.size.w + style:horizontalMargin(),
                 position.y
             )
         end

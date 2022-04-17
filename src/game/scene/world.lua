@@ -1,6 +1,7 @@
 local Base = require("src.game.object.base")
 local Camera = require("src.game.camera.camera")
 local Constants = require("src.game.constants")
+local DoubleBarrelTurret = require("src.game.object.tower.turret.double-barrel-turret")
 local Map = require("src.game.map.map")
 local Player = require("src.game.object.player")
 local PlacementTool = require("src.game.tool.placement-tool")
@@ -11,6 +12,17 @@ local Tiles = require("src.game.graphics.tiles")
 local Tower = require("src.game.object.tower.tower")
 local TripleBarrelTurret = require("src.game.object.tower.turret.triple-barrel-turret")
 local Util = require("src.game.util.util")
+
+local Align = require("src.gui.style.property.align")
+local Color = require("src.gui.style.property.color")
+local Container = require("src.gui.layout.container")
+local DirBool = require("src.gui.style.property.dir-bool")
+local Element = require("src.gui.element")
+local HBox = require("src.gui.layout.h-box")
+local Image = require("src.gui.image")
+local Side = require("src.gui.style.property.side")
+local Size = require("src.gui.style.property.size")
+local Style = require("src.gui.style.style")
 
 ---@class World : Scene
 local World = {}
@@ -28,6 +40,7 @@ setmetatable(World, {
 function World:init()
     Scene.init(self, { name = "World Scene" })
 
+    self:initUI()
     self.player = Player(Util.position(3, 3))
     self.camera = Camera:new({ screen = { love.graphics.getDimensions() } })
     self.camera:followObject(self.player)
@@ -75,6 +88,7 @@ function World:update(dt)
 
     PlacementTool.update()
     self.camera:update(dt)
+    self.ui:update()
 end
 
 function World:fixedUpdate(dt)
@@ -84,18 +98,28 @@ function World:fixedUpdate(dt)
 end
 
 function World:draw()
-    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.push()
 
-    self:drawMap()
+    self.canvas:renderTo(function ()
+        love.graphics.setColor(1, 1, 1)
+        
+        self:drawMap()
+        for i = 1, #self.gameObjects, 1 do
+            self.gameObjects[i]:draw()
+        end
 
-    for i = 1, #self.gameObjects, 1 do
-        self.gameObjects[i]:draw()
-    end
+        PlacementTool.draw()
 
-    PlacementTool.draw()
+        --! Important: only draw the camera when all the other objects have rendered
+        self.camera:draw()
+    end)
 
-    --! Important: only draw the camera when all the other objects have rendered
-    self.camera:draw()
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.draw(self.canvas)
+    love.graphics.pop()
+
+    -- UI should be drawn ontop of canvas
+    self.ui:draw()
 end
 
 function World:drawMap()
@@ -144,10 +168,98 @@ end
 
 function World:mouseMoved(x, y, dx, dy, touch)
     PlacementTool.mouseMoved(x, y, dx, dy, touch)
+    self.ui:mouseMoved(x, y, dx, dy, touch)
 end
 
 function World:mousePressed(x, y, button, touch, presses)
     PlacementTool.mousePressed(x, y, button, touch, presses)
+    self.ui:mousePressed(x, y, button, touch, presses)
+end
+
+
+--[[ UI Section ]]
+
+
+function World:initUI()
+    ---@type Element
+    self.ui = Container({
+        root = true,
+        style = Style({
+            color = Color(0, 0, 0, 0),
+            padding = Side(20, 20, 20, 20),
+            grow = DirBool(true, true),
+        }),
+        children = {
+            self:inventoryBar()
+        }
+    })
+end
+
+function World:inventoryBar()
+    ---@type Tower[]
+    local towers = {
+        Tower({ turret = SingleBarrelTurret({}), }),
+        Tower({ turret = DoubleBarrelTurret({}), }),
+        Tower({ turret = TripleBarrelTurret({}), }),
+    }
+    return Container({
+        style =
+         Style({
+            align = Align(false, false, true),
+            color = Color(35, 35, 35, 0.9),
+            center = DirBool(true),
+            padding = Side(10, 10, 10, 10),
+            size = Size(280, 100),
+        }),
+        children = {
+            HBox({
+                children = {
+                    self:inventoryItem(towers[1]:toImage()),
+                    self:inventoryItem(towers[2]:toImage()),
+                    self:inventoryItem(towers[3]:toImage()),
+                }
+            })
+        }
+    })
+end
+
+---@param images love.Image[]
+function World:inventoryItem(images)
+    return Container({
+        ---@param ref Element
+        mouseEnter = function(ref)
+            if ref.active then return end
+            ref.style.color = Color(255, 255, 255, 1)
+        end,
+        ---@param ref Element
+        mouseOut = function(ref)
+            if ref.active then return end
+            ref.style.color = Color(0, 0, 0, 1)
+        end,
+        ---@param ref Element
+        click = function(ref)
+            if ref.active then
+                ref.active = false
+                ref.style.color = Color(0, 0, 0, 1)
+            else
+                ref.active = true
+                ref.style.color = Color(30, 189, 252, 1)
+            end
+        end,
+        style = Style({
+            color = Color(0, 0, 0, 1),
+            margin = Side(0, 10),
+            size = Size(80, 80),
+        }),
+        children = {
+            Image({
+                images = images,
+                style = Style({
+                    size = Size(80, 80),
+                })
+            })
+        }
+    })
 end
 
 return World

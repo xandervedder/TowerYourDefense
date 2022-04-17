@@ -3,7 +3,6 @@ local Scene = {}
 Scene.__index = Scene
 
 setmetatable(Scene, {
-    __index = Scene,
     __call = function(cls, ...)
         local self = setmetatable({}, cls)
         self:init(...)

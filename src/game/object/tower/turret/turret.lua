@@ -211,4 +211,8 @@ end
 ---Rotates the turret, not sure if I am going to keep this.
 function Turret:rotate() end
 
+function Turret:getQuads()
+    return { self.quad }
+end
+
 return Turret

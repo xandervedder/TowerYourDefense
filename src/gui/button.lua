@@ -26,6 +26,7 @@ end
 function Button:draw()
     Element.setColor(self)
 
+    -- TODO: dependants should be using this
     love.graphics.rectangle(
         "fill",
         self.style.position.x,

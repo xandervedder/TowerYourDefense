@@ -28,9 +28,38 @@ function Element:init(o)
     self.root = o.root or false
     ---@type Style
     self.style = o.style or Style({})
+    -- TODO: is this the right place for this?
+    ---@type boolean
+    self.active = false
+
+    --[[
+        Callbacks.
+    ]]
+
+    ---@type function
+    self.mouseEnter = o.mouseEnter or function() end
+    ---@type function
+    self.mouseOut = o.mouseOut or function() end
+    ---@type function
+    self.click = o.click or function() end
+    ---@type function
+    self.release = o.release or function() end
 end
 
-function Element:draw() end
+function Element:draw()
+    love.graphics.setColor(self.style.color.r, self.style.color.g, self.style.color.b, self.style.color.a)
+    love.graphics.rectangle(
+        "fill",
+        self.style.position.x + self.style.margin.l,
+        self.style.position.y + self.style.margin.t,
+        self.style.size.w,
+        self.style.size.h
+    )
+
+    for _, child in pairs(self.children) do
+        child:draw()
+    end
+end
 
 ---@param dt number
 function Element:update(dt) end
@@ -51,29 +80,51 @@ function Element:keyReleased(key)
     end
 end
 
+---If registered, this method will also call the callback attached to the element.
 ---@param x number
 ---@param y number
 ---@param dx number
 ---@param dy number
 ---@param touch boolean
 function Element:mouseMoved(x, y, dx, dy, touch)
+    -- TODO: this check should go to a util top level package
+    local position = self.style.position
+    local size = self.style.size
+    if (x > position.x and x < position.x + size.w) and (y > position.y and y < position.y + size.h) then
+        self.mouseEnter(self)
+    else
+        self.mouseOut(self)
+    end
+
     for _, child in pairs(self.children) do
-        child:mousePressed(x, y, dx, dy, touch)
+        child:mouseMoved(x, y, dx, dy, touch)
     end
 end
 
+
+
+---If registered, this method will also call the callback attached to the element.
 ---@param x number
 ---@param y number
 ---@param button string
 ---@param touch string
 ---@param presses number
 function Element:mousePressed(x, y, button, touch, presses)
+    -- TODO: this check should go to a util top level package (common)
+    local position = self.style.position
+    local size = self.style.size
+    if (x > position.x and x < position.x + size.w) and (y > position.y and y < position.y + size.h) then
+        self.click(self)
+    end
+
     for _, child in pairs(self.children) do
         child:mousePressed(x, y, button, touch, presses)
     end
 end
 
 function Element:mouseReleased()
+    self.release(self)
+
     for _, child in pairs(self.children) do
         child:mouseReleased()
     end
@@ -132,6 +183,12 @@ end
 ---@return DirBool
 function Element:getCenter()
     return self.style.center
+end
+
+---Returns the align property
+---@return Align
+function Element:getAlignment()
+    return self.style.align
 end
 
 ---Convenience method that sets the color according to what's in the 'color' property.
