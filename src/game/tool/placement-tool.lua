@@ -1,6 +1,7 @@
 local Constants = require("src.game.constants")
 local Util = require("src.game.util.util")
 
+--TODO: make this 'tool' specific to placing towers.
 local PlacementTool = {}
 
 -- Might be a little wierd, but it works and I like to keep it concise :)
@@ -15,6 +16,7 @@ function PlacementTool.initialize(pool, object, camera)
     self.ref = object
     ---@type GameObject
     self.object = object({})
+    self.turret  = nil
     self.camera = camera
 end
 
@@ -28,11 +30,10 @@ function PlacementTool.draw()
     end
 
     local grid = Util.positionFromXY(self.mouse.x, self.mouse.y).position
-    local sheets = self.object:getSheets()
-    local quads = self.object:getQuads()
-
-    for i = 1, #sheets, 1 do
-        love.graphics.draw(sheets[i], quads[i], grid.x, grid.y, 0, Constants.scale, Constants.scale)
+    local images = self.object:toImage()
+    for i = 1, #images, 1 do
+        images[i]:setFilter("nearest", "nearest")
+        love.graphics.draw(images[i], grid.x, grid.y, 0, Constants.scale, Constants.scale)
     end
 end
 
@@ -56,8 +57,16 @@ function PlacementTool.update()
     self.updatePosition(x, y)
 end
 
-function PlacementTool.toggleActive()
-    self.active = not self.active
+function PlacementTool.enable()
+    self.active = true
+end
+
+function PlacementTool.disable()
+    self.active = false
+end
+
+function PlacementTool.setTurret(turret)
+    self.turret = turret
 end
 
 function PlacementTool.mouseMoved(x, y, _, _, _)
@@ -74,13 +83,23 @@ function PlacementTool.updatePosition(x, y)
     self.untranslated = { x = x, y = y, }
 end
 
-function PlacementTool.mousePressed(_, _, _, _, _)
+function PlacementTool.mousePressed(_, _, button, _, _)
     if not self.active then return end
     if not self.canPlace then return end
+    if button == 2 then
+        self.disable()
+        return
+    end
 
     local placeable = self.ref(Util.positionFromXY(self.mouse.x, self.mouse.y))
+    placeable:setTurret(self.turret({ position = placeable:getPosition()}))
     table.insert(self.objectPool, placeable)
-    self.active = false
+end
+
+---Returns the active object
+---@return GameObject
+function PlacementTool.getObject()
+    return self.object
 end
 
 return PlacementTool

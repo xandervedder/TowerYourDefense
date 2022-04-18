@@ -42,6 +42,8 @@ function Container:draw()
 end
 
 function Container:update(dt)
+    Element.update(self, dt)
+
     if self.root then
         self:updateRoot()
     end
@@ -59,7 +61,6 @@ function Container:update(dt)
     if center.y then self.child:setPosition(self.child.style.position.x, (size.h - self.child.style.size.h) / 2) end
 
     self:handleChildAlignment()
-    self.child:update(dt)
 end
 
 ---If the element is the root, we update height, width and position dependent on the window size.

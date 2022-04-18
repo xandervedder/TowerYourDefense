@@ -1,7 +1,6 @@
 local Base = require("src.game.object.tower.base.base")
 local GameObject = require("src.game.object.gameobject")
 local SingleBarrelTurret = require("src.game.object.tower.turret.single-barrel-turret")
-local DoubleBarrelTurret = require("src.game.object.tower.turret.double-barrel-turret")
 
 ---@class Tower
 local Tower = {}
@@ -27,7 +26,7 @@ function Tower:init(o)
     -- TODO:
     self.barrel = nil
     ---@type Turret
-    self.turret = o.turret or DoubleBarrelTurret({ position = self.position })
+    self.turret = o.turret or SingleBarrelTurret({ position = self.position })
     -- TODO:
     self.shell = nil
 end
@@ -39,6 +38,13 @@ end
 
 function Tower:update(dt)
     self.turret:update(dt)
+end
+
+---Sets the turret to a new instance.
+---@param turret Turret
+function Tower:setTurret(turret)
+    self.turret = turret
+    self.turret:setPosition(self.position)
 end
 
 function Tower:getSheets()

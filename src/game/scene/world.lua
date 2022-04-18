@@ -17,7 +17,6 @@ local Align = require("src.gui.style.property.align")
 local Color = require("src.gui.style.property.color")
 local Container = require("src.gui.layout.container")
 local DirBool = require("src.gui.style.property.dir-bool")
-local Element = require("src.gui.element")
 local HBox = require("src.gui.layout.h-box")
 local Image = require("src.gui.image")
 local Side = require("src.gui.style.property.side")
@@ -49,14 +48,6 @@ function World:init()
     self.gameObjects = {
         Spawner({ position = Util.position(0, 0).position, base = base, }),
         Spawner({ position = Util.position(5, 0).position, base = base, }),
-        Tower({
-            position = Util.position(2, 1).position,
-            turret = SingleBarrelTurret({ position = Util.position(2, 1).position }),
-        }),
-        Tower({
-            position = Util.position(4, 1).position,
-            turret = TripleBarrelTurret({ position = Util.position(4, 1).position }),
-        }),
         base,
     }
 
@@ -68,7 +59,8 @@ function World:init()
     self.activeMap = 1
     self.canvas = self.canvasFromMap(self.maps[self.activeMap])
 
-    PlacementTool.initialize(self.gameObjects, Tower, self.camera)
+    self.placementTool = PlacementTool
+    self.placementTool.initialize(self.gameObjects, Tower, self.camera)
 end
 
 function World.canvasFromMap(map)
@@ -102,7 +94,7 @@ function World:draw()
 
     self.canvas:renderTo(function ()
         love.graphics.setColor(1, 1, 1)
-        
+
         self:drawMap()
         for i = 1, #self.gameObjects, 1 do
             self.gameObjects[i]:draw()
@@ -148,8 +140,6 @@ function World:keyPressed(key)
     --? For debugging purposes
     if key == "l" then
         self:switchMaps()
-    elseif key == "b" then
-        PlacementTool.toggleActive()
     end
 end
 
@@ -214,9 +204,9 @@ function World:inventoryBar()
         children = {
             HBox({
                 children = {
-                    self:inventoryItem(towers[1]:toImage()),
-                    self:inventoryItem(towers[2]:toImage()),
-                    self:inventoryItem(towers[3]:toImage()),
+                    self:inventoryItem(towers[1]:toImage(), SingleBarrelTurret),
+                    self:inventoryItem(towers[2]:toImage(), DoubleBarrelTurret),
+                    self:inventoryItem(towers[3]:toImage(), TripleBarrelTurret),
                 }
             })
         }
@@ -224,26 +214,49 @@ function World:inventoryBar()
 end
 
 ---@param images love.Image[]
-function World:inventoryItem(images)
+---@param turretType Turret
+---@return Container
+function World:inventoryItem(images, turretType)
+    self.activeTurret = nil
     return Container({
         ---@param ref Element
         mouseEnter = function(ref)
             if ref.active then return end
             ref.style.color = Color(255, 255, 255, 1)
+            love.mouse.setCursor(love.mouse.getSystemCursor("hand"))
         end,
         ---@param ref Element
         mouseOut = function(ref)
             if ref.active then return end
             ref.style.color = Color(0, 0, 0, 1)
+            love.mouse.setCursor(love.mouse.getSystemCursor("arrow"))
         end,
         ---@param ref Element
         click = function(ref)
             if ref.active then
                 ref.active = false
                 ref.style.color = Color(0, 0, 0, 1)
+                self.placementTool.disable()
             else
                 ref.active = true
                 ref.style.color = Color(30, 189, 252, 1)
+
+                self.activeTurret = turretType
+                self.placementTool.enable()
+                ---@type Tower
+                local tower = self.placementTool.getObject()
+                tower:setTurret(turretType({}))
+                self.placementTool.setTurret(turretType)
+            end
+        end,
+        ---@param ref Element
+        update = function(ref)
+            if ref.active and turretType ~= self.activeTurret then
+                ref.active = false
+                ref.style.color = Color(0, 0, 0, 1)
+            elseif ref.active and not self.placementTool.active then
+                ref.active = false
+                ref.style.color = Color(0, 0, 0, 1)
             end
         end,
         style = Style({

@@ -44,6 +44,8 @@ function Element:init(o)
     self.click = o.click or function() end
     ---@type function
     self.release = o.release or function() end
+    ---@type function
+    self.updateCallback = o.update or function() end
 end
 
 function Element:draw()
@@ -62,7 +64,13 @@ function Element:draw()
 end
 
 ---@param dt number
-function Element:update(dt) end
+function Element:update(dt)
+    self.updateCallback(self)
+
+    for _, child in pairs(self.children) do
+        child:update(dt)
+    end
+end
 
 function Element:resize() end
 
