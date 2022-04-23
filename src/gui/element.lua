@@ -31,6 +31,8 @@ function Element:init(o)
     -- TODO: is this the right place for this?
     ---@type boolean
     self.active = false
+    ---@type string
+    self.id = o.id or ""
 
     --[[
         Callbacks.
@@ -74,6 +76,35 @@ end
 
 function Element:resize() end
 
+---Tries to find a matching element with the given selector.
+-- If it cannot do this, it will look at its children for answers.
+---@param selector string
+---@return Element|nil
+function Element:querySelector(selector)
+    -- If the element that is searched for is this one:
+    if self.id == selector then
+        return self
+    end
+
+    -- If the element is a direct child of this one:
+    for _, child in pairs(self.children) do
+        if child.id == selector then
+            return child
+        end
+    end
+
+    -- If the element is a child of the child:
+    for _, child in pairs(self.children) do
+        local found = child:querySelector(selector)
+        if found then
+            return found
+        end
+    end
+
+    -- If nothing was found:
+    return nil
+end
+
 ---@param key string
 function Element:keyPressed(key)
     for _, child in pairs(self.children) do
@@ -108,8 +139,6 @@ function Element:mouseMoved(x, y, dx, dy, touch)
         child:mouseMoved(x, y, dx, dy, touch)
     end
 end
-
-
 
 ---If registered, this method will also call the callback attached to the element.
 ---@param x number

@@ -86,10 +86,10 @@ function Container:handleChildAlignment()
         local parentY = position.y + size.h - padding.b
         self.child:setPosition(self.child.style.position.x, parentY - cSize.h)
     end
-
-    -- TODO: These will be done later as I do not need these right now
-    -- if alignment.r then end
-    -- if alignment.l then end
+    if alignment.r then
+        local x = position.x + size.w - self.child.style.size.w
+        self.child:setPosition(x - padding.r, self.child.style.position.y)
+    end
 end
 
 function Container:resize()

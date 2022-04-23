@@ -1,10 +1,17 @@
+---@class Publisher
 local Publisher = {}
 Publisher.listeners = {}
 
+---Registers a method to a certain topic.
+---@param identifier string
+---@param topic string
+---@param func function
 function Publisher.register(identifier, topic, func)
     table.insert(Publisher.listeners, { identifier = identifier, topic = topic or "*", method = func })
 end
 
+---Deregisters a listener.
+---@param identifier string
 function Publisher.deregister(identifier)
     local listeners = Publisher.listeners
     for i = #listeners, #listeners, -1 do
@@ -14,6 +21,8 @@ function Publisher.deregister(identifier)
     end
 end
 
+---Publishes an event.
+---@param event Event
 function Publisher.publish(event)
     local listeners = Publisher.listeners
     local eventName = event:getName()

@@ -91,7 +91,7 @@ function Spawner.register(instance)
 end
 
 function Spawner.removeEnemy(event)
-    local enemyRef = event:getData()
+    local enemyRef = event:getPayload()
     local eTable = Spawner.enemies[enemyRef.parent]
     for i = #eTable, 1, -1 do
         local enemy = eTable[i]

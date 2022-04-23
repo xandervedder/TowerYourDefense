@@ -1,5 +1,6 @@
 local Base = require("src.game.object.base")
 local Camera = require("src.game.camera.camera")
+local Collector = require("src.game.object.collector.collector")
 local Constants = require("src.game.constants")
 local DoubleBarrelTurret = require("src.game.object.tower.turret.double-barrel-turret")
 local Map = require("src.game.map.map")
@@ -7,11 +8,12 @@ local Player = require("src.game.object.player")
 local PlacementTool = require("src.game.tool.placement-tool")
 local Scene = require("src.game.scene.scene")
 local SingleBarrelTurret = require("src.game.object.tower.turret.single-barrel-turret")
-local Spawner = require("src.game.object.spawner")
 local Tiles = require("src.game.graphics.tiles")
 local Tower = require("src.game.object.tower.tower")
 local TripleBarrelTurret = require("src.game.object.tower.turret.triple-barrel-turret")
 local Util = require("src.game.util.util")
+
+local Inventory = require("src.game.scene.world.inventory")
 
 local Align = require("src.gui.style.property.align")
 local Color = require("src.gui.style.property.color")
@@ -40,14 +42,16 @@ function World:init()
     Scene.init(self, { name = "World Scene" })
 
     self:initUI()
+    ---@type Inventory
+    self.inventory = Inventory()
     self.player = Player(Util.position(3, 3))
     self.camera = Camera:new({ screen = { love.graphics.getDimensions() } })
     self.camera:followObject(self.player)
 
     local base = Base(Util.position(3, 5))
     self.gameObjects = {
-        Spawner({ position = Util.position(0, 0).position, base = base, }),
-        Spawner({ position = Util.position(5, 0).position, base = base, }),
+        Collector({ position = Util.position(4, 2).position, base = base, }),
+        Collector({ position = Util.position(4, 1).position, base = base, }),
         base,
     }
 
@@ -81,6 +85,7 @@ function World:update(dt)
     PlacementTool.update()
     self.camera:update(dt)
     self.ui:update()
+    self.inventory:update()
 end
 
 function World:fixedUpdate(dt)
@@ -112,6 +117,7 @@ function World:draw()
 
     -- UI should be drawn ontop of canvas
     self.ui:draw()
+    self.inventory:draw()
 end
 
 function World:drawMap()
@@ -180,12 +186,12 @@ function World:initUI()
             grow = DirBool(true, true),
         }),
         children = {
-            self:inventoryBar()
+            self:hotbar()
         }
     })
 end
 
-function World:inventoryBar()
+function World:hotbar()
     ---@type Tower[]
     local towers = {
         Tower({ turret = SingleBarrelTurret({}), }),
@@ -204,9 +210,9 @@ function World:inventoryBar()
         children = {
             HBox({
                 children = {
-                    self:inventoryItem(towers[1]:toImage(), SingleBarrelTurret),
-                    self:inventoryItem(towers[2]:toImage(), DoubleBarrelTurret),
-                    self:inventoryItem(towers[3]:toImage(), TripleBarrelTurret),
+                    self:hotbarItem(towers[1]:toImage(), SingleBarrelTurret),
+                    self:hotbarItem(towers[2]:toImage(), DoubleBarrelTurret),
+                    self:hotbarItem(towers[3]:toImage(), TripleBarrelTurret),
                 }
             })
         }
@@ -216,7 +222,7 @@ end
 ---@param images love.Image[]
 ---@param turretType Turret
 ---@return Container
-function World:inventoryItem(images, turretType)
+function World:hotbarItem(images, turretType)
     self.activeTurret = nil
     return Container({
         ---@param ref Element

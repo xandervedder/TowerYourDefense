@@ -1,20 +1,34 @@
+---@class Event
+---@see Event#init
 local Event = {}
+Event.__index = Event
 
-function Event:new(o)
-    o = o or {}
-    setmetatable(o, self)
-    self.__index = self
-    self.name = o.name or ""
-    self.data = o.data or {}
-    return o
+setmetatable(Event, {
+    __call = function(cls, ...)
+        local self = setmetatable({}, cls)
+        self:init(...)
+        return self
+    end
+})
+
+---Constructor
+---@param name string
+---@param payload table
+function Event:init(name, payload)
+    self.name = name
+    self.payload = payload
 end
 
+---Returns the name of the event
+---@return string
 function Event:getName()
     return self.name
 end
 
-function Event:getData()
-    return self.data
+---Returns the data of the event
+---@return table
+function Event:getPayload()
+    return self.payload
 end
 
 return Event

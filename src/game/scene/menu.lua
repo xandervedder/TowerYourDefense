@@ -50,7 +50,7 @@ function Menu:init()
                             Button({
                                 text = "Play",
                                 method = function()
-                                    Publisher.publish(Event:new({ name = "events.scene.switch" }))
+                                    Publisher.publish(Event("events.scene.switch"))
                                 end,
                                 style = Style({
                                     size = Size(0, 100),
@@ -90,7 +90,7 @@ function Menu:init()
                             Button({
                                 text = "Quit",
                                 method = function()
-                                    Publisher.publish(Event:new({ name = "events.game.quit" }))
+                                    Publisher.publish(Event("events.game.quit"))
                                 end,
                                 style = Style({
                                     size = Size(0, 100),

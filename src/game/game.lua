@@ -1,8 +1,8 @@
-local Publisher = require("src.game.event.publisher")
-local Menu = require("src.game.scene.menu")
-local Tiles = require("src.game.graphics.tiles")
-local World = require("src.game.scene.world")
 local Constants = require("src.game.constants")
+local Menu = require("src.game.scene.menu")
+local Publisher = require("src.game.event.publisher")
+local Tiles = require("src.game.graphics.tiles")
+local World = require("src.game.scene.world.world")
 
 local Game = {}
 Game.dt = 0
