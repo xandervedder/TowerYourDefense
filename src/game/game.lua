@@ -27,8 +27,6 @@ function Game.load()
 
     -- Is the current active scene
     Game.scene = Game.scenes.menu
-    Game.scenes.menu:initialize()
-    Game.scenes.world:initialize()
 end
 
 function Game.draw()

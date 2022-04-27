@@ -1,5 +1,12 @@
 local Style = require("src.gui.style.style")
 
+--- @alias ElementEvent
+--- | "click"           # Called when the element is clicked on.
+--- | "mouseenter"      # Called when the mouse enters the element.
+--- | "mouseout"        # Called when the mouse leaves the element.
+--- | "mousemove"       # Called when the mouse moves in the element.
+--- | "mousereleased"   # Called when the mouse was released on the element
+
 --[[
     Base class for all Graphical User Interface elements.
 ]]
@@ -28,26 +35,12 @@ function Element:init(o)
     self.root = o.root or false
     ---@type Style
     self.style = o.style or Style({})
-    -- TODO: is this the right place for this?
-    ---@type boolean
-    self.active = false
     ---@type string
     self.id = o.id or ""
-
-    --[[
-        Callbacks.
-    ]]
-
-    ---@type function
-    self.mouseEnter = o.mouseEnter or function() end
-    ---@type function
-    self.mouseOut = o.mouseOut or function() end
-    ---@type function
-    self.click = o.click or function() end
-    ---@type function
-    self.release = o.release or function() end
-    ---@type function
-    self.updateCallback = o.update or function() end
+    ---@type table
+    self.listeners = {}
+    ---@type boolean
+    self.mouseEntered = false
 end
 
 function Element:draw()
@@ -67,14 +60,40 @@ end
 
 ---@param dt number
 function Element:update(dt)
-    self.updateCallback(self)
-
     for _, child in pairs(self.children) do
         child:update(dt)
     end
 end
 
 function Element:resize() end
+
+---Adds an event listener to the element.
+---@param type ElementEvent
+---@param method function
+function Element:addEventListener(type, method)
+    table.insert(self.listeners, { type = type, method = method })
+end
+
+---Gets a table of listeners registerd to the element of the type given.
+---@param type ElementEvent
+---@return table
+function Element:getListeners(type)
+    local listenersOfType = {}
+    for _, listener in pairs(self.listeners) do
+        if listener.type == type then 
+            table.insert(listenersOfType, listener)
+        end
+    end
+    return listenersOfType
+end
+
+---Executes the method of the listeners retrieved by the type given.
+---@param type ElementEvent
+function Element:doListenersMethod(type)
+    for _, listener in pairs(self:getListeners(type)) do
+        listener.method(self)
+    end
+end
 
 ---Tries to find a matching element with the given selector.
 -- If it cannot do this, it will look at its children for answers.
@@ -130,9 +149,16 @@ function Element:mouseMoved(x, y, dx, dy, touch)
     local position = self.style.position
     local size = self.style.size
     if (x > position.x and x < position.x + size.w) and (y > position.y and y < position.y + size.h) then
-        self.mouseEnter(self)
+        self:doListenersMethod("mousemove")
+        if not self.mouseEntered then
+            self.mouseEntered = true
+            self:doListenersMethod("mouseenter")
+        end
     else
-        self.mouseOut(self)
+        if self.mouseEntered then
+            self.mouseEntered = false
+            self:doListenersMethod("mouseout")
+        end
     end
 
     for _, child in pairs(self.children) do
@@ -151,7 +177,7 @@ function Element:mousePressed(x, y, button, touch, presses)
     local position = self.style.position
     local size = self.style.size
     if (x > position.x and x < position.x + size.w) and (y > position.y and y < position.y + size.h) then
-        self.click(self)
+        self:doListenersMethod("click")
     end
 
     for _, child in pairs(self.children) do
@@ -160,7 +186,7 @@ function Element:mousePressed(x, y, button, touch, presses)
 end
 
 function Element:mouseReleased()
-    self.release(self)
+    self:doListenersMethod("mousereleased")
 
     for _, child in pairs(self.children) do
         child:mouseReleased()

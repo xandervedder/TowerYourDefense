@@ -18,15 +18,13 @@ function Scene:_getCanvas()
     return love.graphics.newCanvas(love.graphics.getDimensions())
 end
 
-function Scene:initialize() end
-
 function Scene:update(dt) end
 
 function Scene:fixedUpdate(dt) end
 
 function Scene:on(event) end
 
-function Scene:draw(dt) end
+function Scene:draw() end
 
 function Scene:quit() end
 

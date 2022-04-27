@@ -72,8 +72,19 @@ function Inventory:draw()
     self.element:draw()
 end
 
-function Inventory:update()
-    self.element:update()
+function Inventory:update(dt)
+    self.element:update(dt)
+end
+
+---Returns the amount of resources that have been gathered
+---@return number
+function Inventory:getAmount()
+    return self.amount
+end
+
+---@param amount number
+function Inventory:subtract(amount)
+    self.amount = self.amount - amount
 end
 
 return Inventory

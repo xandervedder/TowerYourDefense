@@ -1,7 +1,9 @@
 local Constants = require("src.game.constants")
 local Util = require("src.game.util.util")
 
---TODO: make this 'tool' specific to placing towers.
+--! TODO: make this 'tool' specific to placing towers.
+--! And update this to be an actual class + refactor.
+---@class PlacementTool
 local PlacementTool = {}
 
 -- Might be a little wierd, but it works and I like to keep it concise :)
@@ -10,6 +12,12 @@ self.active = false
 self.canPlace = true
 self.mouse = { x = 0, y = 0 }
 self.untranslated = { x = 0, y = 0 }
+---@type Hotbar
+self.hotbar = nil
+---@type HotbarItem
+self.hotbarItem = nil
+---@type Inventory
+self.inventory = nil
 
 function PlacementTool.initialize(pool, object, camera)
     self.objectPool = pool -- We will add objects to this once we place them
@@ -84,6 +92,7 @@ function PlacementTool.updatePosition(x, y)
 end
 
 function PlacementTool.mousePressed(_, _, button, _, _)
+    if self.hotbar.mouseEntered then return end
     if not self.active then return end
     if not self.canPlace then return end
     if button == 2 then
@@ -94,12 +103,35 @@ function PlacementTool.mousePressed(_, _, button, _, _)
     local placeable = self.ref(Util.positionFromXY(self.mouse.x, self.mouse.y))
     placeable:setTurret(self.turret({ position = placeable:getPosition()}))
     table.insert(self.objectPool, placeable)
+    self.inventory:subtract(self.hotbarItem.constraint)
+    if self.hotbarItem.constraint > self.inventory:getAmount() then
+        self.disable()
+        return
+    end
 end
 
 ---Returns the active object
 ---@return GameObject
 function PlacementTool.getObject()
     return self.object
+end
+
+---Sets the hotbar.
+---@param hotbar Hotbar
+function PlacementTool.setHotbar(hotbar)
+    self.hotbar = hotbar
+end
+
+---Sets the associated hotbar item.
+---@param item HotbarItem
+function PlacementTool.setHotbarItem(item)
+    self.hotbarItem = item
+end
+
+---Sets the associated inventory.
+---@param inventory Inventory
+function PlacementTool.setInventory(inventory)
+    self.inventory = inventory
 end
 
 return PlacementTool

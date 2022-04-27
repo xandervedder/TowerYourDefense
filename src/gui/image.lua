@@ -27,7 +27,7 @@ function Image:draw()
         local scaleX = self.style.size.w / w
         local scaleY = self.style.size.h / h
 
-        love.graphics.setColor(1, 1, 1)
+        self:setColor()
         love.graphics.draw(
             image,
             self.style.position.x,

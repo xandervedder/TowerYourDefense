@@ -13,7 +13,9 @@ local Tower = require("src.game.object.tower.tower")
 local TripleBarrelTurret = require("src.game.object.tower.turret.triple-barrel-turret")
 local Util = require("src.game.util.util")
 
-local Inventory = require("src.game.scene.world.inventory")
+local Hotbar = require("src.game.scene.world.component.hotbar")
+local HotbarItem = require("src.game.scene.world.component.hotbar-item")
+local Inventory = require("src.game.scene.world.component.inventory")
 
 local Align = require("src.gui.style.property.align")
 local Color = require("src.gui.style.property.color")
@@ -41,12 +43,12 @@ setmetatable(World, {
 function World:init()
     Scene.init(self, { name = "World Scene" })
 
-    self:initUI()
     ---@type Inventory
     self.inventory = Inventory()
     self.player = Player(Util.position(3, 3))
     self.camera = Camera:new({ screen = { love.graphics.getDimensions() } })
     self.camera:followObject(self.player)
+    self:initUI()
 
     local base = Base(Util.position(3, 5))
     self.gameObjects = {
@@ -84,8 +86,8 @@ function World:update(dt)
 
     PlacementTool.update()
     self.camera:update(dt)
-    self.ui:update()
-    self.inventory:update()
+    self.ui:update(dt)
+    self.inventory:update(dt)
 end
 
 function World:fixedUpdate(dt)
@@ -172,11 +174,14 @@ function World:mousePressed(x, y, button, touch, presses)
     self.ui:mousePressed(x, y, button, touch, presses)
 end
 
-
---[[ UI Section ]]
-
-
 function World:initUI()
+    ---@type Tower[]
+    local towers = {
+        Tower({ turret = SingleBarrelTurret({}), }),
+        Tower({ turret = DoubleBarrelTurret({}), }),
+        Tower({ turret = TripleBarrelTurret({}), }),
+    }
+
     ---@type Element
     self.ui = Container({
         root = true,
@@ -186,96 +191,26 @@ function World:initUI()
             grow = DirBool(true, true),
         }),
         children = {
-            self:hotbar()
-        }
-    })
-end
-
-function World:hotbar()
-    ---@type Tower[]
-    local towers = {
-        Tower({ turret = SingleBarrelTurret({}), }),
-        Tower({ turret = DoubleBarrelTurret({}), }),
-        Tower({ turret = TripleBarrelTurret({}), }),
-    }
-    return Container({
-        style =
-         Style({
-            align = Align(false, false, true),
-            color = Color(35, 35, 35, 0.9),
-            center = DirBool(true),
-            padding = Side(10, 10, 10, 10),
-            size = Size(280, 100),
-        }),
-        children = {
-            HBox({
+            Hotbar({
+                tool = PlacementTool,
+                inventory = self.inventory,
                 children = {
-                    self:hotbarItem(towers[1]:toImage(), SingleBarrelTurret),
-                    self:hotbarItem(towers[2]:toImage(), DoubleBarrelTurret),
-                    self:hotbarItem(towers[3]:toImage(), TripleBarrelTurret),
+                    HotbarItem({
+                        constraint = 1,
+                        turretType = SingleBarrelTurret,
+                        images = towers[1]:toImage()
+                    }),
+                    HotbarItem({
+                        constraint = 5,
+                        turretType = DoubleBarrelTurret,
+                        images = towers[2]:toImage()
+                    }),
+                    HotbarItem({
+                        constraint = 10,
+                        turretType = TripleBarrelTurret,
+                        images = towers[3]:toImage()
+                    }),
                 }
-            })
-        }
-    })
-end
-
----@param images love.Image[]
----@param turretType Turret
----@return Container
-function World:hotbarItem(images, turretType)
-    self.activeTurret = nil
-    return Container({
-        ---@param ref Element
-        mouseEnter = function(ref)
-            if ref.active then return end
-            ref.style.color = Color(255, 255, 255, 1)
-            love.mouse.setCursor(love.mouse.getSystemCursor("hand"))
-        end,
-        ---@param ref Element
-        mouseOut = function(ref)
-            if ref.active then return end
-            ref.style.color = Color(0, 0, 0, 1)
-            love.mouse.setCursor(love.mouse.getSystemCursor("arrow"))
-        end,
-        ---@param ref Element
-        click = function(ref)
-            if ref.active then
-                ref.active = false
-                ref.style.color = Color(0, 0, 0, 1)
-                self.placementTool.disable()
-            else
-                ref.active = true
-                ref.style.color = Color(30, 189, 252, 1)
-
-                self.activeTurret = turretType
-                self.placementTool.enable()
-                ---@type Tower
-                local tower = self.placementTool.getObject()
-                tower:setTurret(turretType({}))
-                self.placementTool.setTurret(turretType)
-            end
-        end,
-        ---@param ref Element
-        update = function(ref)
-            if ref.active and turretType ~= self.activeTurret then
-                ref.active = false
-                ref.style.color = Color(0, 0, 0, 1)
-            elseif ref.active and not self.placementTool.active then
-                ref.active = false
-                ref.style.color = Color(0, 0, 0, 1)
-            end
-        end,
-        style = Style({
-            color = Color(0, 0, 0, 1),
-            margin = Side(0, 10),
-            size = Size(80, 80),
-        }),
-        children = {
-            Image({
-                images = images,
-                style = Style({
-                    size = Size(80, 80),
-                })
             })
         }
     })
