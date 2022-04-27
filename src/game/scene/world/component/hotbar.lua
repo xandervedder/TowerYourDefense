@@ -42,7 +42,7 @@ function Hotbar:init(o)
         color = Color(35, 35, 35, 0.9),
         center = DirBool(true),
         padding = Side(10, 10, 10, 10),
-        size = Size(280, 100),
+        size = Size(280, 120),
     })
 
     self:addEventListener("click", function(_)

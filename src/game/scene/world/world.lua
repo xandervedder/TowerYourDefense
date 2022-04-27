@@ -17,14 +17,10 @@ local Hotbar = require("src.game.scene.world.component.hotbar")
 local HotbarItem = require("src.game.scene.world.component.hotbar-item")
 local Inventory = require("src.game.scene.world.component.inventory")
 
-local Align = require("src.gui.style.property.align")
 local Color = require("src.gui.style.property.color")
 local Container = require("src.gui.layout.container")
 local DirBool = require("src.gui.style.property.dir-bool")
-local HBox = require("src.gui.layout.h-box")
-local Image = require("src.gui.image")
 local Side = require("src.gui.style.property.side")
-local Size = require("src.gui.style.property.size")
 local Style = require("src.gui.style.style")
 
 ---@class World : Scene
@@ -52,8 +48,10 @@ function World:init()
 
     local base = Base(Util.position(3, 5))
     self.gameObjects = {
-        Collector({ position = Util.position(4, 2).position, base = base, }),
-        Collector({ position = Util.position(4, 1).position, base = base, }),
+        Collector({ position = Util.position(4, 1).position, }),
+        Collector({ position = Util.position(4, 2).position, }),
+        Collector({ position = Util.position(5, 1).position, }),
+        Collector({ position = Util.position(5, 2).position, }),
         base,
     }
 
@@ -196,17 +194,17 @@ function World:initUI()
                 inventory = self.inventory,
                 children = {
                     HotbarItem({
-                        constraint = 1,
+                        constraint = 10,
                         turretType = SingleBarrelTurret,
                         images = towers[1]:toImage()
                     }),
                     HotbarItem({
-                        constraint = 5,
+                        constraint = 25,
                         turretType = DoubleBarrelTurret,
                         images = towers[2]:toImage()
                     }),
                     HotbarItem({
-                        constraint = 10,
+                        constraint = 50,
                         turretType = TripleBarrelTurret,
                         images = towers[3]:toImage()
                     }),

@@ -1,9 +1,13 @@
+local Align = require("src.gui.style.property.align")
 local Color = require("src.gui.style.property.color")
 local Container = require("src.gui.layout.container")
+local DirBool = require("src.gui.style.property.dir-bool")
 local Image = require("src.gui.image")
 local Side = require("src.gui.style.property.side")
 local Size = require("src.gui.style.property.size")
 local Style = require("src.gui.style.style")
+local TextView = require("src.gui.text-view")
+local VBox = require("src.gui.layout.v-box")
 
 ---@class HotbarItem : Container
 local HotbarItem = {}
@@ -20,13 +24,29 @@ setmetatable(HotbarItem, {
 
 function HotbarItem:init(o)
     o.children = {
-        Image({
-            images = o.images,
+        VBox({
             style = Style({
-                color = Color(255, 255, 255, 1),
-                size = Size(80, 80),
-            })
-        })
+                size = Size(80, 100),
+            }),
+            children = {
+                Image({
+                    id = "image",
+                    images = o.images,
+                    style = Style({
+                        color = Color(255, 255, 255, 1),
+                        size = Size(80, 80),
+                    }),
+                }),
+                TextView({
+                    style = Style({
+                        margin = Side(5, 0, 0, 0),
+                        size = Size(100, 20),
+                    }),
+                    fontSize = 14,
+                    text = tostring(o.constraint),
+                })
+            }
+        }),
     }
 
     Container.init(self, o)
@@ -69,10 +89,12 @@ end
 function HotbarItem:update(dt)
     Container.update(self, dt)
 
+    ---@type Element
+    local child = self:querySelector("image")
     if self.constrained then
-        self.child.style.color = Color(255, 255, 255, 0.5)
+        child.style.color = Color(255, 255, 255, 0.5)
     else
-        self.child.style.color = Color(255, 255, 255, 1)
+        child.style.color = Color(255, 255, 255, 1)
     end
 
     if self.active then

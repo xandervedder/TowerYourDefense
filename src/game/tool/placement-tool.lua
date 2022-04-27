@@ -96,6 +96,7 @@ function PlacementTool.mousePressed(_, _, button, _, _)
     if not self.active then return end
     if not self.canPlace then return end
     if button == 2 then
+        self.hotbarItem.active = false
         self.disable()
         return
     end

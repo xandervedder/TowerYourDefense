@@ -19,7 +19,7 @@ function TextView:init(o)
     Element.init(self, o)
 
     self.text = o.text or ""
-    self.font = love.graphics.newFont(20)
+    self.font = love.graphics.newFont(o.fontSize or 20)
     self.font:setFilter("nearest", "nearest")
 end
 
