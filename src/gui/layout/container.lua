@@ -27,7 +27,8 @@ end
 
 function Container:draw()
     local margin = self.style.margin
-    love.graphics.setColor(self.style.color.r, self.style.color.g, self.style.color.b, self.style.color.a)
+
+    self:setColor()
     love.graphics.rectangle(
         "fill",
         self.style.position.x + margin.l,

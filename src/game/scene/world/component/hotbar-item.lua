@@ -1,7 +1,5 @@
-local Align = require("src.gui.style.property.align")
 local Color = require("src.gui.style.property.color")
 local Container = require("src.gui.layout.container")
-local DirBool = require("src.gui.style.property.dir-bool")
 local Image = require("src.gui.image")
 local Side = require("src.gui.style.property.side")
 local Size = require("src.gui.style.property.size")
@@ -92,6 +90,7 @@ function HotbarItem:update(dt)
     ---@type Element
     local child = self:querySelector("image")
     if self.constrained then
+        self.style.color = Color(0, 0, 0, 1)
         child.style.color = Color(255, 255, 255, 0.5)
     else
         child.style.color = Color(255, 255, 255, 1)
@@ -99,8 +98,6 @@ function HotbarItem:update(dt)
 
     if self.active then
         self.style.color = Color(30, 189, 252, 1)
-    else
-        self.style.color = Color(0, 0, 0, 1)
     end
 end
 
