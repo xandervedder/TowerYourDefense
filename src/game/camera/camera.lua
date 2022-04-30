@@ -1,3 +1,4 @@
+---@class Camera
 local Camera = {}
 
 -- Requires a 'screen' attribute

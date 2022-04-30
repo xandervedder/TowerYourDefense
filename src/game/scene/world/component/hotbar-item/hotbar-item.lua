@@ -55,11 +55,6 @@ function HotbarItem:init(o)
     self.constrained = false
     ---@type number
     self.constraint = o.constraint
-    --! TODO: this is very specific to the turrets,
-    --! we should make this more generic.
-    ---@type Turret
-    self.turretType = o.turretType
-
     ---@type Style
     self.style = Style({
         color = Color(0, 0, 0, 1),
@@ -92,12 +87,26 @@ function HotbarItem:update(dt)
     if self.constrained then
         self.style.color = Color(0, 0, 0, 1)
         child.style.color = Color(255, 255, 255, 0.5)
+    elseif self.active then
+        self.style.color = Color(30, 189, 252, 1)
     else
+        self.style.color = Color(0, 0, 0, 1)
         child.style.color = Color(255, 255, 255, 1)
     end
+end
 
-    if self.active then
-        self.style.color = Color(30, 189, 252, 1)
+---Configures the tool before it gets enabled.
+---@param tool PlacementTool
+---@param inventory Inventory
+function HotbarItem:configureTool(tool, inventory)
+    tool.clickedLambda = function()
+        inventory:subtract(self.constraint)
+        if self.constraint > inventory:getAmount() then
+            tool:disable()
+        end
+    end
+    tool.rightClickedLambda = function()
+        self.active = false
     end
 end
 

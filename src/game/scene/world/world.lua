@@ -5,7 +5,6 @@ local Constants = require("src.game.constants")
 local DoubleBarrelTurret = require("src.game.object.tower.turret.double-barrel-turret")
 local Map = require("src.game.map.map")
 local Player = require("src.game.object.player")
-local PlacementTool = require("src.game.tool.placement-tool")
 local Scene = require("src.game.scene.scene")
 local SingleBarrelTurret = require("src.game.object.tower.turret.single-barrel-turret")
 local Tiles = require("src.game.graphics.tiles")
@@ -13,8 +12,9 @@ local Tower = require("src.game.object.tower.tower")
 local TripleBarrelTurret = require("src.game.object.tower.turret.triple-barrel-turret")
 local Util = require("src.game.util.util")
 
+local CollectorHotbarItem = require("src.game.scene.world.component.hotbar-item.collector-hotbar-item")
 local Hotbar = require("src.game.scene.world.component.hotbar")
-local HotbarItem = require("src.game.scene.world.component.hotbar-item")
+local TowerHotbarItem = require("src.game.scene.world.component.hotbar-item.tower-hotbar-item")
 local Inventory = require("src.game.scene.world.component.inventory")
 
 local Color = require("src.gui.style.property.color")
@@ -44,14 +44,10 @@ function World:init()
     self.player = Player(Util.position(3, 3))
     self.camera = Camera:new({ screen = { love.graphics.getDimensions() } })
     self.camera:followObject(self.player)
-    self:initUI()
 
     local base = Base(Util.position(3, 5))
     self.gameObjects = {
         Collector({ position = Util.position(4, 1).position, }),
-        Collector({ position = Util.position(4, 2).position, }),
-        Collector({ position = Util.position(5, 1).position, }),
-        Collector({ position = Util.position(5, 2).position, }),
         base,
     }
 
@@ -62,9 +58,7 @@ function World:init()
     }
     self.activeMap = 1
     self.canvas = self.canvasFromMap(self.maps[self.activeMap])
-
-    self.placementTool = PlacementTool
-    self.placementTool.initialize(self.gameObjects, Tower, self.camera)
+    self:initUI()
 end
 
 function World.canvasFromMap(map)
@@ -82,7 +76,6 @@ function World:update(dt)
         self.gameObjects[i]:update(dt)
     end
 
-    PlacementTool.update()
     self.camera:update(dt)
     self.ui:update(dt)
     self.inventory:update(dt)
@@ -105,7 +98,8 @@ function World:draw()
             self.gameObjects[i]:draw()
         end
 
-        PlacementTool.draw()
+        -- TODO: I do not like this solution, fix this...
+        self.ui:querySelector("hotbar"):getTool():draw()
 
         --! Important: only draw the camera when all the other objects have rendered
         self.camera:draw()
@@ -163,12 +157,10 @@ function World:keyReleased(key)
 end
 
 function World:mouseMoved(x, y, dx, dy, touch)
-    PlacementTool.mouseMoved(x, y, dx, dy, touch)
     self.ui:mouseMoved(x, y, dx, dy, touch)
 end
 
 function World:mousePressed(x, y, button, touch, presses)
-    PlacementTool.mousePressed(x, y, button, touch, presses)
     self.ui:mousePressed(x, y, button, touch, presses)
 end
 
@@ -190,23 +182,34 @@ function World:initUI()
         }),
         children = {
             Hotbar({
-                tool = PlacementTool,
+                tool = self.towerTool,
                 inventory = self.inventory,
+                camera = self.camera,
+                pool = self.gameObjects,
                 children = {
-                    HotbarItem({
+                    TowerHotbarItem({
                         constraint = 10,
                         turretType = SingleBarrelTurret,
                         images = towers[1]:toImage()
                     }),
-                    HotbarItem({
+                    TowerHotbarItem({
                         constraint = 25,
                         turretType = DoubleBarrelTurret,
                         images = towers[2]:toImage()
                     }),
-                    HotbarItem({
+                    TowerHotbarItem({
                         constraint = 50,
                         turretType = TripleBarrelTurret,
                         images = towers[3]:toImage()
+                    }),
+                    CollectorHotbarItem({
+                        constraint = 100,
+                        allowedPositions = {
+                            Util.position(4, 1).position,
+                            Util.position(4, 2).position,
+                            Util.position(5, 1).position,
+                            Util.position(5, 2).position,
+                        }
                     }),
                 }
             })

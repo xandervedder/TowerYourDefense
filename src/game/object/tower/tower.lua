@@ -2,7 +2,7 @@ local Base = require("src.game.object.tower.base.base")
 local GameObject = require("src.game.object.gameobject")
 local SingleBarrelTurret = require("src.game.object.tower.turret.single-barrel-turret")
 
----@class Tower
+---@class Tower : GameObject
 local Tower = {}
 Tower.__index = Tower
 

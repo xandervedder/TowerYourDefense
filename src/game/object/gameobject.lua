@@ -29,7 +29,7 @@ end
 
 ---Loads the sheet and assigns both the imageData and Image to the object.
 ---@param location string
----@param filterType string
+---@param filterType? string
 function GameObject:setSheet(location, filterType)
     -- TODO: move to constructor
     filterType = filterType or "nearest"

@@ -61,4 +61,8 @@ function Collector:update(dt)
     end
 end
 
+function Collector:toImage()
+    return GameObject.imagesFromQuads(self.sheetData, { self.structureQuad, self.drillQuad })
+end
+
 return Collector

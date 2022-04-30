@@ -1,3 +1,5 @@
+local PlacementTool = require("src.game.tool.placement-tool")
+
 local Align = require("src.gui.style.property.align")
 local Color = require("src.gui.style.property.color")
 local Container = require("src.gui.layout.container")
@@ -30,19 +32,27 @@ function Hotbar:init(o)
     }
 
     Container.init(self, o)
+
+    ---@type string
+    self.id = "hotbar"
     ---@type Inventory
     self.inventory = o.inventory
     ---@type PlacementTool
-    self.tool = o.tool
-    self.tool.setInventory(self.inventory)
-    self.tool.setHotbar(self)
+    self.tool = PlacementTool({
+        camera = o.camera,
+        pool = o.pool,
+        object = function() end,
+        shouldClick = function()
+            return self.mouseEntered
+        end
+    })
     ---@type Style
     self.style = Style({
         align = Align(false, false, true),
         color = Color(35, 35, 35, 0.9),
         center = DirBool(true),
         padding = Side(10, 10, 10, 10),
-        size = Size(280, 120),
+        size = Size(370, 120),
     })
 
     self:addEventListener("click", function(_)
@@ -54,11 +64,9 @@ function Hotbar:init(o)
         for _, child in pairs(children) do
             if child.mouseEntered and not child.constrained then
                 child.active = true
+                child:configureTool(self.tool, self.inventory)
+                self.tool:enable()
                 activeChild = child
-                self.tool.enable()
-                self.tool.getObject():setTurret(child.turretType({}))
-                self.tool.setTurret(child.turretType)
-                self.tool.setHotbarItem(child)
                 break
             end
         end
@@ -71,8 +79,13 @@ function Hotbar:init(o)
     end)
 end
 
+function Hotbar:draw()
+    Container.draw(self)
+end
+
 function Hotbar:update(dt)
     Container.update(self, dt)
+    self.tool:update(dt)
 
     self:checkConstraints()
 end
@@ -89,6 +102,20 @@ function Hotbar:checkConstraints()
             child.constrained = false
         end
     end
+end
+
+function Hotbar:mousePressed(x, y, button, touch, presses)
+    Container.mousePressed(self, x, y, button, touch, presses)
+    self.tool:mousePressed(nil, nil, button, nil, nil)
+end
+
+function Hotbar:mouseMoved(x, y, dx, dy, touch)
+    Container.mouseMoved(self, x, y, dx, dy, touch)
+    self.tool:mouseMoved(x, y, nil, nil, nil)
+end
+
+function Hotbar:getTool()
+    return self.tool
 end
 
 return Hotbar
