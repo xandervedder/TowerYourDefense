@@ -127,14 +127,14 @@ end
 ---@param key string
 function Element:keyPressed(key)
     for _, child in pairs(self.children) do
-        child:mousePressed(key)
+        child:keyPressed(key)
     end
 end
 
 ---@param key string
 function Element:keyReleased(key)
     for _, child in pairs(self.children) do
-        child:mousePressed(key)
+        child:keyReleased(key)
     end
 end
 
