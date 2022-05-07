@@ -1,4 +1,3 @@
-local Constants = require("src.game.constants")
 local Event = require("src.game.event.event")
 local GameObject = require("src.game.object.gameobject")
 local Publisher = require("src.game.event.publisher")
@@ -27,7 +26,8 @@ function Enemy:init(o)
     self.health = 100
     self.originalHealth = self.health
     self.parent = o.parent
-    self.size = Util.size(6)
+    -- TODO: fix sizing
+    self.size = { w = 16, h = 16}
     self.speed = 0.25
 end
 
@@ -103,7 +103,7 @@ function Enemy:die()
     self.health = 0
     self.dead = true
 
-    Publisher.publish(Event:new({ name = "enemy.death", data = self }))
+    Publisher.publish(Event("enemy.death", self))
 end
 
 function Enemy:isDead()
