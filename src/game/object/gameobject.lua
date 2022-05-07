@@ -18,13 +18,19 @@ setmetatable(GameObject, {
 
 function GameObject:init(o)
     self.position = o.position or { x = 0, y = 0 }
-    self.size = o.size or Util.size()
+
+    ---@type number
+    self.scale = o.scale or 1
+    self.size = o.size or Util.size(self.scale)
     ---@type number
     self.speed = o.speed or 1
     ---@type love.ImageData
     self.sheetData = nil
     ---@type love.Image
     self.sheet = nil
+    -- TODO: type
+    ---@type string
+    self.type = "GameObject"
 end
 
 ---Loads the sheet and assigns both the imageData and Image to the object.
@@ -62,6 +68,12 @@ function GameObject:setPosition(position)
 end
 
 function GameObject:getSize() return self.size end
+
+---Sets the size according to the given scale
+---@param scale number
+function GameObject:setSize(scale)
+    self.size = Util.size(scale)
+end
 
 function GameObject:getSpeed() return self.speed end
 

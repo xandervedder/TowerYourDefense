@@ -23,14 +23,14 @@ end
 function Util.size(scale)
     scale = scale or 1
     return {
-        w = Constants.tile.scaledWidth() / scale,
-        h = Constants.tile.scaledHeight() /scale,
+        w = Constants.tile.scaledWidth() * scale,
+        h = Constants.tile.scaledHeight() * scale,
     }
 end
 
 ---Checks if the first object is within the other object.
----@param o1 table The first object
----@param o2 table The object to compare the position to
+---@param o1 GameObject The first object
+---@param o2 GameObject The object to compare the position to
 function Util.isWithin(o1, o2)
     local p1 = o1:getPosition()
     local p2 = o2:getPosition()

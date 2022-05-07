@@ -6,8 +6,6 @@ local Turret = require("src.game.object.tower.turret.turret")
 ---@class TripleBarrelTurret : Turret
 local TripleBarrelTurret = {}
 TripleBarrelTurret.__index = TripleBarrelTurret
-TripleBarrelTurret.LEFT = 2 * C.scale
-TripleBarrelTurret.RIGHT = 2 * C.scale
 
 setmetatable(TripleBarrelTurret, {
     __index = Turret,
@@ -23,6 +21,10 @@ function TripleBarrelTurret:init(o)
     o.location = "assets/graphics/turret-spritesheet.png"
 
     Turret.init(self, o)
+
+    self.type = "TripleBarrelTurret"
+    self.left = 2 * C.scale * self.scale
+    self.right = 2 * C.scale * self.scale
 end
 
 function TripleBarrelTurret:update(dt)
@@ -41,9 +43,9 @@ end
 
 function TripleBarrelTurret:shoot()
     -- TODO: shell should be its own object in a different file
-    local leftBarrelShell = self:configureShell(self.LEFT, math.rad(-90))
+    local leftBarrelShell = self:configureShell(self.left, math.rad(-90))
     local middleBarrelShell = self:configureShell(0, 0)
-    local rightBarrelShell = self:configureShell(self.RIGHT, math.rad(90))
+    local rightBarrelShell = self:configureShell(self.right, math.rad(90))
 
     table.insert(self.activeShells, leftBarrelShell)
     table.insert(self.activeShells, middleBarrelShell)
@@ -51,8 +53,8 @@ function TripleBarrelTurret:shoot()
 end
 
 function TripleBarrelTurret:configureShell(addition, radians)
-    local middlePointX = self.center.x + ((8 * C.scale) * -math.cos(self.rotation))
-    local middlePointY = self.center.y + ((8 * C.scale) * -math.sin(self.rotation))
+    local middlePointX = self.center.x + ((8 * C.scale * self.scale) * -math.cos(self.rotation))
+    local middlePointY = self.center.y + ((8 * C.scale * self.scale) * -math.sin(self.rotation))
 
     local shell = {
         x = middlePointX + (addition * -math.cos(self.rotation + radians)),
@@ -70,6 +72,13 @@ function TripleBarrelTurret:configureShell(addition, radians)
     shell.velocity.y = -math.sin(self.rotation) * shell.speed
 
     return shell
+end
+
+function TripleBarrelTurret:setScale(scaleFactor)
+    Turret.setScale(self, scaleFactor)
+
+    self.left = 2 * C.scale * self.scale
+    self.right = 2 * C.scale * self.scale
 end
 
 return TripleBarrelTurret

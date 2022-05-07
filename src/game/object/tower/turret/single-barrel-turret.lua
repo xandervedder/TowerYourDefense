@@ -20,6 +20,8 @@ function SingleBarrelTurret:init(o)
     o.location = "assets/graphics/turret-spritesheet.png"
 
     Turret.init(self, o)
+
+    self.type = "SingleBarrelTurret"
 end
 
 function SingleBarrelTurret:update(dt)
@@ -41,8 +43,8 @@ function SingleBarrelTurret:shoot()
     -- TODO: shell should be its own object in a different file
     local shell = {
         -- https://math.stackexchange.com/a/3534251
-        x = self.center.x + ((8 * C.scale) * -math.cos(self.rotation)),
-        y = self.center.y + ((8 * C.scale) * -math.sin(self.rotation)),
+        x = self.center.x + ((8 * C.scale * self.scale) * -math.cos(self.rotation)),
+        y = self.center.y + ((8 * C.scale * self.scale) * -math.sin(self.rotation)),
         velocity = { x = 0, y = 0 },
         speed = self.shotSpeed,
     }

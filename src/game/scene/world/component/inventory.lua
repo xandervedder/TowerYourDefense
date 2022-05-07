@@ -27,7 +27,7 @@ function Inventory:init(_)
     -- For now, we will use a single type of material,
     -- this will change in the future.
     ---@type integer
-    self.amount = 0;
+    self.amount = 1000;
     ---@type string
     self.selector = "text-view"
     ---@type Element

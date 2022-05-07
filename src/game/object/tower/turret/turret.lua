@@ -24,7 +24,7 @@ function Turret:init(o)
 
     --! TODO: type
     self.activeShells = {}
-    --! TODO: type
+    ---@type Position
     self.center = {
         x = self.position.x + self.size.w / 2,
         y = self.position.y + self.size.h / 2,
@@ -54,7 +54,7 @@ function Turret:draw()
     for i = 1, #self.activeShells, 1 do
         local bullet = self.activeShells[i]
         love.graphics.setColor(0, 0, 0)
-        love.graphics.circle("fill", bullet.x, bullet.y, 0.75 * C.scale)
+        love.graphics.circle("fill", bullet.x, bullet.y, 0.75 * C.scale * self.scale)
     end
 
     love.graphics.setColor(1, 1, 1)
@@ -64,8 +64,8 @@ function Turret:draw()
         self.center.x,
         self.center.y,
         self.rotation,
-        C.scale,
-        C.scale,
+        C.scale * self.scale,
+        C.scale * self.scale,
         -- Origin points will be in the center of the image:
         C.tile.w / 2,
         C.tile.h / 2
@@ -208,11 +208,16 @@ function Turret:predictPosition(dt)
     return self.projectedEnemyPosition
 end
 
----Rotates the turret, not sure if I am going to keep this.
-function Turret:rotate() end
-
 function Turret:getQuads()
     return { self.quad }
+end
+
+function Turret:setScale(scaleFactor)
+    self.scale = scaleFactor
+    self.center = {
+        x = self.position.x + self.size.w / 2,
+        y = self.position.y + self.size.h / 2,
+    }
 end
 
 return Turret

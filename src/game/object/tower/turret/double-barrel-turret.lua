@@ -4,8 +4,6 @@ local Turret = require("src.game.object.tower.turret.turret")
 ---@class DoubleBarrelTurret : Turret
 local DoubleBarrelTurret = {}
 DoubleBarrelTurret.__index = DoubleBarrelTurret
-DoubleBarrelTurret.LEFT = 2 * C.scale
-DoubleBarrelTurret.RIGHT = 2 * C.scale
 
 setmetatable(DoubleBarrelTurret, {
     __index = Turret,
@@ -21,6 +19,10 @@ function DoubleBarrelTurret:init(o)
     o.location = "assets/graphics/turret-spritesheet.png"
 
     Turret.init(self, o)
+
+    self.type = "DoubleBarrelTurret"
+    self.left = 2 * C.scale * self.scale
+    self.right = 2 * C.scale * self.scale
 end
 
 function DoubleBarrelTurret:update(dt)
@@ -39,16 +41,16 @@ end
 
 function DoubleBarrelTurret:shoot()
     -- TODO: shell should be its own object in a different file
-    local leftBarrelShell = self:configureShell(self.LEFT, math.rad(-90))
-    local rightBarrelShell = self:configureShell(self.RIGHT, math.rad(90))
+    local leftBarrelShell = self:configureShell(self.left, math.rad(-90))
+    local rightBarrelShell = self:configureShell(self.right, math.rad(90))
 
     table.insert(self.activeShells, leftBarrelShell)
     table.insert(self.activeShells, rightBarrelShell)
 end
 
 function DoubleBarrelTurret:configureShell(addition, radians)
-    local middlePointX = self.center.x + ((8 * C.scale) * -math.cos(self.rotation))
-    local middlePointY = self.center.y + ((8 * C.scale) * -math.sin(self.rotation))
+    local middlePointX = self.center.x + ((8 * C.scale * self.scale) * -math.cos(self.rotation))
+    local middlePointY = self.center.y + ((8 * C.scale * self.scale) * -math.sin(self.rotation))
 
     local shell = {
         x = middlePointX + (addition * -math.cos(self.rotation + radians)),
@@ -66,6 +68,14 @@ function DoubleBarrelTurret:configureShell(addition, radians)
     shell.velocity.y = -math.sin(self.rotation) * shell.speed
 
     return shell
+end
+
+
+function DoubleBarrelTurret:setScale(scaleFactor)
+    Turret.setScale(self, scaleFactor)
+
+    self.left = 2 * C.scale * self.scale
+    self.right = 2 * C.scale * self.scale
 end
 
 return DoubleBarrelTurret

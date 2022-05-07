@@ -4,6 +4,7 @@ local Collector = require("src.game.object.collector.collector")
 local Constants = require("src.game.constants")
 local DoubleBarrelTurret = require("src.game.object.tower.turret.double-barrel-turret")
 local Map = require("src.game.map.map")
+local MegaTowerTool = require("src.game.tool.mega-tower-tool")
 local Player = require("src.game.object.player")
 local Scene = require("src.game.scene.scene")
 local SingleBarrelTurret = require("src.game.object.tower.turret.single-barrel-turret")
@@ -11,6 +12,7 @@ local Tiles = require("src.game.graphics.tiles")
 local Tower = require("src.game.object.tower.tower")
 local TripleBarrelTurret = require("src.game.object.tower.turret.triple-barrel-turret")
 local Util = require("src.game.util.util")
+local Spawner = require("src.game.object.spawner")
 
 local CollectorHotbarItem = require("src.game.scene.world.component.hotbar-item.collector-hotbar-item")
 local Hotbar = require("src.game.scene.world.component.hotbar")
@@ -44,9 +46,11 @@ function World:init()
     self.player = Player(Util.position(3, 3))
     self.camera = Camera:new({ screen = { love.graphics.getDimensions() } })
     self.camera:followObject(self.player)
+    ---@type MegaTowerTool
 
     local base = Base(Util.position(3, 5))
     self.gameObjects = {
+        Spawner({ position = Util.position(4, 0).position, base = base }),
         Collector({ position = Util.position(4, 1).position, }),
         base,
     }
@@ -58,6 +62,8 @@ function World:init()
     }
     self.activeMap = 1
     self.canvas = self.canvasFromMap(self.maps[self.activeMap])
+    self.megaTowerTool = MegaTowerTool({ camera = self.camera, pool = self.gameObjects })
+
     self:initUI()
 end
 
@@ -79,6 +85,7 @@ function World:update(dt)
     self.camera:update(dt)
     self.ui:update(dt)
     self.inventory:update(dt)
+    self.megaTowerTool:update(dt)
 end
 
 function World:fixedUpdate(dt)
@@ -100,6 +107,7 @@ function World:draw()
 
         -- TODO: I do not like this solution, fix this...
         self.ui:querySelector("hotbar"):getTool():draw()
+        self.megaTowerTool:draw()
 
         --! Important: only draw the camera when all the other objects have rendered
         self.camera:draw()
@@ -140,6 +148,8 @@ function World:keyPressed(key)
     --? For debugging purposes
     if key == "l" then
         self:switchMaps()
+    elseif key == "q" then
+        self.megaTowerTool:toggle()
     end
 end
 
@@ -158,10 +168,12 @@ end
 
 function World:mouseMoved(x, y, dx, dy, touch)
     self.ui:mouseMoved(x, y, dx, dy, touch)
+    self.megaTowerTool:mouseMoved(x, y, dx, dy, touch)
 end
 
 function World:mousePressed(x, y, button, touch, presses)
     self.ui:mousePressed(x, y, button, touch, presses)
+    self.megaTowerTool:mousePressed(x, y, button, touch, presses)
 end
 
 function World:initUI()

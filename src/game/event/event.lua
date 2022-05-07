@@ -1,5 +1,4 @@
 ---@class Event
----@see Event#init
 local Event = {}
 Event.__index = Event
 
