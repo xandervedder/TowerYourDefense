@@ -4,10 +4,6 @@ local Game = require("src.game.game")
 Every method here is passed to the game defined above, we want to keep
 main.lua file clean, since everything is in the src/ folder.
 ]]--
-function love.conf(t)
-    Game.configure(t)
-end
-
 function love.load()
     Game.load()
 end
