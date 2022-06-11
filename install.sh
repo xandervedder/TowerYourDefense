@@ -11,4 +11,4 @@ DIR_NAME=lua_modules
 luarocks purge --tree $DIR_NAME
 
 # Install dependencies locally, so LÖVE understands them.
-luarocks install json4lua --tree $DIR_NAME
+luarocks install lunajson --tree $DIR_NAME
