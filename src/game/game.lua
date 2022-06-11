@@ -9,8 +9,8 @@ Game.dt = 0
 
 function Game.configure(t)
     t.window.title = "Tower Your Defense"
-    t.window.width = 1024
-    t.window.height = 1024
+    t.window.width = 2560
+    t.window.height = 1440
     t.window.display = 2 --* For now...
     t.window.resizable = true
     t.vsync = 1
