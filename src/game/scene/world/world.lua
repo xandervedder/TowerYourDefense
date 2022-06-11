@@ -4,11 +4,11 @@ local Collector = require("src.game.object.collector.collector")
 local Constants = require("src.game.constants")
 local DoubleBarrelTurret = require("src.game.object.tower.turret.double-barrel-turret")
 local Map = require("src.game.map.map")
+local MapRenderer = require("src.game.graphics.map.map-renderer")
 local MegaTowerTool = require("src.game.tool.mega-tower-tool")
 local Player = require("src.game.object.player")
 local Scene = require("src.game.scene.scene")
 local SingleBarrelTurret = require("src.game.object.tower.turret.single-barrel-turret")
-local Tiles = require("src.game.graphics.tiles")
 local Tower = require("src.game.object.tower.tower")
 local TripleBarrelTurret = require("src.game.object.tower.turret.triple-barrel-turret")
 local Util = require("src.game.util.util")
@@ -50,31 +50,20 @@ function World:init()
 
     local base = Base(Util.position(3, 5))
     self.gameObjects = {
-        Spawner({ position = Util.position(4, 0).position, base = base }),
-        Collector({ position = Util.position(4, 1).position, }),
-        base,
+        -- Spawner({ position = Util.position(4, 0).position, base = base }),
+        -- Collector({ position = Util.position(4, 1).position, }),
+        -- base,
     }
-
     table.insert(self.gameObjects, self.player)
 
-    self.maps = {
-        Map.read("/assets/map/main.map"),
-    }
-    self.activeMap = 1
-    self.canvas = self.canvasFromMap(self.maps[self.activeMap])
+    ---@type MapRenderer
+    self.mapRenderer = MapRenderer()
+
+    local mapSize = self.mapRenderer:getDimensions();
+    self.canvas = love.graphics.newCanvas(mapSize.w, mapSize.h)
     self.megaTowerTool = MegaTowerTool({ camera = self.camera, pool = self.gameObjects })
 
     self:initUI()
-end
-
-function World.canvasFromMap(map)
-    local height = #map
-    local width = #map[1]
-
-    return love.graphics.newCanvas(
-        Constants.tile.scaledWidth() * width,
-        Constants.tile.scaledHeight() * height
-    )
 end
 
 function World:update(dt)
@@ -100,7 +89,7 @@ function World:draw()
     self.canvas:renderTo(function ()
         love.graphics.setColor(1, 1, 1)
 
-        self:drawMap()
+        self.mapRenderer:draw()
         for i = 1, #self.gameObjects, 1 do
             self.gameObjects[i]:draw()
         end
@@ -122,33 +111,10 @@ function World:draw()
     self.inventory:draw()
 end
 
-function World:drawMap()
-    local map = self.maps[self.activeMap]
-    for x = 1, #map, 1 do
-        for y = 1, #map[1], 1 do
-            local quad = Tiles.tile[tonumber(map[x][y])]
-
-            love.graphics.draw(
-                Tiles.spriteSheet,
-                quad,
-                -- Remove 1 from the current index, since coordinates are starting at 0
-                (y - 1) * Constants.tile.scaledWidth(),
-                (x - 1) * Constants.tile.scaledHeight(),
-                0,
-                Constants.scale,
-                Constants.scale
-            )
-        end
-    end
-end
-
 function World:keyPressed(key)
     self.player:keyPressed(key)
 
-    --? For debugging purposes
-    if key == "l" then
-        self:switchMaps()
-    elseif key == "q" then
+    if key == "q" then
         self.megaTowerTool:toggle()
     end
 end
