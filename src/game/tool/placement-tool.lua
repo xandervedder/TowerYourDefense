@@ -46,7 +46,7 @@ function PlacementTool:init(o)
     self.clickedLambda = o.clicked
     ---Lambda that runs when the right click has executed.
     ---@type function
-    self.rightClickedLambda = o.rightClick
+    self.rightClickedLambda = o.rightClick or function() --[[ noop ]] end
     ---Lambda that returns whether or not the click method will run.
     ---@type function
     self.shouldClickLambda = o.shouldClick
