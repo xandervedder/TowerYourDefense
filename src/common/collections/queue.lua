@@ -3,8 +3,6 @@
 ]]--
 
 ---@class Queue
----@type fun():Queue
----@generic T
 local Queue = {}
 Queue.__index = Queue
 
