@@ -50,11 +50,11 @@ function PriorityQueue:heapify(size, index)
     local left = 2 * index
     local right = 2 * index + 1
 
-    if left < size and self.elements[index] > self.elements[left] then
+    if left <= size and self.elements[index] > self.elements[left] then
         lowest = left
     end
 
-    if right < size and self.elements[lowest] > self.elements[right] then
+    if right <= size and self.elements[lowest] > self.elements[right] then
         lowest = right
     end
 
