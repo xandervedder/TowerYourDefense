@@ -1,12 +1,6 @@
--- https://www.redblobgames.com/pathfinding/a-star/implementation.html#python-astar
--- https://www.programiz.com/dsa/priority-queue
--- https://en.wikipedia.org/wiki/Heapsort#Pseudocode
-
 --[[
     Implementation of the PriorityQueue in lua.
-
-    Note: currently it only supports numbers (int, float).
-]]
+]]--
 
 ---@class PriorityQueue
 local PriorityQueue = {}
@@ -21,22 +15,25 @@ setmetatable(PriorityQueue, {
 })
 
 function PriorityQueue:init()
-    ---@type array<array<number, T>>
+    ---@type array<table<T, number>>
     self.elements = {}
 end
 
 ---Adds data to the queue and ordens it according to the priority.
----@param data number
+---
+---Note: the first number in the table is the value (which can be anything), the second one is the priority.
+---@param data table<T, number>
 function PriorityQueue:push(data)
-    if data == nil then
-        error("Data is of incompatible type: " .. tostring(data))
-    end
+    if data == nil then error("Data cannot be empty.") end
+    if type(data) ~= "table" then error("Data must be of table type. Type '" .. type(data) .. "' given.") end
+    if #data ~= 2 then error("Exactly 2 items must be in the table. Table contains '" .. #data .. "'.") end
 
     table.insert(self.elements, data)
 
     -- We only heapify if the internal array has more than one element.
     if #self.elements == 1 then return end
 
+    -- TODO: Might want to implement something that can push batches of items in the PriorityQueue, might be faster.
     for index = math.floor(#self.elements / 2), 1, -1 do
         self:heapify(#self.elements, index)
     end
@@ -50,11 +47,11 @@ function PriorityQueue:heapify(size, index)
     local left = 2 * index
     local right = 2 * index + 1
 
-    if left <= size and self.elements[index] > self.elements[left] then
+    if left <= size and self.elements[index][2] > self.elements[left][2] then
         lowest = left
     end
 
-    if right <= size and self.elements[lowest] > self.elements[right] then
+    if right <= size and self.elements[lowest][2] > self.elements[right][2] then
         lowest = right
     end
 
@@ -72,6 +69,7 @@ function PriorityQueue:swap(first, second)
 end
 
 ---Returns the item that is at the front of the queue.
+---@return T
 function PriorityQueue:pop()
     local last = #self.elements;
     -- Swap the first and the last items.
@@ -86,7 +84,7 @@ function PriorityQueue:pop()
         self:heapify(#self.elements, index)
     end
 
-    return item
+    return item[1]
 end
 
 ---Magic method that shows the internal array of the priority queue.
@@ -94,7 +92,7 @@ end
 function PriorityQueue:__tostring()
     local output = "["
     for index, value in pairs(self.elements) do
-        output = output .. value
+        output = output .. "{" .. value[1] .. ", " .. value[2] .. "}"
         if index ~= #self.elements then
             output = output .. ", "
         end
