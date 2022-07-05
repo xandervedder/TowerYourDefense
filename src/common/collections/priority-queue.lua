@@ -71,6 +71,26 @@ function PriorityQueue:swap(first, second)
     self.elements[first], self.elements[second] = self.elements[second], self.elements[first]
 end
 
+---Returns the item that is at the front of the queue.
+function PriorityQueue:pop()
+    local last = #self.elements;
+    -- Swap the first and the last items.
+    self:swap(1, last)
+
+    local item = self.elements[last]
+    -- Remove the last node of the tree.
+    self.elements[#self.elements] = nil
+
+    -- Heapify the tree once more.
+    for index = math.floor(#self.elements / 2), 1, -1 do
+        self:heapify(#self.elements, index)
+    end
+
+    return item
+end
+
+---Magic method that shows the internal array of the priority queue.
+---@return string
 function PriorityQueue:__tostring()
     local output = "["
     for index, value in pairs(self.elements) do
