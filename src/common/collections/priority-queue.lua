@@ -46,21 +46,21 @@ end
 ---@param size number
 ---@param index number
 function PriorityQueue:heapify(size, index)
-    local largest = index
+    local lowest = index
     local left = 2 * index
     local right = 2 * index + 1
 
-    if left < size and self.elements[index] < self.elements[left] then
-        largest = left
+    if left < size and self.elements[index] > self.elements[left] then
+        lowest = left
     end
 
-    if right < size and self.elements[largest] < self.elements[right] then
-        largest = right
+    if right < size and self.elements[lowest] > self.elements[right] then
+        lowest = right
     end
 
-    if largest ~= index then
-        self:swap(index, largest)
-        self:heapify(size, largest)
+    if lowest ~= index then
+        self:swap(index, lowest)
+        self:heapify(size, lowest)
     end
 end
 
