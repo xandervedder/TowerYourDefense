@@ -87,6 +87,12 @@ function PriorityQueue:pop()
     return item[1]
 end
 
+---Returns whether the queue is empty or not.
+---@return boolean
+function PriorityQueue:empty()
+    return #self.elements == 0
+end
+
 ---Magic method that shows the internal array of the priority queue.
 ---@return string
 function PriorityQueue:__tostring()
@@ -100,8 +106,4 @@ function PriorityQueue:__tostring()
     return output .. "]"
 end
 
----Returns whether the queue is empty or not.
----@return boolean
-function PriorityQueue:empty()
-    return #self.elements == 0
-end
+return PriorityQueue
