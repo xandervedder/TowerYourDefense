@@ -15,28 +15,20 @@ setmetatable(PriorityQueue, {
 })
 
 function PriorityQueue:init()
-    ---@type array<table<T, number>>
+    ---@type table<table<any, number>>
     self.elements = {}
 end
 
 ---Adds data to the queue and ordens it according to the priority.
 ---
 ---Note: the first number in the table is the value (which can be anything), the second one is the priority.
----@param data table<T, number>
+---@param data table<any, number>
 function PriorityQueue:push(data)
     if data == nil then error("Data cannot be empty.") end
     if type(data) ~= "table" then error("Data must be of table type. Type '" .. type(data) .. "' given.") end
     if #data ~= 2 then error("Exactly 2 items must be in the table. Table contains '" .. #data .. "'.") end
 
-    table.insert(self.elements, data)
-
-    -- We only heapify if the internal array has more than one element.
-    if #self.elements == 1 then return end
-
-    -- TODO: Might want to implement something that can push batches of items in the PriorityQueue, might be faster.
-    for index = math.floor(#self.elements / 2), 1, -1 do
-        self:heapify(#self.elements, index)
-    end
+    table.insert(self.elements, 1, data)
 end
 
 ---Heapifies the list with data.
@@ -68,9 +60,19 @@ function PriorityQueue:swap(first, second)
     self.elements[first], self.elements[second] = self.elements[second], self.elements[first]
 end
 
+---Helper method that starts the heapifying process.
+function PriorityQueue:beginHeapify()
+    for index = math.floor(#self.elements / 2), 1, -1 do
+        self:heapify(#self.elements, index)
+    end
+end
+
 ---Returns the item that is at the front of the queue.
----@return T
+---@return any
 function PriorityQueue:pop()
+    -- This implementation only heapifies once an item is requested to be removed from the queue.
+    self:beginHeapify()
+
     local last = #self.elements;
     -- Swap the first and the last items.
     self:swap(1, last)
@@ -80,9 +82,7 @@ function PriorityQueue:pop()
     self.elements[#self.elements] = nil
 
     -- Heapify the tree once more.
-    for index = math.floor(#self.elements / 2), 1, -1 do
-        self:heapify(#self.elements, index)
-    end
+    self:beginHeapify()
 
     return item[1]
 end
@@ -91,6 +91,12 @@ end
 ---@return boolean
 function PriorityQueue:empty()
     return #self.elements == 0
+end
+
+---Returns the size of the queue.
+---@return number
+function PriorityQueue:size()
+    return #self.elements
 end
 
 ---Magic method that shows the internal array of the priority queue.
