@@ -39,6 +39,8 @@ end
 ---Method that checks whether or not a location is obstructed by an obstacle.
 ---@param location Location
 function WeightedGraph:obstructed(location)
+    if #self.obstacles == 0 then return false end
+
     local x = location.x
     local y = location.y
 
@@ -57,14 +59,25 @@ end
 function WeightedGraph:neighbours(location)
     local x = location.x
     local y = location.y
-    -- Neighbours in four directions (North, East, South, West).
     ---@type table<Location>
-    local neighbours = {
-        Location(x, y - 1),
-        Location(x + 1, y),
-        Location(x, y + 1),
-        Location(x - 1, y),
-    }
+    local neighbours = {}
+
+    -- TODO: This doesn't work as expected, look at this on a later date.
+    if (x + y) % 2 == 0 then
+        neighbours = {
+            Location(x, y + 1),
+            Location(x, y - 1),
+            Location(x - 1, y),
+            Location(x + 1, y),
+        }
+    else
+        neighbours = {
+            Location(x + 1, y),
+            Location(x - 1, y),
+            Location(x, y - 1),
+            Location(x, y + 1),
+        }
+    end
 
     for i = #neighbours, 1, -1 do
         if not self:inBounds(neighbours[i]) or self:obstructed(neighbours[i]) then
