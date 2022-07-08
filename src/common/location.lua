@@ -23,4 +23,8 @@ function Location:__eq(toCompare)
     return self.x == toCompare.x and self.y == toCompare.y
 end
 
+function Location:__tostring()
+    return "{ x=" .. self.x .. ", y=" .. self.y .. " }"
+end
+
 return Location
