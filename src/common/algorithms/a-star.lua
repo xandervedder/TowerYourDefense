@@ -134,4 +134,10 @@ function AStar:isPath(x, y)
     return self.VOID_CHARACTER
 end
 
+---Returns the generated path.
+---@return table<Location>
+function AStar:get()
+    return self.path
+end
+
 return AStar
