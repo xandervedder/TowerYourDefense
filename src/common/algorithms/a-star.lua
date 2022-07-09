@@ -98,7 +98,12 @@ function AStar:reconstructPath()
 
     table.insert(path, self.start)
 
-    self.path = path
+    self.path = {}
+    -- Reverse the list since we want to start at the 'start' not the 'goal'.
+    for i = #path, 1, -1 do
+        table.insert(self.path, path[i])
+    end
+
     return self
 end
 
