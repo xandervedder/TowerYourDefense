@@ -36,6 +36,7 @@ function AStar:init(graph, start, goal)
 end
 
 ---Returns the most optimal path in terms of distance.
+---@return AStar
 function AStar:search()
     local hashStart = self:toHash(self.start)
     ---@type PriorityQueue
@@ -85,6 +86,7 @@ end
 
 ---Reconstructs the path from goal to start. 
 ---TODO: might want to reverse this (start to goal).
+---@return AStar
 function AStar:reconstructPath()
     local current = self.goal
     local path = {}
