@@ -3,7 +3,7 @@ local Publisher = {}
 Publisher.listeners = {}
 
 ---Registers a method to a certain topic.
----@param identifier string
+---@param identifier any
 ---@param topic string
 ---@param func function
 function Publisher.register(identifier, topic, func)
