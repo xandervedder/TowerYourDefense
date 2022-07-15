@@ -2,6 +2,9 @@ local json = require("lunajson")
 
 local C = require("src.game.constants")
 
+--TODO: Move from 'gui' to 'common'
+local Size = require("src.gui.style.property.size")
+
 ---@class MapRenderer
 local MapRenderer = {}
 MapRenderer.__index = MapRenderer
@@ -134,10 +137,15 @@ end
 ---Gets the dimensions of the to be rendered map.
 ---@return Size
 function MapRenderer:getDimensions()
-    return {
-        w = C.tile.scaledHeight() * #self.quads[1],
-        h = C.tile.scaledWidth() * #self.quads,
-    }
+    return Size(C.tile.scaledHeight() * #self.quads[1], C.tile.scaledWidth() * #self.quads)
+end
+
+---Gets the grid size of the map, which tells how many cells are within the map.
+---
+---Note: not the *actual* size of the map.
+---@return Size
+function MapRenderer:getGridSize()
+    return Size(#self.quads[1], #self.quads)
 end
 
 return MapRenderer
