@@ -1,4 +1,12 @@
+# Editor specific files
 *.iml
 *.idea/
 *.vscode/
+
+# Third party packages from LuaRocks
 /lua_modules
+
+# Used for profiling, but it is not on LuaRocks so I don't want
+# to keep it in the repository if possible (untill I find a better solution).
+profiler.lua
+profiler.log
