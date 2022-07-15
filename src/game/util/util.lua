@@ -1,5 +1,8 @@
+local Location = require("src.common.location")
+
 local Constants = require("src.game.constants")
 
+---@type Util
 local Util = {}
 
 function Util.position(x, y)
@@ -18,6 +21,17 @@ function Util.positionFromXY(x, y)
     local yPos = math.floor(y / Constants.tile.scaledHeight())
 
     return Util.position(xPos, yPos)
+end
+
+---Converts a position to a location.
+---
+---TODO: this should definitely be refactored...
+---@param position Position
+function Util.toLocation(position)
+    local height = Constants.tile.scaledHeight()
+    local width = Constants.tile.scaledWidth()
+
+    return Location(math.floor(position.x / width), math.floor(position.y / height))
 end
 
 function Util.size(scale)
