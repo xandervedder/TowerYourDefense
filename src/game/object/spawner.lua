@@ -1,7 +1,18 @@
+local AStar = require("src.common.algorithms.a-star")
+local WeightedGraph = require("src.common.algorithms.weighted-graph")
+
+local Constants = require("src.game.constants")
 local Enemy = require("src.game.object.enemy")
 local GameObject = require("src.game.object.gameobject")
 local Publisher = require("src.game.event.publisher")
+local Util = require("src.game.util.util")
 
+--[[
+    Implementation spawner mechanics. Handles where enemies will travel and
+    when they will spawn.
+]]--
+
+---@class Spawner : GameObject
 local Spawner = {}
 Spawner.enemies = {}
 Spawner.__index = Spawner
@@ -15,10 +26,28 @@ setmetatable(Spawner, {
     end
 })
 
-function Spawner:init(o)
+---Constructor
+---@param o table
+---@param base Base
+---@param grid Size
+function Spawner:init(o, base, grid)
     GameObject.init(self, o)
 
-    self.base = o.base
+    ---@type Base
+    self.base = base
+    ---@type Size
+    self.grid = grid
+
+    ---@type table<number, Location>
+    self.path = AStar(
+        WeightedGraph(self.grid.w, self.grid.h),
+        Util.toLocation(self:getPosition()),
+        Util.toLocation(base:getPosition())
+    )
+        :search()
+        :reconstructPath()
+        :get()
+
     self.deltaPassed = 0
     self.spawnRate = self.spawnRate or 1 -- In seconds
     self.register(self)
@@ -38,7 +67,27 @@ function Spawner:draw()
     love.graphics.setColor(0, 0, 0)
     love.graphics.print("SPAWNER", self.position.x, self.position.y)
 
+    self:drawDebugPath()
     self:drawSpawnedEnemies()
+end
+
+function Spawner:drawDebugPath()
+    ---@type table<number>
+    local lineLocations = {}
+    for _, location in pairs(self.path) do
+        local x = location.x * Constants.tile.scaledWidth()
+        local y = location.y * Constants.tile.scaledHeight()
+
+        table.insert(lineLocations, x + (Constants.tile.scaledWidth() / 2))
+        table.insert(lineLocations, y + (Constants.tile.scaledHeight() / 2))
+    end
+
+    love.graphics.setLineWidth(3)
+    love.graphics.line(lineLocations)
+
+    local lastItemIndex = #lineLocations
+    love.graphics.circle("fill", lineLocations[1], lineLocations[2], 25)
+    love.graphics.circle("fill", lineLocations[lastItemIndex - 1], lineLocations[lastItemIndex], 25)
 end
 
 function Spawner:drawSpawnedEnemies()

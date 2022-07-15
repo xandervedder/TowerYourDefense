@@ -1,7 +1,10 @@
+local Location = require("src.common.location")
+local AStar = require("src.common.algorithms.a-star")
+local WeightedGraph = require("src.common.algorithms.weighted-graph")
+
 local Base = require("src.game.object.base")
 local Camera = require("src.game.camera.camera")
 local Collector = require("src.game.object.collector.collector")
-local Constants = require("src.game.constants")
 local DoubleBarrelTurret = require("src.game.object.tower.turret.double-barrel-turret")
 local MapRenderer = require("src.game.graphics.map.map-renderer")
 local MegaTowerTool = require("src.game.tool.mega-tower-tool")
@@ -40,6 +43,9 @@ setmetatable(World, {
 function World:init()
     Scene.init(self, { name = "World Scene" })
 
+    ---@type MapRenderer
+    self.mapRenderer = MapRenderer()
+
     ---@type Inventory
     self.inventory = Inventory()
     self.player = Player(Util.position(3, 3))
@@ -47,16 +53,14 @@ function World:init()
     self.camera:followObject(self.player)
     ---@type MegaTowerTool
 
-    local base = Base(Util.position(3, 5))
+    local base = Base(Util.position(2, 3))
+    self.spawner = Spawner({ position = Util.position(4, 0).position }, base, self.mapRenderer:getGridSize())
     self.gameObjects = {
-        -- Spawner({ position = Util.position(4, 0).position, base = base }),
-        -- Collector({ position = Util.position(4, 1).position, }),
-        -- base,
+        base,
+        self.spawner,
+        Collector({ position = Util.position(4, 1).position, }),
     }
     table.insert(self.gameObjects, self.player)
-
-    ---@type MapRenderer
-    self.mapRenderer = MapRenderer()
 
     local mapSize = self.mapRenderer:getDimensions();
     self.canvas = love.graphics.newCanvas(mapSize.w, mapSize.h)
