@@ -42,6 +42,8 @@ function CollectorHotbarItem:configureTool(tool, inventory)
         return object
     end
     tool.obstructionLambda = function()
+        if not self.active then return false end
+
         local mouse = Util.positionFromXY(tool.mouse.x, tool.mouse.y).position
         for _, aPosition in pairs(self.allowedPositions) do
             local aGrid = Util.positionFromXY(aPosition.x, aPosition.y).position
