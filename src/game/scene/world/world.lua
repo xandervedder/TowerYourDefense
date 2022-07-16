@@ -51,7 +51,6 @@ function World:init()
     self.player = Player(Util.position(3, 3))
     self.camera = Camera:new({ screen = { love.graphics.getDimensions() } })
     self.camera:followObject(self.player)
-    ---@type MegaTowerTool
 
     local base = Base(Util.position(2, 3))
     self.spawner = Spawner({ position = Util.position(4, 0).position }, base, self.mapRenderer:getGridSize())
@@ -64,6 +63,7 @@ function World:init()
 
     local mapSize = self.mapRenderer:getDimensions();
     self.canvas = love.graphics.newCanvas(mapSize.w, mapSize.h)
+    ---@type MegaTowerTool
     self.megaTowerTool = MegaTowerTool({ camera = self.camera, pool = self.gameObjects })
 
     self:initUI()
