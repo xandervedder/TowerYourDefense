@@ -82,8 +82,10 @@ end
 function HotbarItem:update(dt)
     Container.update(self, dt)
 
-    ---@type Element
+    ---@type Element|nil
     local child = self:querySelector("image")
+    if child == nil then return end
+
     if self.constrained then
         self.style.color = Color(0, 0, 0, 1)
         child.style.color = Color(255, 255, 255, 0.5)
