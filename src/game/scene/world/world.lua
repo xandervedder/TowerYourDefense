@@ -154,7 +154,6 @@ function World:initUI()
         }),
         children = {
             Hotbar({
-                tool = self.towerTool,
                 inventory = self.inventory,
                 camera = self.camera,
                 pool = self.gameObjects,
