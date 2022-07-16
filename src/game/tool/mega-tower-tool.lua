@@ -103,7 +103,7 @@ function MegaTowerTool:checkForTowers(occupiedSpots)
         occupiedSpots.bl.type ~= "Tower" or
         occupiedSpots.br.type ~= "Tower")
     then
-        return
+        return false
     end
 
     ---@type string
