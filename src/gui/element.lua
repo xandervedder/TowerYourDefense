@@ -237,7 +237,7 @@ function Element:isRoot()
 end
 
 ---Returns the grow property
----@return boolean
+---@return DirBool
 function Element:getGrow()
     return self.style.grow
 end
