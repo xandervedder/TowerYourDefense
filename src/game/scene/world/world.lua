@@ -122,15 +122,6 @@ function World:keyPressed(key)
     end
 end
 
-function World:switchMaps()
-    self.activeMap = self.activeMap + 1
-    if self.activeMap > #self.maps then
-        self.activeMap = 1
-    end
-
-    self.canvas = self.canvasFromMap(self.maps[self.activeMap])
-end
-
 function World:keyReleased(key)
     self.player:keyReleased(key)
 end
