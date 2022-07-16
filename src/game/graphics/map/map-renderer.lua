@@ -75,7 +75,7 @@ function MapRenderer:prepareQuads()
 end
 
 ---Returns the calculated coordinates from an array.
----@param tile array<number>
+---@param tile table<number>
 ---@return Position
 function MapRenderer:getTileCoordinates(tile)
     local x = tile[1]
