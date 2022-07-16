@@ -33,6 +33,7 @@ function Game.draw()
 
     -- For debugging
     love.graphics.setColor(0, 1, 0)
+    love.graphics.setFont(love.graphics.newFont(10))
     love.graphics.print("FPS: " .. tostring(love.timer.getFPS()), 5, 5)
 end
 

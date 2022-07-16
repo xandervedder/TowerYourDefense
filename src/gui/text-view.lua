@@ -27,9 +27,9 @@ function TextView:draw()
     Element.draw(self)
 
     love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setFont(self.font)
     love.graphics.print(
         self.text,
-        self.font,
         self.style.position.x + self.style.margin.l + self.style.padding.l,
         self.style.position.y + self.style.margin.t + self.style.padding.t
     )
