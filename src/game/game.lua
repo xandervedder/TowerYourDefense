@@ -12,6 +12,7 @@ function Game.configure(t)
     t.window.height = 1440
     t.window.display = 2 --* For now...
     t.window.resizable = true
+    t.window.highdpi = true
     t.vsync = 1
 end
 
