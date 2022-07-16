@@ -15,7 +15,7 @@ setmetatable(Queue, {
 })
 
 function Queue:init()
-    ---@type table<T>
+    ---@type table<any>
     self.data = {}
     ---@type number
     self.first = 1
@@ -34,7 +34,7 @@ function Queue:push(data)
 end
 
 ---Pops the first item off the queue and returns it.
----@return T
+---@return any
 function Queue:pop()
     -- If the queue runs out of items, return nil; we can't do anything anymore.
     if self.first > self.last then return nil end
