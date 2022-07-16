@@ -112,8 +112,8 @@ function Menu:draw()
     self.element:draw()
 end
 
-function Menu:update()
-    self.element:update()
+function Menu:update(dt)
+    self.element:update(dt)
 end
 
 function Menu:resize()
