@@ -26,7 +26,7 @@ setmetatable(Inventory, {
 function Inventory:init(_)
     -- For now, we will use a single type of material,
     -- this will change in the future.
-    ---@type integer
+    ---@type number
     self.amount = 1000;
     ---@type string
     self.selector = "text-view"
@@ -62,8 +62,9 @@ function Inventory:onEvent(event)
     if event:getName() == "inventory.increase" then
         self.amount = self.amount + event:getPayload().amount
 
-        ---@type TextView
+        ---@type Element|nil
         local textView = self.element:querySelector(self.selector)
+        ---@cast textView TextView
         textView.text = tostring(self.amount)
     end
 end
