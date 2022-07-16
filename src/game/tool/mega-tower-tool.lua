@@ -86,6 +86,7 @@ function MegaTowerTool:update(dt)
         self.occupied.br and
         self:checkForTowers(self.occupied)
     ) then
+        ---@type GameObject
         self.tower = self.occupied.tl
         self.filled = true
     else
