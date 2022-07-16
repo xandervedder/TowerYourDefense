@@ -2,7 +2,7 @@ local Location = require("src.common.location")
 
 local Constants = require("src.game.constants")
 
----@type Util
+---@class Util
 local Util = {}
 
 function Util.position(x, y)
