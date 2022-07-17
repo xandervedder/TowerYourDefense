@@ -54,4 +54,14 @@ function Util.isWithin(o1, o2)
         (p1.y > p2.y and p1.y < p2.y + s2.h)
 end
 
+--TODO: this should really be a method within a Point or Location class...
+---Checks if position 1 is within position 2.
+---@param p1 Position
+---@param p2 Position
+---@param s2 Size
+function Util.isWithinPosition(p1, p2, s2)
+    return (p1.x > p2.x and p1.x < p2.x + s2.w) and
+        (p1.y > p2.y and p1.y < p2.y + s2.h)
+end
+
 return Util
