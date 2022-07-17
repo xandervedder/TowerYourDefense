@@ -1,6 +1,6 @@
 local GameObject = require("src.game.object.gameobject")
 
----@type Base : GameObject
+---@class Base : GameObject
 local Base = {}
 Base.__index = Base
 
