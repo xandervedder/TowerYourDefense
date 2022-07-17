@@ -16,6 +16,7 @@ setmetatable(GameObject, {
     end
 })
 
+--TODO: refactor the o to represent a type.
 function GameObject:init(o)
     self.position = o.position or { x = 0, y = 0 }
 
