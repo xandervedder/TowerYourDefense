@@ -9,12 +9,14 @@ Queue.__index = Queue
 setmetatable(Queue, {
     __call = function(cls, ...)
         local self = setmetatable({}, cls)
-        self:init()
+        self:init(...)
         return self
     end
 })
 
-function Queue:init()
+---Constructor
+---@param data table<any>|nil
+function Queue:init(data)
     ---@type table<any>
     self.data = {}
     ---@type number
@@ -23,6 +25,12 @@ function Queue:init()
     -- first and last would point to the same thing.
     ---@type number
     self.last = 0
+
+    if data ~= nil then
+        for _, value in pairs(data) do
+            self:push(value)
+        end
+    end
 end
 
 ---Pushes into the queue whilst ensuring that the item
@@ -48,6 +56,12 @@ function Queue:pop()
     self.first = self.first + 1
 
     return item
+end
+
+---Returns whether the Queue is empty or not.
+---@return boolean
+function Queue:empty()
+    return #self.data == 0
 end
 
 return Queue
