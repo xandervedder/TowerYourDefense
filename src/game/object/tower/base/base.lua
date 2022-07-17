@@ -9,7 +9,8 @@ local GameObject = require("src.game.object.gameobject")
     behaviour is yet to be implemented, but in the future
     it will be.
 ]]
----@class Base : GameObject
+-- TODO: rename file and object
+---@class TowerBase : GameObject
 local Base = {}
 Base.__index = Base
 

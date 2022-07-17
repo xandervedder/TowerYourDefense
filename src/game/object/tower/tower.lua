@@ -21,7 +21,7 @@ function Tower:init(o)
     GameObject.init(self, o)
 
     -- Attributes of the Tower
-    ---@type Base
+    ---@type TowerBase
     self.base = o.base or Base({ position = self.position, scale = self.scale })
     -- TODO:
     self.barrel = nil
