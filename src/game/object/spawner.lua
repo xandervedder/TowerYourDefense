@@ -48,7 +48,9 @@ function Spawner:init(o, base, grid)
         :reconstructPath()
         :get()
 
+    ---@type number
     self.deltaPassed = 0
+    ---@type number
     self.spawnRate = self.spawnRate or 1 -- In seconds
     self.register(self)
     self.enemies = self.getEnemies(self)
@@ -67,6 +69,7 @@ function Spawner:draw()
     love.graphics.setColor(0, 0, 0)
     love.graphics.print("SPAWNER", self.position.x, self.position.y)
 
+    --TODO: add console command for this (see update v0.1.1)
     self:drawDebugPath()
     self:drawSpawnedEnemies()
 end
@@ -110,12 +113,10 @@ end
 function Spawner:spawn()
     local enemy = Enemy({
         position = {
-            x = self.position.x + self.size.w / 2,
-            y = self.position.y + self.size.h / 2
+            x = self.position.x + (self.size.w / 2) - (Enemy.SIZE.w / 2),
+            y = self.position.y + (self.size.h / 2) - (Enemy.SIZE.h / 2)
         },
-        parent = self,
-        base = self.base,
-    })
+    }, self, self.base, self.path)
     table.insert(self.enemies, enemy)
 end
 
