@@ -1,7 +1,3 @@
-local Location = require("src.common.location")
-local AStar = require("src.common.algorithms.a-star")
-local WeightedGraph = require("src.common.algorithms.weighted-graph")
-
 local Base = require("src.game.object.base")
 local Camera = require("src.game.camera.camera")
 local Collector = require("src.game.object.collector.collector")
