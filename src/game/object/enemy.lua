@@ -1,4 +1,4 @@
-local Location = require("src.common.location")
+local Point = require("src.common.objects.point")
 local Queue = require("src.common.collections.queue")
 
 local Constants = require("src.game.constants")
@@ -29,7 +29,7 @@ setmetatable(Enemy, {
 ---@param o table
 ---@param parent Spawner
 ---@param base Base
----@param path table<Location>
+---@param path table<Point>
 function Enemy:init(o, parent, base, path)
     GameObject.init(self, o)
 
@@ -39,10 +39,10 @@ function Enemy:init(o, parent, base, path)
     self.parent = parent
     ---@type Queue
     self.pathToBase = Queue(path)
-    --? Ignore first location as it's the same as the start (we already know this).
+    --? Ignore first Point as it's the same as the start (we already know this).
     self.pathToBase:pop()
-    ---@type Location
-    self.currentLocation = self.pathToBase:pop()
+    ---@type Point
+    self.currentPoint = self.pathToBase:pop()
     ---@type boolean
     self.dead = false
     ---@type string
@@ -96,20 +96,19 @@ function Enemy:update()
         return
     end
 
-    local currentLocation = self:getCurrentLocation()
-    --TODO: Use Location (or Point in the future).
-    if currentLocation.x == self.position.x and currentLocation.y == self.position.y then
-        self.currentLocation = self.pathToBase:pop()
-        currentLocation = self:getCurrentLocation()
+    local currentPoint = self:getCurrentPoint()
+    if currentPoint.x == self.position.x and currentPoint.y == self.position.y then
+        self.currentPoint = self.pathToBase:pop()
+        currentPoint = self:getCurrentPoint()
     end
 
-    if currentLocation.x > self.position.x then
+    if currentPoint.x > self.position.x then
         self.position.x = self.position.x + self.speed
         self.direction = "right"
-    elseif currentLocation.x < self.position.x then
+    elseif currentPoint.x < self.position.x then
         self.position.x = self.position.x - self.speed
         self.direction = "left"
-    elseif currentLocation.y > self.position.y then
+    elseif currentPoint.y > self.position.y then
         self.position.y = self.position.y + self.speed
         self.direction = "bottom"
     else
@@ -118,12 +117,12 @@ function Enemy:update()
     end
 end
 
----Gets the current location, but to the middle of it.
----@return Location
-function Enemy:getCurrentLocation()
-    local x = self.currentLocation.x
-    local y = self.currentLocation.y
-    return Location(
+---Gets the current Point, but to the middle of it.
+---@return Point
+function Enemy:getCurrentPoint()
+    local x = self.currentPoint.x
+    local y = self.currentPoint.y
+    return Point(
         (x * Constants.tile.scaledWidth()) + (Constants.tile.scaledWidth() / 2) - (self.SIZE.w / 2),
         (y * Constants.tile.scaledHeight()) + (Constants.tile.scaledHeight() / 2) - (self.SIZE.h / 2)
     )

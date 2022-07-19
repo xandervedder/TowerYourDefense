@@ -1,4 +1,4 @@
-local Location = require("src.common.location")
+local Point = require("src.common.objects.point")
 
 local Constants = require("src.game.constants")
 
@@ -27,11 +27,11 @@ end
 ---
 ---TODO: this should definitely be refactored...
 ---@param position Position
-function Util.toLocation(position)
+function Util.toPoint(position)
     local height = Constants.tile.scaledHeight()
     local width = Constants.tile.scaledWidth()
 
-    return Location(math.floor(position.x / width), math.floor(position.y / height))
+    return Point(math.floor(position.x / width), math.floor(position.y / height))
 end
 
 function Util.size(scale)

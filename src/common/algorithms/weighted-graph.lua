@@ -1,4 +1,4 @@
-local Location = require("src.common.location")
+local Point = require("src.common.objects.point")
 
 --[[
     Implementation of a weighted graph in lua.
@@ -22,27 +22,27 @@ setmetatable(WeightedGraph, {
 function WeightedGraph:init(width, height)
     self.width = width
     self.height = height
-    ---@type table<Location>
+    ---@type table<Point>
     self.obstacles = {}
     self.weights = {}
 end
 
----Checks if the location given is within bounds
----@param location Location
-function WeightedGraph:inBounds(location)
-    local x = location.x
-    local y = location.y
+---Checks if the point given is within the bounds of the graph.
+---@param point Point
+function WeightedGraph:inBounds(point)
+    local x = point.x
+    local y = point.y
 
     return 0 <= x and 0 <= y and self.width >= x and self.height >= y
 end
 
----Method that checks whether or not a location is obstructed by an obstacle.
----@param location Location
-function WeightedGraph:obstructed(location)
+---Method that checks whether or not a `point` is obstructed by an obstacle.
+---@param point Point
+function WeightedGraph:obstructed(point)
     if #self.obstacles == 0 then return false end
 
-    local x = location.x
-    local y = location.y
+    local x = point.x
+    local y = point.y
 
     for _, value in pairs(self.obstacles) do
         if value.x == x and value.y == y then
@@ -54,28 +54,28 @@ function WeightedGraph:obstructed(location)
 end
 
 ---Retrieves the neighbours of the given location
----@param location Location
----@return table<Location>
-function WeightedGraph:neighbours(location)
-    local x = location.x
-    local y = location.y
-    ---@type table<Location>
+---@param point Point
+---@return table<Point>
+function WeightedGraph:neighbours(point)
+    local x = point.x
+    local y = point.y
+    ---@type table<Point>
     local neighbours = {}
 
     -- TODO: This doesn't work as expected, look at this on a later date.
     if (x + y) % 2 == 0 then
         neighbours = {
-            Location(x, y + 1),
-            Location(x, y - 1),
-            Location(x - 1, y),
-            Location(x + 1, y),
+            Point(x, y + 1),
+            Point(x, y - 1),
+            Point(x - 1, y),
+            Point(x + 1, y),
         }
     else
         neighbours = {
-            Location(x + 1, y),
-            Location(x - 1, y),
-            Location(x, y - 1),
-            Location(x, y + 1),
+            Point(x + 1, y),
+            Point(x - 1, y),
+            Point(x, y - 1),
+            Point(x, y + 1),
         }
     end
 
@@ -90,8 +90,8 @@ end
 
 ---Returns how much it will cost to move from one location to the other.
 ---Note: in this case we don't do anything special with the cost yet, but it could be used for future functionality.
----@param from Location
----@param to Location
+---@param from Point
+---@param to Point
 ---@return integer
 function WeightedGraph:cost(from, to)
     return 1

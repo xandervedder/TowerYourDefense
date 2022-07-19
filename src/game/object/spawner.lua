@@ -38,11 +38,11 @@ function Spawner:init(o, base, grid)
     ---@type Size
     self.grid = grid
 
-    ---@type table<number, Location>
+    ---@type table<number, Point>
     self.path = AStar(
         WeightedGraph(self.grid.w, self.grid.h),
-        Util.toLocation(self:getPosition()),
-        Util.toLocation(base:getPosition())
+        Util.toPoint(self:getPosition()),
+        Util.toPoint(base:getPosition())
     )
         :search()
         :reconstructPath()

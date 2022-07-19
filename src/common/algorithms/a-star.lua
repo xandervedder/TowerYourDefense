@@ -22,16 +22,16 @@ setmetatable(AStar, {
 
 ---Constructor
 ---@param graph WeightedGraph
----@param start Location
----@param goal Location
+---@param start Point
+---@param goal Point
 function AStar:init(graph, start, goal)
     ---@type WeightedGraph
     self.graph = graph
-    ---@type Location
+    ---@type Point
     self.start = start
-    ---@type Location
+    ---@type Point
     self.goal = goal
-    ---@type table<Location>
+    ---@type table<Point>
     self.path = nil
 end
 
@@ -43,24 +43,24 @@ function AStar:search()
     local frontier = PriorityQueue()
     frontier:push({self.start, 0})
 
-    ---@type table<Location, Location>
+    ---@type table<Point, Point>
     local cameFrom = {}
     cameFrom[hashStart] = nil
-    ---@type table<Location, number>
+    ---@type table<Point, number>
     local costSoFar = {}
     costSoFar[hashStart] = 0
 
     while not frontier:empty() do
-        ---@type Location
+        ---@type Point
         local current = frontier:pop()
         if current == self.goal then break end
 
-        for _, nextLocation in pairs(self.graph:neighbours(current)) do
-            local newCost = costSoFar[self:toHash(current)] + self.graph:cost(current, nextLocation)
-            local nextHash = self:toHash(nextLocation)
+        for _, nextPoint in pairs(self.graph:neighbours(current)) do
+            local newCost = costSoFar[self:toHash(current)] + self.graph:cost(current, nextPoint)
+            local nextHash = self:toHash(nextPoint)
             if not costSoFar[nextHash] or newCost < costSoFar[nextHash] then
-                local priority = newCost + self:heuristic(nextLocation, self.goal)
-                frontier:push({nextLocation, priority})
+                local priority = newCost + self:heuristic(nextPoint, self.goal)
+                frontier:push({nextPoint, priority})
                 costSoFar[nextHash] = newCost
                 cameFrom[nextHash] = current
             end
@@ -71,15 +71,15 @@ function AStar:search()
     return self
 end
 
----Converts a `Location` to a 'hash'. It will not really be a hash, but we can't use the classes
+---Converts a `Point` to a 'hash'. It will not really be a hash, but we can't use the classes
 ---since the hash of the class will be different (even if the contents of the table are the same).
----@param location Location
-function AStar:toHash(location)
-    return location.x .. ',' .. location.y
+---@param point Point
+function AStar:toHash(point)
+    return point.x .. ',' .. point.y
 end
 
----@param a Location
----@param b Location
+---@param a Point
+---@param b Point
 function AStar:heuristic(a, b)
     return math.abs(a.x - b.x) + math.abs(a.y - b.y)
 end
@@ -130,8 +130,8 @@ end
 ---@param y number
 ---@return string
 function AStar:isPath(x, y)
-    for _, location in pairs(self.path) do
-        if location.x == x and location.y == y then
+    for _, point in pairs(self.path) do
+        if point.x == x and point.y == y then
             return self.PATH_CHARACTER
         end
     end
@@ -140,7 +140,7 @@ function AStar:isPath(x, y)
 end
 
 ---Returns the generated path.
----@return table<Location>
+---@return table<Point>
 function AStar:get()
     return self.path
 end
