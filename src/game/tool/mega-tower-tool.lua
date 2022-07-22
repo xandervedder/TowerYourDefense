@@ -1,3 +1,5 @@
+local Point = require("src.common.objects.point")
+
 local C = require("src.game.constants")
 local Util = require("src.game.util.util")
 
@@ -18,9 +20,9 @@ function MegaTowerTool:init(o)
     self.pool = o.pool
     ---@type Camera
     self.camera = o.camera
-    ---@type Position
+    ---@type Point
     self.mouse = { x = 0, y = 0 }
-    ---@type Position
+    ---@type Point
     self.untranslated = { x = 0, y = 0 }
     ---@type number
     self.lineWidth = C.scale
@@ -35,7 +37,7 @@ end
 function MegaTowerTool:draw()
     if not self.active then return end
 
-    local grid = Util.positionFromXY(self.mouse.x, self.mouse.y).position
+    local grid = Util.fromMousePoint(self.mouse.x, self.mouse.y)
     local size = Util.size(1)
 
     if self.filled then
@@ -70,10 +72,11 @@ function MegaTowerTool:update(dt)
         ---@type GameObject
         br = nil, -- Bottom right
     }
-    local grid = Util.positionFromXY(self.mouse.x, self.mouse.y).position
+
+    local grid = Util.fromMousePoint(self.mouse.x, self.mouse.y)
     local size = Util.size(1)
     for _, gameObject in pairs(self.pool) do
-        local p = gameObject:getPosition()
+        local p = gameObject:getPoint()
         if p.x == grid.x and p.y == grid.y then self.occupied.tl = gameObject end
         if p.x == grid.x + size.w and p.y == grid.y then self.occupied.tr = gameObject end
         if p.x == grid.x and p.y == grid.y + size.w then self.occupied.bl = gameObject end
@@ -115,26 +118,22 @@ function MegaTowerTool:checkForTowers(occupiedSpots)
     )
 end
 
----Updates the position.
+---Updates the point of the mouse.
 ---@param x number
 ---@param y number
-function MegaTowerTool:updatePosition(x, y)
+function MegaTowerTool:updatePoint(x, y)
     -- TODO: this method is the same one as the placement-tool's method:
-    local camera = self.camera:getPosition()
+    local camera = self.camera:getPoint()
 
-    self.mouse = {
-        x = math.abs(x - camera.x),
-        y = math.abs(y - camera.y),
-    }
-
-    self.untranslated = { x = x, y = y, }
+    self.mouse = Point(math.abs(x - camera.x), math.abs(y - camera.y))
+    self.untranslated = Point(x, y)
 end
 
 ---Function that is called when the mouse has been moved.
 ---@param x number
 ---@param y number
 function MegaTowerTool:mouseMoved(x, y, _, _, _)
-    self:updatePosition(x, y)
+    self:updatePoint(x, y)
 end
 
 function MegaTowerTool:mousePressed(_, _, _, _, _)

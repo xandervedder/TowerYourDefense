@@ -24,8 +24,8 @@ function Collector:init(o)
     self.drillQuad = love.graphics.newQuad(C.tile.w, 0, C.tile.w, C.tile.h, self.sheet:getDimensions())
 
     self.center = {
-        x = self.position.x + self.size.w / 2,
-        y = self.position.y + self.size.h / 2,
+        x = self.point.x + self.size.w / 2,
+        y = self.point.y + self.size.h / 2,
     }
     self.rotation = 0
     self.collectionDelayInSeconds = 1
@@ -48,7 +48,7 @@ function Collector:draw()
         C.tile.h / 2
     )
 
-    love.graphics.draw(self.sheet, self.structureQuad, self.position.x, self.position.y, 0, C.scale, C.scale)
+    love.graphics.draw(self.sheet, self.structureQuad, self.point.x, self.point.y, 0, C.scale, C.scale)
 end
 
 function Collector:update(dt)

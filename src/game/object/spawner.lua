@@ -1,5 +1,6 @@
 local AStar = require("src.common.algorithms.a-star")
 local WeightedGraph = require("src.common.algorithms.weighted-graph")
+local Point = require("src.common.objects.point")
 
 local Constants = require("src.game.constants")
 local Enemy = require("src.game.object.enemy")
@@ -41,8 +42,8 @@ function Spawner:init(o, base, grid)
     ---@type table<number, Point>
     self.path = AStar(
         WeightedGraph(self.grid.w, self.grid.h),
-        Util.toPoint(self:getPosition()),
-        Util.toPoint(base:getPosition())
+        Util.toGridPoint(self:getPoint()),
+        Util.toGridPoint(base:getPoint())
     )
         :search()
         :reconstructPath()
@@ -60,14 +61,14 @@ function Spawner:draw()
     love.graphics.setColor(0, 1, 0)
     love.graphics.rectangle(
         "fill",
-        self.position.x,
-        self.position.y,
+        self.point.x,
+        self.point.y,
         self.size.w,
         self.size.h
     )
 
     love.graphics.setColor(0, 0, 0)
-    love.graphics.print("SPAWNER", self.position.x, self.position.y)
+    love.graphics.print("SPAWNER", self.point.x, self.point.y)
 
     --TODO: add console command for this (see update v0.1.1)
     self:drawDebugPath()
@@ -112,10 +113,10 @@ end
 
 function Spawner:spawn()
     local enemy = Enemy({
-        position = {
-            x = self.position.x + (self.size.w / 2) - (Enemy.SIZE.w / 2),
-            y = self.position.y + (self.size.h / 2) - (Enemy.SIZE.h / 2)
-        },
+        point = Point(
+            self.point.x + (self.size.w / 2) - (Enemy.SIZE.w / 2),
+            self.point.y + (self.size.h / 2) - (Enemy.SIZE.h / 2)
+        ),
     }, self, self.base, self.path)
     table.insert(self.enemies, enemy)
 end

@@ -1,9 +1,12 @@
+local Point = require("src.common.objects.point")
+
 local Util = require("src.game.util.util")
 
 --[[
     Base Object used for any game object in the game.
     Whether it be an enemy or tower, every object inherits from GameObject.
 ]]--
+
 ---@class GameObject
 local GameObject = {}
 GameObject.__index = GameObject
@@ -18,7 +21,8 @@ setmetatable(GameObject, {
 
 --TODO: refactor the o to represent a type.
 function GameObject:init(o)
-    self.position = o.position or { x = 0, y = 0 }
+    ---@type Point
+    self.point = o.point or Point(0, 0)
 
     ---@type number
     self.scale = o.scale or 1
@@ -53,19 +57,19 @@ function GameObject:update(dt) end
 ---@param dt number
 function GameObject:fixedUpdate(dt) end
 
-function GameObject:getPosition()
-    return self.position
+function GameObject:getPoint()
+    return self.point
 end
 
 function GameObject:getMiddle()
     return {
-        x = self.position.x + (self.size.w / 2),
-        y = self.position.y + (self.size.h / 2)
+        x = self.point.x + (self.size.w / 2),
+        y = self.point.y + (self.size.h / 2)
     }
 end
 
-function GameObject:setPosition(position)
-    self.position = position
+function GameObject:setPoint(point)
+    self.point = point
 end
 
 function GameObject:getSize() return self.size end

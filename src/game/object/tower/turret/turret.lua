@@ -1,3 +1,5 @@
+local Point = require("src.common.objects.point")
+
 local C = require("src.game.constants")
 local GameObject = require("src.game.object.gameobject")
 local Spawner = require("src.game.object.spawner")
@@ -24,11 +26,8 @@ function Turret:init(o)
 
     --! TODO: type
     self.activeShells = {}
-    ---@type Position
-    self.center = {
-        x = self.position.x + self.size.w / 2,
-        y = self.position.y + self.size.h / 2,
-    }
+    ---@type Point
+    self.center = Point(self.point.x + self.size.w / 2, self.point.y + self.size.h / 2)
     ---@type number
     self.damage = 25
     ---@type number
@@ -195,6 +194,7 @@ function Turret:predictPosition(dt)
 
     local direction = self.enemy:getDirection()
     --! Will be improved at a later time:
+    -- TODO: Improve typing
     if direction == "right" then
         self.projectedEnemyPosition = { x = position.x + (steps * self.enemy:getSpeed()), y = position.y }
     elseif direction == "left" then
@@ -214,10 +214,7 @@ end
 
 function Turret:setScale(scaleFactor)
     self.scale = scaleFactor
-    self.center = {
-        x = self.position.x + self.size.w / 2,
-        y = self.position.y + self.size.h / 2,
-    }
+    self.center = Point(self.point.x + self.size.w / 2, self.point.y + self.size.h / 2)
 end
 
 return Turret

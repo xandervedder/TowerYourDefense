@@ -25,20 +25,20 @@ function Base:draw()
     love.graphics.setColor(0, 0, 1)
     love.graphics.rectangle(
         "fill",
-        self.position.x,
-        self.position.y,
+        self.point.x,
+        self.point.y,
         self.size.w,
         self.size.h
     )
 
     love.graphics.setColor(1, 1, 1)
-    love.graphics.print("BASE", self.position.x, self.position.y)
+    love.graphics.print("BASE", self.point.x, self.point.y)
 
     love.graphics.setColor(1, 0, 0)
     love.graphics.rectangle(
         "fill",
-        self.position.x,
-        self.position.y + self.size.h - 10,
+        self.point.x,
+        self.point.y + self.size.h - 10,
         self.size.w,
         10
     )
@@ -50,8 +50,8 @@ function Base:draw()
     end
     love.graphics.rectangle(
         "fill",
-        self.position.x,
-        self.position.y + self.size.h - 10,
+        self.point.x,
+        self.point.y + self.size.h - 10,
         self.size.w * percentage,
         10
     )

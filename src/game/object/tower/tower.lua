@@ -22,11 +22,11 @@ function Tower:init(o)
 
     -- Attributes of the Tower
     ---@type TowerBase
-    self.base = o.base or Base({ position = self.position, scale = self.scale })
+    self.base = o.base or Base({ point = self.point, scale = self.scale })
     -- TODO:
     self.barrel = nil
     ---@type Turret
-    self.turret = o.turret or SingleBarrelTurret({ position = self.position, })
+    self.turret = o.turret or SingleBarrelTurret({ point = self.point, })
     ---@type string
     self.type = "Tower"
     -- TODO:
@@ -46,7 +46,7 @@ end
 ---@param turret Turret
 function Tower:setTurret(turret)
     self.turret = turret
-    self.turret:setPosition(self.position)
+    self.turret:setPoint(self.point)
 end
 
 function Tower:getSheets()

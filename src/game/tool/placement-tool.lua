@@ -1,10 +1,7 @@
+local Point = require("src.common.objects.point")
+
 local Constants = require("src.game.constants")
 local Util = require("src.game.util.util")
-
--- TODO: Use actual type
----@class Position
----@field x number
----@field y number
 
 ---@class PlacementTool
 local PlacementTool = {}
@@ -32,10 +29,10 @@ function PlacementTool:init(o)
     self.gameObjectRef = o.object
     ---@type boolean
     self.obstructed = false
-    ---@type Position
-    self.mouse = { x = 0, y = 0 }
-    ---@type Position
-    self.untranslated = { x = 0, y = 0 }
+    ---@type Point
+    self.mouse = Point(0, 0)
+    ---@type Point
+    self.untranslated = Point(0, 0)
 
     --[[
         Lambda initializations, used to customize the logic
@@ -67,7 +64,7 @@ function PlacementTool:draw()
         love.graphics.setColor(1, 1, 1, 0.5)
     end
 
-    local grid = Util.positionFromXY(self.mouse.x, self.mouse.y).position
+    local grid = Util.fromMousePoint(self.mouse.x, self.mouse.y)
     local images = self.gameObject:toImage()
     for i = 1, #images, 1 do
         images[i]:setFilter("nearest", "nearest")
@@ -79,10 +76,10 @@ end
 function PlacementTool:update(_)
     if not self.enabled then return end
 
-    for _, value in pairs(self.gameObjectPool) do
-        local position = value:getPosition()
-        local objectGrid = Util.positionFromXY(position.x, position.y).position
-        local grid = Util.positionFromXY(self.mouse.x, self.mouse.y).position
+    for _, gameObject in pairs(self.gameObjectPool) do
+        local point = gameObject:getPoint()
+        local objectGrid = Util.fromMousePoint(point.x, point.y)
+        local grid = Util.fromMousePoint(self.mouse.x, self.mouse.y)
         if grid.x == objectGrid.x and grid.y == objectGrid.y or self.obstructionLambda() then
             self.obstructed = true
             break;
@@ -96,18 +93,14 @@ function PlacementTool:update(_)
     self:updatePosition(x, y)
 end
 
----Updates the position of mouse based on where it is in the grid.
+---Updates the position of the mouse based on where it is in the grid.
 ---@param x number
 ---@param y number
 function PlacementTool:updatePosition(x, y)
-    local camera = self.camera:getPosition()
+    local camera = self.camera:getPoint()
 
-    self.mouse = {
-        x = math.abs(x - camera.x),
-        y = math.abs(y - camera.y),
-    }
-
-    self.untranslated = { x = x, y = y, }
+    self.mouse = Point(math.abs(x - camera.x), math.abs(y - camera.y))
+    self.untranslated = Point(x, y)
 end
 
 ---Function that is called when the mouse has been moved.
@@ -131,7 +124,7 @@ function PlacementTool:mousePressed(_, _, button, _, _)
     if self.shouldClickLambda() then return end
 
     ---@type GameObject
-    local object = self.gameObjectRef(Util.positionFromXY(self.mouse.x, self.mouse.y))
+    local object = self.gameObjectRef({ point = Util.fromMousePoint(self.mouse.x, self.mouse.y) })
     self.objectCreatedLambda(object)
     table.insert(self.gameObjectPool, object)
 

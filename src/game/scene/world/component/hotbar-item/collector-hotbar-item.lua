@@ -24,7 +24,8 @@ function CollectorHotbarItem:init(o)
 
     HotbarItem.init(self, o)
 
-    self.allowedPositions = o.allowedPositions
+    ---@type table<number, Point>
+    self.allowedPoints = o.allowedPoints
 end
 
 ---Configures the tool before it gets enabled.
@@ -44,11 +45,10 @@ function CollectorHotbarItem:configureTool(tool, inventory)
     tool.obstructionLambda = function()
         if not self.active then return false end
 
-        local mouse = Util.positionFromXY(tool.mouse.x, tool.mouse.y).position
-        for _, aPosition in pairs(self.allowedPositions) do
-            local aGrid = Util.positionFromXY(aPosition.x, aPosition.y).position
-            -- TODO: util/common method
-            if aGrid.x == mouse.x and aGrid.y == mouse.y then
+        local mouse = Util.toGridPoint(nil, tool.mouse.x, tool.mouse.y)
+        for _, point in pairs(self.allowedPoints) do
+            -- TODO: util/common method (in point)
+            if point.x == mouse.x and point.y == mouse.y then
                 return false
             end
         end

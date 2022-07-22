@@ -1,5 +1,7 @@
 local json = require("lunajson")
 
+local Point = require("src.common.objects.point")
+
 local C = require("src.game.constants")
 
 --TODO: Move from 'gui' to 'common'
@@ -76,18 +78,15 @@ end
 
 ---Returns the calculated coordinates from an array.
 ---@param tile table<number>
----@return Position
+---@return Point
 function MapRenderer:getTileCoordinates(tile)
     local x = tile[1]
     local y = tile[2]
-    return {
-        x = x * C.tile.w,
-        y = y * C.tile.h,
-    }
+    return Point(x * C.tile.w, y * C.tile.h)
 end
 
 ---Gets the quad that this is associated to the sheet.
----@param tile Position
+---@param tile Point
 ---@param sheet love.Image
 ---@return love.Quad
 function MapRenderer:getQuad(tile, sheet)

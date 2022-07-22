@@ -54,7 +54,7 @@ function Enemy:init(o, parent, base, path)
     ---@type number
     self.originalHealth = self.health
     ---@type number
-    self.speed = 1
+    self.speed = 0.25
 end
 
 function Enemy:draw()
@@ -63,8 +63,8 @@ function Enemy:draw()
     love.graphics.setColor(1, 0, 0)
     love.graphics.rectangle(
         "fill",
-        self.position.x,
-        self.position.y,
+        self.point.x,
+        self.point.y,
         self.SIZE.w,
         self.SIZE.h
     )
@@ -72,8 +72,8 @@ function Enemy:draw()
     love.graphics.setColor(1, 0, 0)
     love.graphics.rectangle(
         "fill",
-        self.position.x,
-        self.position.y + self.SIZE.h + 5, -- Offset
+        self.point.x,
+        self.point.y + self.SIZE.h + 5, -- Offset
         self.SIZE.w,
         10
     )
@@ -82,37 +82,37 @@ function Enemy:draw()
     love.graphics.setColor(0, 1, 0)
     love.graphics.rectangle(
         "fill",
-        self.position.x,
-        self.position.y + self.SIZE.h + 5, -- Offset
+        self.point.x,
+        self.point.y + self.SIZE.h + 5, -- Offset
         self.SIZE.w * percentage,
         10
     )
 end
 
 function Enemy:update()
-    if Util.isWithinPosition(self.position, self.base:getPosition(), self.base:getSize()) then
+    if Util.isWithinPosition(self.point, self.base:getPoint(), self.base:getSize()) then
         self.base:damage(self.dmg)
         self:die()
         return
     end
 
     local currentPoint = self:getCurrentPoint()
-    if currentPoint.x == self.position.x and currentPoint.y == self.position.y then
+    if currentPoint.x == self.point.x and currentPoint.y == self.point.y then
         self.currentPoint = self.pathToBase:pop()
         currentPoint = self:getCurrentPoint()
     end
 
-    if currentPoint.x > self.position.x then
-        self.position.x = self.position.x + self.speed
+    if currentPoint.x > self.point.x then
+        self.point.x = self.point.x + self.speed
         self.direction = "right"
-    elseif currentPoint.x < self.position.x then
-        self.position.x = self.position.x - self.speed
+    elseif currentPoint.x < self.point.x then
+        self.point.x = self.point.x - self.speed
         self.direction = "left"
-    elseif currentPoint.y > self.position.y then
-        self.position.y = self.position.y + self.speed
+    elseif currentPoint.y > self.point.y then
+        self.point.y = self.point.y + self.speed
         self.direction = "bottom"
     else
-        self.position.y = self.position.y - self.speed
+        self.point.y = self.point.y - self.speed
         self.direction = "top"
     end
 end
@@ -133,6 +133,7 @@ end
 ---@return string
 function Enemy:getDirection() return self.direction end
 
+-- TODO: This is odd behaviour
 ---Retrieves the position of the enemy
 ---@return table
 function Enemy:getPosition() return GameObject.getMiddle(self) end

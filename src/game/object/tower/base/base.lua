@@ -35,8 +35,8 @@ function Base:draw()
     love.graphics.draw(
         self.sheet,
         self.quad,
-        self.position.x,
-        self.position.y,
+        self.point.x,
+        self.point.y,
         0,
         C.scale * self.scale,
         C.scale * self.scale

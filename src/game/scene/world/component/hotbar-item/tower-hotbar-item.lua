@@ -36,7 +36,7 @@ function TowerHotbarItem:configureTool(tool, inventory)
     ---@param object Tower
     tool.objectCreatedLambda = function(object)
         -- This is for actually placing the game object.
-        object:setTurret(self.turretType({ position = object:getPosition() }))
+        object:setTurret(self.turretType({ point = object:getPoint() }))
     end
 end
 

@@ -1,3 +1,5 @@
+local Point = require("src.common.objects.point")
+
 local Base = require("src.game.object.base")
 local Camera = require("src.game.camera.camera")
 local Collector = require("src.game.object.collector.collector")
@@ -44,16 +46,16 @@ function World:init()
 
     ---@type Inventory
     self.inventory = Inventory()
-    self.player = Player(Util.position(3, 3))
+    self.player = Player({ point = Util.fromCoordinate(3, 3) })
     self.camera = Camera:new({ screen = { love.graphics.getDimensions() } })
     self.camera:followObject(self.player)
 
-    local base = Base(Util.position(2, 3))
-    self.spawner = Spawner({ position = Util.position(4, 0).position }, base, self.mapRenderer:getGridSize())
+    local base = Base({ point = Util.fromCoordinate(2, 3) })
+    self.spawner = Spawner({ point = Util.fromCoordinate(4, 0) }, base, self.mapRenderer:getGridSize())
     self.gameObjects = {
         base,
         self.spawner,
-        Collector({ position = Util.position(4, 1).position, }),
+        Collector({ point = Util.fromCoordinate(4, 1), }),
     }
     table.insert(self.gameObjects, self.player)
 
@@ -171,11 +173,11 @@ function World:initUI()
                     }),
                     CollectorHotbarItem({
                         constraint = 100,
-                        allowedPositions = {
-                            Util.position(4, 1).position,
-                            Util.position(4, 2).position,
-                            Util.position(5, 1).position,
-                            Util.position(5, 2).position,
+                        allowedPoints = {
+                            Point(4, 1),
+                            Point(4, 2),
+                            Point(5, 1),
+                            Point(5, 2),
                         }
                     }),
                 }

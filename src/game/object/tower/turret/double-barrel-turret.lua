@@ -58,7 +58,7 @@ function DoubleBarrelTurret:configureShell(addition, radians)
         velocity = { x = 0, y = 0 },
         speed = self.shotSpeed,
     }
-    shell.getPosition = function ()
+    shell.getPoint = function ()
         return { x = shell.x, y = shell.y }
     end
 

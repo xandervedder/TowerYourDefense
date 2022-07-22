@@ -1,5 +1,6 @@
 local GameObject = require("src.game.object.gameobject")
 
+---@class Player : GameObject
 local Player = {}
 Player.__index = Player
 
@@ -28,14 +29,14 @@ function Player:draw()
     if self.controls.hide then return end
 
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.rectangle("fill", self.position.x, self.position.y, self.size.w / 2, self.size.h / 2)
+    love.graphics.rectangle("fill", self.point.x, self.point.y, self.size.w / 2, self.size.h / 2)
 end
 
 function Player:update(dt)
-    if self.controls.up then self.position.y = self.position.y - 2 end
-    if self.controls.down then self.position.y = self.position.y + 2 end
-    if self.controls.left then self.position.x = self.position.x - 2 end
-    if self.controls.right then self.position.x = self.position.x + 2 end
+    if self.controls.up then self.point.y = self.point.y - 2 end
+    if self.controls.down then self.point.y = self.point.y + 2 end
+    if self.controls.left then self.point.x = self.point.x - 2 end
+    if self.controls.right then self.point.x = self.point.x + 2 end
 end
 
 function Player:keyPressed(key)
