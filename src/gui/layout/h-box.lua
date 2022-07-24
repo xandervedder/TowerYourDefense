@@ -1,5 +1,6 @@
+local Point = require("src.common.objects.point")
+
 local Element = require("src.gui.element")
-local Position = require("src.gui.style.property.position")
 
 --[[
     Layout that aligns elements horizontally.
@@ -37,9 +38,8 @@ function HBox:update(dt)
     end
 end
 
-
 function HBox:align()
-    ---@type Position
+    ---@type Point
     local nextPosition = nil
 
     for _, child in pairs(self.children) do
@@ -50,14 +50,14 @@ function HBox:align()
             child:setPosition(nextPosition.x, nextPosition.y)
 
             local prevPosition = nextPosition
-            nextPosition = Position(
+            nextPosition = Point(
                 prevPosition.x + style.size.w + style:horizontalMargin(),
                 position.y
             )
         else
             child:setPosition(position.x, position.y)
 
-            nextPosition = Position(
+            nextPosition = Point(
                 position.x + style.size.w + style:horizontalMargin(),
                 position.y
             )

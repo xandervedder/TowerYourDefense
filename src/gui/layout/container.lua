@@ -13,6 +13,8 @@ setmetatable(Container, {
     end
 })
 
+---Constructor.
+---@param o table
 function Container:init(o)
     Element.init(self, o)
 
@@ -64,7 +66,7 @@ function Container:update(dt)
     self:handleChildAlignment()
 end
 
----If the element is the root, we update height, width and position dependent on the window size.
+---If the element is the root, we update the height, width and position dependent on the window size.
 function Container:updateRoot()
     local w, h = love.graphics.getDimensions()
     if self.style.grow.x then self.style.size.w = w end

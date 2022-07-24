@@ -22,6 +22,8 @@ setmetatable(Element, {
     end
 })
 
+---Constructor.
+---@param o table
 function Element:init(o)
     ---@type Element[]
     self.children = o.children or {}

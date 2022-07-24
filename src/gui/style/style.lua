@@ -1,13 +1,15 @@
+local Point = require("src.common.objects.point")
+
 local Align = require("src.gui.style.property.align")
 local Color = require("src.gui.style.property.color")
 local DirBool = require("src.gui.style.property.dir-bool")
-local Position = require("src.gui.style.property.position")
 local Side = require("src.gui.style.property.side")
 local Size = require("src.gui.style.property.size")
 
 --[[
     Class used for styling, with defaults for everything.
-]]
+]]--
+
 ---@class Style
 local Style = {}
 Style.__index = Style
@@ -41,8 +43,8 @@ function Style:init(o)
     self.center = o.center or DirBool()
     ---@type DirBool
     self.grow = o.grow or DirBool()
-    ---@type Position
-    self.position = o.position or Position()
+    ---@type Point
+    self.position = o.position or Point(0, 0)
     ---@type Size
     self.size = o.size or Size()
     ---@type Align
