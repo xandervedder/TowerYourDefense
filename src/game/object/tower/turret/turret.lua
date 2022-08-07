@@ -189,6 +189,10 @@ function Turret:checkCollision()
     end
 end
 
+---Predicts the enemy position by calculating how long it would take for the 'bullet' to travel to the enemy. With
+---this information it will also calculate the difference the turret would need to actually hit the enemy.
+---@param dt number
+---@return Point
 function Turret:predictPosition(dt)
     local position = self.enemy:getMiddle()
     local distance = math.sqrt(math.pow(self.center.x - position.x, 2) + math.pow(self.center.y - position.y, 2))
@@ -197,15 +201,14 @@ function Turret:predictPosition(dt)
 
     local direction = self.enemy:getDirection()
     --! Will be improved at a later time:
-    -- TODO: Improve typing
     if direction == "right" then
-        self.projectedEnemyPosition = { x = position.x + (steps * self.enemy:getSpeed()), y = position.y }
+        self.projectedEnemyPosition = Point(position.x + (steps * self.enemy:getSpeed()), position.y)
     elseif direction == "left" then
-        self.projectedEnemyPosition = { x = position.x - (steps * self.enemy:getSpeed()), y = position.y }
+        self.projectedEnemyPosition = Point(position.x - (steps * self.enemy:getSpeed()), position.y)
     elseif direction == "top" then
-        self.projectedEnemyPosition = { x = position.x, y = position.y - (steps * self.enemy:getSpeed()) }
+        self.projectedEnemyPosition = Point(position.x, position.y - (steps * self.enemy:getSpeed()))
     elseif direction == "bottom" then
-        self.projectedEnemyPosition = { x = position.x, y = position.y + (steps * self.enemy:getSpeed()) }
+        self.projectedEnemyPosition = Point(position.x, position.y + (steps * self.enemy:getSpeed()))
     end
 
     return self.projectedEnemyPosition
