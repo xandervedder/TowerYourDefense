@@ -59,6 +59,8 @@ function Enemy:init(o, parent, base, path)
     self.originalHealth = self.health
     ---@type number
     self.speed = 0.25
+    ---@type Size
+    self.size = self.SIZE
 end
 
 function Enemy:draw()
