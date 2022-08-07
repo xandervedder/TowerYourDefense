@@ -1,5 +1,8 @@
 local GameObject = require("src.game.object.gameobject")
 
+-- TODO: location of import
+local Size = require("src.gui.style.property.size")
+
 ---@class Player : GameObject
 local Player = {}
 Player.__index = Player
@@ -23,13 +26,16 @@ function Player:init(o)
         right = false,
         hide = false,
     }
+
+    ---@type Size
+    self.size = Size(self.size.w / 2, self.size.h / 2)
 end
 
 function Player:draw()
     if self.controls.hide then return end
 
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.rectangle("fill", self.point.x, self.point.y, self.size.w / 2, self.size.h / 2)
+    love.graphics.rectangle("fill", self.point.x, self.point.y, self.size.w, self.size.h)
 end
 
 function Player:update(dt)
