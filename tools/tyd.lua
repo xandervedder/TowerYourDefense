@@ -37,5 +37,5 @@ elseif commandToRun == "install" then
 elseif commandToRun == "test" then
     os.execute("lua $PWD/test/runner.lua")
 else
-    print("Command not recognized: '" .. commandToRun .. "'")
+    print("Command not recognized: '" .. commandToRun .. "'.")
 end
