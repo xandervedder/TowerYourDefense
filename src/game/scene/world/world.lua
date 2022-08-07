@@ -46,8 +46,10 @@ function World:init()
 
     ---@type Inventory
     self.inventory = Inventory()
+    ---@type Player
     self.player = Player({ point = Util.fromCoordinate(3, 3) })
-    self.camera = Camera:new({ screen = { love.graphics.getDimensions() } })
+    ---@type Camera
+    self.camera = Camera({ screen = { love.graphics.getDimensions() } })
     self.camera:followObject(self.player)
 
     local base = Base({ point = Util.fromCoordinate(2, 3) })
@@ -132,6 +134,10 @@ end
 function World:mousePressed(x, y, button, touch, presses)
     self.ui:mousePressed(x, y, button, touch, presses)
     self.megaTowerTool:mousePressed(x, y, button, touch, presses)
+end
+
+function World:resize()
+    self.camera:resize()
 end
 
 function World:initUI()
