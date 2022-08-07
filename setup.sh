@@ -25,4 +25,3 @@ echo "... Installing 'tyd' command..."
 __set_up_tyd_command $LOCATION
 
 echo "Installation complete!"
-$LOCATION
