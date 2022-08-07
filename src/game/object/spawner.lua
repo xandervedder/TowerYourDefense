@@ -15,6 +15,7 @@ local Util = require("src.game.util.util")
 
 ---@class Spawner : GameObject
 local Spawner = {}
+---@type Enemy[]
 Spawner.enemies = {}
 Spawner.__index = Spawner
 
@@ -124,7 +125,7 @@ end
 function Spawner:despawnOutOfBoundsEnemies()
     local x, y = love.graphics.getDimensions()
     for i = #self.enemies, 1, -1 do
-        local position = self.enemies[i]:getPosition()
+        local position = self.enemies[i]:getMiddle()
         if position.x > x or position.y > y then
             table.remove(self.enemies, i)
         end

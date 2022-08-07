@@ -61,13 +61,13 @@ function GameObject:getPoint()
     return self.point
 end
 
+---Returns the middle of the gameobject.
+---@return Point
 function GameObject:getMiddle()
-    return {
-        x = self.point.x + (self.size.w / 2),
-        y = self.point.y + (self.size.h / 2)
-    }
+    return Point(self.point.x + (self.size.w / 2), self.point.y + (self.size.h / 2))
 end
 
+---@param point Point
 function GameObject:setPoint(point)
     self.point = point
 end

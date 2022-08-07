@@ -109,8 +109,11 @@ function Turret:findNextEnemy()
     end
 end
 
+---Checks whether the enemy is within range of the turret.
+---@param enemy Enemy
+---@return boolean
 function Turret:withinRange(enemy)
-    local position = enemy:getPosition()
+    local position = enemy:getMiddle()
     local size = enemy:getSize()
     local dx = math.abs(self.center.x - position.x - size.w / 2)
     local dy = math.abs(self.center.y - position.y - size.h / 2)
@@ -187,7 +190,7 @@ function Turret:checkCollision()
 end
 
 function Turret:predictPosition(dt)
-    local position = self.enemy:getPosition()
+    local position = self.enemy:getMiddle()
     local distance = math.sqrt(math.pow(self.center.x - position.x, 2) + math.pow(self.center.y - position.y, 2))
     local time = dt * distance / self.shotSpeed
     local steps = time / dt

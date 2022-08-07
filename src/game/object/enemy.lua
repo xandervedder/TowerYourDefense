@@ -93,7 +93,8 @@ function Enemy:draw()
     )
 end
 
-function Enemy:update()
+---@param _ number
+function Enemy:update(_)
     if Util.isWithinPosition(self.point, self.base:getPoint(), self.base:getSize()) then
         self.base:damage(self.dmg)
         self:die()
@@ -136,11 +137,6 @@ end
 ---Returns the direction the enemy is currently walking towards.
 ---@return Direction
 function Enemy:getDirection() return self.direction end
-
--- TODO: This is odd behaviour
----Retrieves the position of the enemy
----@return table
-function Enemy:getPosition() return GameObject.getMiddle(self) end
 
 ---Reduces the health of an enemy by the damage given.
 ---@param dmg number
