@@ -113,7 +113,7 @@ end
 ---@param enemy Enemy
 ---@return boolean
 function Turret:withinRange(enemy)
-    local position = enemy:getMiddle()
+    local position = enemy:getPoint()
     local size = enemy:getSize()
     local dx = math.abs(self.center.x - position.x - size.w / 2)
     local dy = math.abs(self.center.y - position.y - size.h / 2)
