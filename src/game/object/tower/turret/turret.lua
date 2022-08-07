@@ -24,7 +24,7 @@ function Turret:init(o)
 
     self.quad = love.graphics.newQuad(o.q.x, o.q.y, C.tile.w, C.tile.h, self.sheet:getDimensions())
 
-    --! TODO: type
+    ---@type table
     self.activeShells = {}
     ---@type Point
     self.center = Point(self.point.x + self.size.w / 2, self.point.y + self.size.h / 2)
@@ -36,7 +36,7 @@ function Turret:init(o)
     self.enemy = nil
     ---@type number
     self.firingDelay = 0.2
-    --! TODO: Type
+    ---@type Point
     self.projectedEnemyPosition = nil
     ---@type number
     self.range = o.range or 250
