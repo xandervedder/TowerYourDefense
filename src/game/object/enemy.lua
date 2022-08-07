@@ -45,8 +45,12 @@ function Enemy:init(o, parent, base, path)
     self.currentPoint = self.pathToBase:pop()
     ---@type boolean
     self.dead = false
-    ---@type string
-    self.direction = ""
+    ---@alias Direction
+    --- | "up"
+    --- | "right"
+    --- | "down"
+    --- | "left" 
+    self.direction = "right"
     ---@type number
     self.dmg = 25
     ---@type number
@@ -130,7 +134,7 @@ end
 
 -- TODO: This should be based on the current force... improve:
 ---Returns the direction the enemy is currently walking towards.
----@return string
+---@return Direction
 function Enemy:getDirection() return self.direction end
 
 -- TODO: This is odd behaviour
