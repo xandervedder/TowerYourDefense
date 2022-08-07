@@ -113,6 +113,7 @@ function Spawner:update(dt)
 end
 
 function Spawner:spawn()
+    ---@type Enemy
     local enemy = Enemy({
         point = Point(
             self.point.x + (self.size.w / 2) - (Enemy.SIZE.w / 2),
