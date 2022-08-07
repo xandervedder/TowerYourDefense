@@ -21,7 +21,7 @@ if commandToRun == "help" then
     print()
 
     print("- install:")
-    print("   Installs all luarocks packages.")
+    print("  Installs all luarocks packages.")
     print()
 
     print("- test:")
