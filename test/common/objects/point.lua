@@ -46,5 +46,3 @@ function TestPoint:testShouldFormatAsAStringCorrectly()
 
     Lu.assertEquals(tostring(p1), "{ x=1, y=1 }")
 end
-
-os.exit(Lu.LuaUnit.run())

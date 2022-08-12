@@ -1,17 +1,11 @@
 --[[
-    Simple test runner that runs every tests.
-
-    For now, in a "hacky" way, untill I find a better solution.
+    Simple test runner that runs every tests. It does so by requiring every test into this file.
 ]]--
 
-function executeTest(location)
-    os.execute("lua " .. location .. " --verbose")
-end
+require("test.common.collections.queue")
+require("test.common.objects.point")
+require("test.setup")
 
-local locations = {
-    "test/common/objects/point.lua"
-}
+local Lu = require("luaunit")
 
-for _, location in pairs(locations) do
-    executeTest(location)
-end
+os.exit(Lu.LuaUnit.run())
