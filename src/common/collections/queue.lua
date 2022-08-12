@@ -14,7 +14,7 @@ setmetatable(Queue, {
     end
 })
 
----Constructor
+---Constructor.
 ---@param data table<any>|nil
 function Queue:init(data)
     ---@type table<any>
