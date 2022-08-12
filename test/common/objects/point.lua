@@ -6,6 +6,13 @@ local Point = require("src.common.objects.point")
 
 TestPoint = {}
 
+function TestPoint:testConcatShouldWorkCorrectlyAndNotThrow()
+    local p1 = Point(1, 1)
+    local concatString = "abc"
+
+    Lu.assertEquals(p1 .. concatString, "{ x=1, y=1 }abc")
+end
+
 function TestPoint:testShouldEqualWithTheSameValues()
     local p1 = Point(1, 1)
     local p2 = Point(1, 1)
