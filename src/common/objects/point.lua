@@ -22,6 +22,13 @@ function Point:init(x, y)
     self.y = y
 end
 
+---Add metamethod.
+---@param otherPoint Point
+---@return Point
+function Point:__add(otherPoint)
+    return Point(self.x + otherPoint.x, self.y + otherPoint.y)
+end
+
 ---Concatenation metamethod.
 ---@param str string
 ---@return string
