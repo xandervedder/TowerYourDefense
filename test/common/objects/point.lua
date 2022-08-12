@@ -1,8 +1,8 @@
 require("test.setup")
 
-local Lu = require("luaunit")
-
 local Point = require("src.common.objects.point")
+
+local Lu = require("luaunit")
 
 TestPoint = {}
 
