@@ -29,6 +29,13 @@ function Point:__add(otherPoint)
     return Point(self.x + otherPoint.x, self.y + otherPoint.y)
 end
 
+---Subtract metamethod.
+---@param otherPoint any
+---@return unknown
+function Point:__sub(otherPoint)
+    return Point(self.x - otherPoint.x, self.y - otherPoint.y)
+end
+
 ---Concatenation metamethod.
 ---@param str string
 ---@return string
