@@ -35,7 +35,7 @@ elseif commandToRun == "install" then
     os.execute("luarocks install lunajson --tree " .. dirName)
     os.execute("luarocks install luaunit --tree " .. dirName)
 elseif commandToRun == "test" then
-    os.execute("lua $PWD/test/runner.lua")
+    os.execute("lua $PWD/test/runner.lua -o tap")
 else
     print("Command not recognized: '" .. commandToRun .. "'.")
 end
