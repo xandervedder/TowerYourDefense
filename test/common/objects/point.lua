@@ -6,43 +6,37 @@ local Lu = require("luaunit")
 
 TestPoint = {}
 
-function TestPoint:testShouldAddCorrectly()
-    local p1 = Point(1, 1)
-    local p2 = Point(2, 2)
+function TestPoint:setUp()
+    ---@type Point
+    self.p1 = Point(1, 1)
+    ---@type Point
+    self.p1Equal = Point(1, 1)
+    ---@type Point
+    self.p2 = Point(2, 2)
+end
 
-    Lu.assertEquals(Point(3, 3), p1 + p2)
+function TestPoint:testShouldAddCorrectly()
+    Lu.assertEquals(Point(3, 3), self.p1 + self.p2)
 end
 
 function TestPoint:testShouldSubtractCorrectly()
-    local p1 = Point(1, 1)
-    local p2 = Point(2, 2)
-
-    Lu.assertEquals(Point(-1, -1), p1 - p2)
+    Lu.assertEquals(Point(-1, -1), self.p1 - self.p2)
 end
 
 function TestPoint:testConcatShouldWorkCorrectlyAndNotThrow()
-    local p1 = Point(1, 1)
     local concatString = "abc"
 
-    Lu.assertEquals(p1 .. concatString, "{ x=1, y=1 }abc")
+    Lu.assertEquals(self.p1 .. concatString, "{ x=1, y=1 }abc")
 end
 
 function TestPoint:testShouldEqualWithTheSameValues()
-    local p1 = Point(1, 1)
-    local p2 = Point(1, 1)
-
-    Lu.assertEquals(p1, p2)
+    Lu.assertEquals(self.p1, self.p1Equal)
 end
 
 function TestPoint:testShouldNotEqualWithDifferingValues()
-    local p1 = Point(1, 1)
-    local p2 = Point(0, 0)
-
-    Lu.assertNotEquals(p1, p2)
+    Lu.assertNotEquals(self.p1, self.p2)
 end
 
 function TestPoint:testShouldFormatAsAStringCorrectly()
-    local p1 = Point(1, 1)
-
-    Lu.assertEquals(tostring(p1), "{ x=1, y=1 }")
+    Lu.assertEquals(tostring(self.p1), "{ x=1, y=1 }")
 end
