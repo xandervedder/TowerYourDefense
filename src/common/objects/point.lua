@@ -22,6 +22,13 @@ function Point:init(x, y)
     self.y = y
 end
 
+---Concatenation metamethod.
+---@param str string
+---@return string
+function Point:__concat(str)
+    return tostring(self) .. str
+end
+
 ---Equals metamethod.
 ---@param toCompare Point
 function Point:__eq(toCompare)
