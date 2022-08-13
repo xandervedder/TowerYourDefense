@@ -3,6 +3,7 @@
 ]]--
 
 require("test.common.algorithms.a-star")
+require("test.common.algorithms.weighted-graph")
 require("test.common.collections.priority-queue")
 require("test.common.collections.queue")
 require("test.common.objects.point")
