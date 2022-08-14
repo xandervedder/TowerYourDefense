@@ -36,5 +36,5 @@ end
 function TestQueue:testShouldRecieveSameItemAfterPushingAndPopping()
     self.queue:push(1)
 
-    Lu.assertEquals(1, self.queue:pop())
+    Lu.assertEquals(self.queue:pop(), 1)
 end
