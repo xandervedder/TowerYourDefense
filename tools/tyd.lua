@@ -30,10 +30,18 @@ if commandToRun == "help" then
     print()
 elseif commandToRun == "install" then
     local dirName = "lua_modules"
+    local packages = {
+        "lunajson",
+        "luaunit",
+    }
 
+    -- Purge all packages first.
     os.execute("luarocks purge --tree " .. dirName)
-    os.execute("luarocks install lunajson --tree " .. dirName)
-    os.execute("luarocks install luaunit --tree " .. dirName)
+
+    -- Then install every package.
+    for _, package in pairs(packages) do
+        os.execute("luarocks install " .. package .. " --tree " .. dirName)
+    end
 elseif commandToRun == "test" then
     os.execute("lua $PWD/test/runner.lua -o tap")
 else
