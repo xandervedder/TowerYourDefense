@@ -7,6 +7,7 @@ require("test.common.algorithms.weighted-graph")
 require("test.common.collections.priority-queue")
 require("test.common.collections.queue")
 require("test.common.objects.point")
+require("test.gui.element")
 require("test.setup")
 
 local Lu = require("luaunit")
