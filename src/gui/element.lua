@@ -220,37 +220,37 @@ function Element:getSize()
     return self.style.size
 end
 
----Sets the width of the element
+---Sets the width of the element.
 ---@param w number
 function Element:setWidth(w)
     self.style.size.w = w
 end
 
----Sets the height of the element
+---Sets the height of the element.
 ---@param h number
 function Element:setHeight(h)
     self.style.size.h = h
 end
 
----Returns whether the element is the root
+---Returns whether the element is the root.
 ---@return boolean
 function Element:isRoot()
     return self.root
 end
 
----Returns the grow property
+---Returns the grow property.
 ---@return DirBool
 function Element:getGrow()
     return self.style.grow
 end
 
----Returns the center property
+---Returns the center property.
 ---@return DirBool
 function Element:getCenter()
     return self.style.center
 end
 
----Returns the align property
+---Returns the align property.
 ---@return Align
 function Element:getAlignment()
     return self.style.align
