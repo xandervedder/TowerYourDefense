@@ -16,11 +16,11 @@ function TestPoint:setUp()
 end
 
 function TestPoint:testShouldAddCorrectly()
-    Lu.assertEquals(Point(3, 3), self.p1 + self.p2)
+    Lu.assertEquals(self.p1 + self.p2, Point(3, 3))
 end
 
 function TestPoint:testShouldSubtractCorrectly()
-    Lu.assertEquals(Point(-1, -1), self.p1 - self.p2)
+    Lu.assertEquals(self.p1 - self.p2, Point(-1, -1))
 end
 
 function TestPoint:testConcatShouldWorkCorrectlyAndNotThrow()
