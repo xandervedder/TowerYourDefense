@@ -10,6 +10,7 @@ local Style = require("src.gui.style.style")
 --[[
     Base class for all Graphical User Interface elements.
 ]]
+
 ---@class Element
 local Element = {}
 Element.__index = Element
