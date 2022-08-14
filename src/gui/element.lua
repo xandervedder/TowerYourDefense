@@ -76,7 +76,7 @@ function Element:addEventListener(type, method)
     table.insert(self.listeners, { type = type, method = method })
 end
 
----Gets a table of listeners registerd to the element of the type given.
+---Gets a table of listeners registered to the element of the type given.
 ---@param type ElementEvent
 ---@return table
 function Element:getListeners(type)
