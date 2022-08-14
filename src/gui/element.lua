@@ -82,7 +82,7 @@ end
 function Element:getListeners(type)
     local listenersOfType = {}
     for _, listener in pairs(self.listeners) do
-        if listener.type == type then 
+        if listener.type == type then
             table.insert(listenersOfType, listener)
         end
     end
