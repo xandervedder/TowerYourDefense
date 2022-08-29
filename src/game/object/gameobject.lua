@@ -26,6 +26,7 @@ function GameObject:init(o)
 
     ---@type number
     self.scale = o.scale or 1
+    ---@type Size
     self.size = o.size or Util.size(self.scale)
     ---@type number
     self.speed = o.speed or 1
@@ -33,7 +34,6 @@ function GameObject:init(o)
     self.sheetData = nil
     ---@type love.Image
     self.sheet = nil
-    -- TODO: type
     ---@type string
     self.type = "GameObject"
 end
