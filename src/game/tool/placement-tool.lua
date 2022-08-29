@@ -90,7 +90,7 @@ function PlacementTool:isObstructed()
         local point = gameObject:getPoint()
         local objectGrid = Util.fromMousePoint(point.x, point.y)
         local grid = Util.fromMousePoint(self.mouse.x, self.mouse.y)
-        if grid.x == objectGrid.x and grid.y == objectGrid.y or self.obstructionLambda() then
+        if objectGrid == grid or self.obstructionLambda() then
             return true
         end
     end
