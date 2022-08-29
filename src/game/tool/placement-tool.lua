@@ -76,21 +76,26 @@ end
 function PlacementTool:update(_)
     if not self.enabled then return end
 
+    self.obstructed = self:isObstructed();
+
+    local x = self.untranslated.x
+    local y = self.untranslated.y
+    self:updatePosition(x, y)
+end
+
+---Checks whether the tool is obstructed by something in the object pool.
+---@return boolean
+function PlacementTool:isObstructed()
     for _, gameObject in pairs(self.gameObjectPool) do
         local point = gameObject:getPoint()
         local objectGrid = Util.fromMousePoint(point.x, point.y)
         local grid = Util.fromMousePoint(self.mouse.x, self.mouse.y)
         if grid.x == objectGrid.x and grid.y == objectGrid.y or self.obstructionLambda() then
-            self.obstructed = true
-            break;
-        else
-            self.obstructed = false
+            return true
         end
     end
 
-    local x = self.untranslated.x
-    local y = self.untranslated.y
-    self:updatePosition(x, y)
+    return false
 end
 
 ---Updates the position of the mouse based on where it is in the grid.
