@@ -39,6 +39,8 @@ function Spawner:init(o, base, grid)
     self.base = base
     ---@type Size
     self.grid = grid
+    ---@type number
+    self.obstructionRange = 1;
 
     ---@type table<number, Point>
     self.path = AStar(

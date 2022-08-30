@@ -21,9 +21,10 @@ setmetatable(GameObject, {
 
 --TODO: refactor the o to represent a type.
 function GameObject:init(o)
+    ---@type number
+    self.obstructionRange = o.obstructionRange or 0
     ---@type Point
     self.point = o.point or Point(0, 0)
-
     ---@type number
     self.scale = o.scale or 1
     ---@type Size
@@ -108,6 +109,32 @@ function GameObject.imagesFromQuads(sheet, quads)
         table.insert(images, love.graphics.newImage(data))
     end
     return images
+end
+
+---Indicates whether the point given is within the obstruction range.
+---This should be used when you want control over where something can be built, for example.
+---@return boolean
+---@param point Point This should be an actual coordinate -- not grid points (i.e. 64,64 instead of, 0,0)
+function GameObject:isWithinObstructionRange(point)
+    -- TODO: this should be a method on Point (maybe).
+    -- TODO: this also might cause problems in the future...
+    point = Util.toGridPoint(point)
+    local translated = Util.toGridPoint(self.point)
+
+    if translated == point then return true end
+    if self.obstructionRange == 0 then return false end
+
+    ---@type Point
+    local offset = Point(self.obstructionRange, self.obstructionRange)
+    ---@type Point
+    ---@diagnostic disable-next-line: assign-type-mismatch
+    local topLeft = translated - offset
+    ---@type Point
+    ---@diagnostic disable-next-line: assign-type-mismatch
+    local bottomRight = translated + offset
+
+    return (point.x >= topLeft.x and point.x <= bottomRight.x) and
+           (point.y >= topLeft.y and point.y <= bottomRight.y)
 end
 
 return GameObject
