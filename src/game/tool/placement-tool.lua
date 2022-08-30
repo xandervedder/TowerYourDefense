@@ -87,10 +87,8 @@ end
 ---@return boolean
 function PlacementTool:isObstructed()
     for _, gameObject in pairs(self.gameObjectPool) do
-        local point = gameObject:getPoint()
-        local objectGrid = Util.fromMousePoint(point.x, point.y)
         local grid = Util.fromMousePoint(self.mouse.x, self.mouse.y)
-        if gameObject:isWithinObstructionRange(grid) or self.obstructionLambda() then
+        if gameObject:isWithinObstructionRange(Util.toGridPoint(grid)) or self.obstructionLambda() then
             return true
         end
     end

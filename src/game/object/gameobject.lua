@@ -117,10 +117,7 @@ end
 ---@param point Point This should be an actual coordinate -- not grid points (i.e. 64,64 instead of, 0,0)
 function GameObject:isWithinObstructionRange(point)
     -- TODO: this should be a method on Point (maybe).
-    -- TODO: this also might cause problems in the future...
-    point = Util.toGridPoint(point)
     local translated = Util.toGridPoint(self.point)
-
     if translated == point then return true end
     if self.obstructionRange == 0 then return false end
 
