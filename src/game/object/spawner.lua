@@ -32,32 +32,28 @@ setmetatable(Spawner, {
 ---@param o table
 ---@param base Base
 ---@param grid Size
-function Spawner:init(o, base, grid)
+---@param obstaclesPool Point[]
+function Spawner:init(o, base, grid, obstaclesPool)
     GameObject.init(self, o)
 
     ---@type Base
     self.base = base
     ---@type Size
     self.grid = grid
+    ---@type Point[]
+    self.obstaclesPool = obstaclesPool or {}
     ---@type number
     self.obstructionRange = 1;
-
-    ---@type table<number, Point>
-    self.path = AStar(
-        WeightedGraph(self.grid.w, self.grid.h),
-        Util.toGridPoint(self:getPoint()),
-        Util.toGridPoint(base:getPoint())
-    )
-        :search()
-        :reconstructPath()
-        :get()
-
     ---@type number
     self.deltaPassed = 0
     ---@type number
     self.spawnRate = self.spawnRate or 1 -- In seconds
     self.register(self)
     self.enemies = self.getEnemies(self)
+
+    self:setPath()
+
+    Publisher.register(self, "objects.updated", function() self:setPath() end)
 end
 
 function Spawner:draw()
@@ -139,6 +135,17 @@ function Spawner:updateSpawnedEnemies(dt)
     for _, enemy in pairs(self.enemies) do
         enemy:update(dt)
     end
+end
+
+function Spawner:setPath()
+    self.path = AStar(
+        WeightedGraph(self.grid.w, self.grid.h, self.obstaclesPool),
+        Util.toGridPoint(self:getPoint()),
+        Util.toGridPoint(self.base:getPoint())
+    )
+        :search()
+        :reconstructPath()
+        :get()
 end
 
 function Spawner.register(instance)

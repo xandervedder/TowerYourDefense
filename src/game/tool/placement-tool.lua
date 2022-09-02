@@ -1,6 +1,8 @@
 local Point = require("src.common.objects.point")
 
 local Constants = require("src.game.constants")
+local Event = require("src.game.event.event")
+local Publisher = require("src.game.event.publisher")
 local Util = require("src.game.util.util")
 
 ---@class PlacementTool
@@ -16,6 +18,7 @@ setmetatable(PlacementTool, {
     end
 })
 
+---@param o table
 function PlacementTool:init(o)
     ---@type Camera
     self.camera = o.camera
@@ -129,7 +132,7 @@ function PlacementTool:mousePressed(_, _, button, _, _)
     ---@type GameObject
     local object = self.gameObjectRef({ point = Util.fromMousePoint(self.mouse.x, self.mouse.y) })
     self.objectCreatedLambda(object)
-    table.insert(self.gameObjectPool, object)
+    Publisher.publish(Event("objects.created", object))
 
     self:clickedLambda()
 end

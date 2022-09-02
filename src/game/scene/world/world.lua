@@ -1,8 +1,10 @@
 local Point = require("src.common.objects.point")
 
+local Event = require("src.game.event.event")
+local Publisher = require("src.game.event.publisher")
+
 local Base = require("src.game.object.base")
 local Camera = require("src.game.camera.camera")
-local Collector = require("src.game.object.collector.collector")
 local DoubleBarrelTurret = require("src.game.object.tower.turret.double-barrel-turret")
 local MapRenderer = require("src.game.graphics.map.map-renderer")
 local MegaTowerTool = require("src.game.tool.mega-tower-tool")
@@ -43,7 +45,6 @@ function World:init()
 
     ---@type MapRenderer
     self.mapRenderer = MapRenderer()
-
     ---@type Inventory
     self.inventory = Inventory()
     ---@type Player
@@ -51,22 +52,32 @@ function World:init()
     ---@type Camera
     self.camera = Camera({ screen = { love.graphics.getDimensions() } })
     self.camera:followObject(self.player)
-
+    ---@type Base
     local base = Base({ point = Util.fromCoordinate(2, 3) })
-    self.spawner = Spawner({ point = Util.fromCoordinate(4, 0) }, base, self.mapRenderer:getGridSize())
+    ---@type GameObject[]
     self.gameObjects = {
         base,
-        self.spawner,
-        Collector({ point = Util.fromCoordinate(4, 1), }),
+        self.player,
     }
-    table.insert(self.gameObjects, self.player)
-
+    ---@type Point[]
+    self.points = {}
+    ---@type Spawner
+    self.spawner = Spawner(
+        { point = Util.fromCoordinate(4, 0) },
+        base,
+        self.mapRenderer:getGridSize(),
+        self.points
+    )
+    table.insert(self.gameObjects, self.spawner)
     local mapSize = self.mapRenderer:getDimensions();
     self.canvas = love.graphics.newCanvas(mapSize.w, mapSize.h)
     ---@type MegaTowerTool
     self.megaTowerTool = MegaTowerTool({ camera = self.camera, pool = self.gameObjects })
 
     self:initUI()
+
+    ---@param event Event
+    Publisher.register(self, "objects.created", function(event) self:updateObjectPool(event.payload) end)
 end
 
 function World:update(dt)
@@ -190,6 +201,15 @@ function World:initUI()
             })
         }
     })
+end
+
+---Updates the contents of the point and object pool.
+---@param gameObject GameObject
+function World:updateObjectPool(gameObject)
+    table.insert(self.gameObjects, gameObject)
+    table.insert(self.points, Util.toGridPoint(gameObject:getPoint()))
+
+    Publisher.publish(Event("objects.updated"))
 end
 
 return World
