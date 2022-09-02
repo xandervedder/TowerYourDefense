@@ -27,7 +27,7 @@ function Util.fromCoordinate(x, y)
 end
 
 ---Converts a `real` point to a grid `point`.
----For example, we can convert (16*8, 16*,8) to (0, 0)
+---For example, we can convert (16\*8, 16\*8) to (0, 0)
 ---@param point Point|nil
 ---@param x number|nil
 ---@param y number|nil
