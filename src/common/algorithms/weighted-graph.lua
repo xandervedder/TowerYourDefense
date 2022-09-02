@@ -19,11 +19,12 @@ setmetatable(WeightedGraph, {
 ---Constructor
 ---@param width number
 ---@param height number
-function WeightedGraph:init(width, height)
+---@param obstacles Point[]|nil
+function WeightedGraph:init(width, height, obstacles)
     self.width = width
     self.height = height
-    ---@type table<Point>
-    self.obstacles = {}
+    ---@type Point[]
+    self.obstacles = obstacles or {}
     self.weights = {}
 end
 
@@ -41,11 +42,8 @@ end
 function WeightedGraph:obstructed(point)
     if #self.obstacles == 0 then return false end
 
-    local x = point.x
-    local y = point.y
-
     for _, value in pairs(self.obstacles) do
-        if value.x == x and value.y == y then
+        if point == value then
             return true
         end
     end
