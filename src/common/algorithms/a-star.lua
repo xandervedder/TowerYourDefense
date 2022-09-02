@@ -85,7 +85,6 @@ function AStar:heuristic(a, b)
 end
 
 ---Reconstructs the path from goal to start. 
----TODO: might want to reverse this (start to goal).
 ---@return AStar
 function AStar:reconstructPath()
     local current = self.goal
