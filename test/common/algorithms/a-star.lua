@@ -32,3 +32,15 @@ function TestAStar:testShouldHaveTheCorrectPathCount()
 
     Lu.assertEquals(#path, 11)
 end
+
+function TestAStar:testShouldHaveCorrectPathCountWithObstacle()
+    self.aStar.graph.obstacles = {
+        Point(2, 3),
+        Point(2, 2),
+        Point(2, 1),
+        Point(2, 0),
+    }
+    local path = self.aStar:search():reconstructPath():get()
+
+    Lu.assertEquals(#path, 11)
+end
