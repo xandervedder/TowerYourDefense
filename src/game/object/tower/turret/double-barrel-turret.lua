@@ -34,7 +34,7 @@ function DoubleBarrelTurret:update(dt)
     if not (self.elapsedTime >= self.firingDelay) then return end
     self.elapsedTime = 0
 
-    if self:withinRange(self.enemy) and not self.enemy:isDead() then
+    if self:withinRange(self.enemy) and not self.enemy:isDead() and self:isAimedAtEnemy() then
         self:shoot()
     end
 end

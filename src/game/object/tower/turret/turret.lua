@@ -31,6 +31,8 @@ function Turret:init(o)
     ---@type number
     self.damage = 25
     ---@type number
+    self.diff = 0
+    ---@type number
     self.elapsedTime = 0
     ---@type Enemy
     self.enemy = nil
@@ -153,14 +155,14 @@ function Turret:rotateBarrel(dt)
 
     local target = math.deg(radians)
     local current = math.deg(self.rotation)
-    local diff = current - target
+    self.diff = current - target
 
-    if math.abs(diff) > 1 then
+    if math.abs(self.diff) > 1 then
         -- When the barrel needs to move from 20 -> 290
         if 360 - target + current < 180 then
             self.rotation = self.rotation + (-0.01 * self.rotationSpeed)
         -- When the barrel needs to move from 290 -> 20
-        elseif math.abs(diff) > 180 then
+        elseif math.abs(self.diff) > 180 then
             self.rotation = self.rotation + (0.01 * self.rotationSpeed)
         elseif target > current then
             self.rotation = self.rotation + (0.01 * self.rotationSpeed)
@@ -212,6 +214,13 @@ function Turret:predictPosition(dt)
     end
 
     return self.projectedEnemyPosition
+end
+
+---Function that will tell if the barrel is aimed at an enemy
+---@return boolean
+function Turret:isAimedAtEnemy()
+    local absDiff = math.abs(self.diff)
+    return absDiff >= 0 and absDiff <= 3
 end
 
 function Turret:getQuads()
