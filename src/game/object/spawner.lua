@@ -46,6 +46,8 @@ function Spawner:init(o, base, grid, obstaclesPool)
     self.obstructionRange = 1;
     ---@type number
     self.deltaPassed = 0
+    ---@type Point[]
+    self.path = {}
     ---@type number
     self.spawnRate = self.spawnRate or 1 -- In seconds
     self.register(self)
@@ -53,7 +55,11 @@ function Spawner:init(o, base, grid, obstaclesPool)
 
     self:setPath()
 
-    Publisher.register(self, "objects.updated", function() self:setPath() end)
+    Publisher.register(self, "objects.updated", function()
+        if self:shouldUpdatePath() then
+            self:setPath()
+        end
+    end)
 end
 
 function Spawner:draw()
@@ -135,6 +141,20 @@ function Spawner:updateSpawnedEnemies(dt)
     for _, enemy in pairs(self.enemies) do
         enemy:update(dt)
     end
+end
+
+---Checks whether any object in the objectpool is 'colliding' with one of the paths.
+---@return boolean
+function Spawner:shouldUpdatePath()
+    for _, obstaclePoint in pairs(self.obstaclesPool) do
+        for _, pathPoint in pairs(self.path) do
+            if obstaclePoint == pathPoint then
+                return true
+            end
+        end
+    end
+
+    return false
 end
 
 function Spawner:setPath()
