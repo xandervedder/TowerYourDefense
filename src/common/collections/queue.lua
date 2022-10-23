@@ -58,6 +58,22 @@ function Queue:pop()
     return item
 end
 
+---Reverses the order of the queue.
+function Queue:reverse()
+    if self:empty() then
+        error("Illegal operation: Attempted to reverse an empty queue.")
+    end
+
+    local store = {}
+    while not self:empty() do
+        table.insert(store, self:pop())
+    end
+
+    for i = #store, 1, -1 do
+        self:push(store[i])
+    end
+end
+
 ---Returns whether the Queue is empty or not.
 ---@return boolean
 function Queue:empty()

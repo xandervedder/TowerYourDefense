@@ -38,3 +38,27 @@ function TestQueue:testShouldRecieveSameItemAfterPushingAndPopping()
 
     Lu.assertEquals(self.queue:pop(), 1)
 end
+
+function TestQueue:testShouldReverseCorrectlyWithOneItem()
+    self.queue:push(1)
+    self.queue:reverse()
+
+    Lu.assertEquals(self.queue:pop(), 1)
+end
+
+function TestQueue:testShouldThrowErrorWhenReversingEmptyQueue()
+    Lu.assertErrorMsgContains("Illegal operation: Attempted to reverse an empty queue.", function ()
+        self.queue:reverse();
+    end)
+end
+
+function TestQueue:testShouldReverseCorrectlyWithMultipleItems()
+    self.queue:push(1)
+    self.queue:push(2)
+    self.queue:push(3)
+    self.queue:reverse()
+
+    Lu.assertEquals(self.queue:pop(), 3)
+    Lu.assertEquals(self.queue:pop(), 2)
+    Lu.assertEquals(self.queue:pop(), 1)
+end
