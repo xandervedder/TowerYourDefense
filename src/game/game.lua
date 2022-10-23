@@ -64,7 +64,9 @@ function Game.on(event)
         love.event.quit()
     end
 
-    Game.scene:on(event)
+    if Game.scene then
+        Game.scene:on(event)
+    end
 end
 
 function Game.resize()

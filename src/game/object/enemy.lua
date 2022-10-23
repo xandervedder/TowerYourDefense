@@ -1,3 +1,5 @@
+local AStar = require("src.common.algorithms.a-star")
+local WeightedGraph = require("src.common.algorithms.weighted-graph")
 local Point = require("src.common.objects.point")
 local Queue = require("src.common.collections.queue")
 
@@ -30,7 +32,9 @@ setmetatable(Enemy, {
 ---@param parent Spawner
 ---@param base Base
 ---@param path table<Point>
-function Enemy:init(o, parent, base, path)
+---@param grid Size
+---@param obstaclesPool Point[]
+function Enemy:init(o, parent, base, path, grid, obstaclesPool)
     GameObject.init(self, o)
 
     ---@type Base
@@ -38,11 +42,11 @@ function Enemy:init(o, parent, base, path)
     ---@type Spawner
     self.parent = parent
     ---@type Queue
-    self.pathToBase = Queue(path)
+    self.currentPath = Queue(path)
     --? Ignore first Point as it's the same as the start (we already know this).
-    self.pathToBase:pop()
+    self.currentPath:pop()
     ---@type Point
-    self.currentPoint = self.pathToBase:pop()
+    self.currentPoint = self.currentPath:pop()
     ---@type boolean
     self.dead = false
     ---@alias Direction
@@ -61,6 +65,26 @@ function Enemy:init(o, parent, base, path)
     self.speed = 0.25
     ---@type Size
     self.size = self.SIZE
+    ---@type Size
+    self.grid = grid
+    ---@type Point[]
+    self.obstaclesPool = obstaclesPool
+
+    Publisher.register(self, "path.updated", function()
+        self.currentPath = self:constructPath(self.base:getPoint())
+    end)
+end
+
+---Constructs the path if the previous path was obstructed.
+---@param point Point
+---@return Queue<Point>
+function Enemy:constructPath(point)
+    ---@type WeightedGraph
+    local graph = WeightedGraph(self.grid.w, self.grid.h, self.obstaclesPool)
+    return Queue(AStar(graph, self.currentPoint, Util.toGridPoint(point))
+        :search()
+        :reconstructPath()
+        :get())
 end
 
 function Enemy:draw()
@@ -103,19 +127,24 @@ function Enemy:update(_)
         return
     end
 
-    local currentPoint = self:getCurrentPoint()
-    if currentPoint.x == self.point.x and currentPoint.y == self.point.y then
-        self.currentPoint = self.pathToBase:pop()
-        currentPoint = self:getCurrentPoint()
+    local currentPointInTheMiddle = self:getCurrentPoint()
+    if currentPointInTheMiddle.x == self.point.x and currentPointInTheMiddle.y == self.point.y then
+        if self.currentPath:empty() then
+            self.currentPath = self:constructPath(self.base:getPoint())
+            self.currentPath:pop()
+        end
+
+        self.currentPoint = self.currentPath:pop()
+        currentPointInTheMiddle = self:getCurrentPoint()
     end
 
-    if currentPoint.x > self.point.x then
+    if currentPointInTheMiddle.x > self.point.x then
         self.point.x = self.point.x + self.speed
         self.direction = "right"
-    elseif currentPoint.x < self.point.x then
+    elseif currentPointInTheMiddle.x < self.point.x then
         self.point.x = self.point.x - self.speed
         self.direction = "left"
-    elseif currentPoint.y > self.point.y then
+    elseif currentPointInTheMiddle.y > self.point.y then
         self.point.y = self.point.y + self.speed
         self.direction = "bottom"
     else

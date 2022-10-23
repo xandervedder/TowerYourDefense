@@ -5,6 +5,7 @@ local Point = require("src.common.objects.point")
 local Constants = require("src.game.constants")
 local Enemy = require("src.game.object.enemy")
 local GameObject = require("src.game.object.gameobject")
+local Event = require("src.game.event.event")
 local Publisher = require("src.game.event.publisher")
 local Util = require("src.game.util.util")
 
@@ -123,7 +124,7 @@ function Spawner:spawn()
             self.point.x + (self.size.w / 2) - (Enemy.SIZE.w / 2),
             self.point.y + (self.size.h / 2) - (Enemy.SIZE.h / 2)
         ),
-    }, self, self.base, self.path)
+    }, self, self.base, self.path, self.grid, self.obstaclesPool)
     table.insert(self.enemies, enemy)
 end
 
@@ -166,6 +167,8 @@ function Spawner:setPath()
         :search()
         :reconstructPath()
         :get()
+
+    Publisher.publish(Event("path.updated"))
 end
 
 function Spawner.register(instance)
