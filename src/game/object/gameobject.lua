@@ -36,6 +36,7 @@ function GameObject:init(o)
     ---@type love.Image
     self.sheet = nil
     ---@type string
+    ---This is necessary since we cannot get the name of the metatable from lua itself.
     self.type = "GameObject"
 end
 

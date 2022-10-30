@@ -73,6 +73,8 @@ function Enemy:init(o, parent, base, path, grid, obstaclesPool, gameObjectsPool)
     ---@type GameObject[]
     self.gameObjectsPool = gameObjectsPool
 
+    self.type = "Enemy"
+
     Publisher.register(self, "path.updated", function()
         self.currentPath = self:constructPath(self.base:getPoint())
     end)

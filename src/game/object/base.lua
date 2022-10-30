@@ -19,6 +19,8 @@ function Base:init(o)
     self.destroyed = false
     self.health = 1000
     self.originalHealth = self.health
+
+    self.type = "Base"
 end
 
 function Base:draw()

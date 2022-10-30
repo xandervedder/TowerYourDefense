@@ -59,6 +59,8 @@ function Spawner:init(o, base, grid, obstaclesPool, gameObjectsPool)
 
     self:setPath()
 
+    self.type = "Spawner"
+
     Publisher.register(self, "objects.updated", function()
         if self:shouldUpdatePath() then
             self:setPath()

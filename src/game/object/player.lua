@@ -26,9 +26,10 @@ function Player:init(o)
         right = false,
         hide = false,
     }
-
     ---@type Size
     self.size = Size(self.size.w / 2, self.size.h / 2)
+
+    self.type = "Player"
 end
 
 function Player:draw()
