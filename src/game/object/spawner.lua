@@ -10,7 +10,7 @@ local Publisher = require("src.game.event.publisher")
 local Util = require("src.game.util.util")
 
 --[[
-    Implementation spawner mechanics. Handles where enemies will travel and
+    Implementation of spawner mechanics. Handles where enemies will travel and
     when they will spawn.
 ]]--
 
