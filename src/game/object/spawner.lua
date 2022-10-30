@@ -34,7 +34,8 @@ setmetatable(Spawner, {
 ---@param base Base
 ---@param grid Size
 ---@param obstaclesPool Point[]
-function Spawner:init(o, base, grid, obstaclesPool)
+---@param gameObjectsPool GameObject[]
+function Spawner:init(o, base, grid, obstaclesPool, gameObjectsPool)
     GameObject.init(self, o)
 
     ---@type Base
@@ -43,6 +44,8 @@ function Spawner:init(o, base, grid, obstaclesPool)
     self.grid = grid
     ---@type Point[]
     self.obstaclesPool = obstaclesPool or {}
+    ---@type GameObject[]
+    self.gameObjectsPool = gameObjectsPool
     ---@type number
     self.obstructionRange = 1;
     ---@type number
@@ -124,7 +127,8 @@ function Spawner:spawn()
             self.point.x + (self.size.w / 2) - (Enemy.SIZE.w / 2),
             self.point.y + (self.size.h / 2) - (Enemy.SIZE.h / 2)
         ),
-    }, self, self.base, self.path, self.grid, self.obstaclesPool)
+    }, self, self.base, self.path, self.grid, self.obstaclesPool, self.gameObjectsPool)
+
     table.insert(self.enemies, enemy)
 end
 

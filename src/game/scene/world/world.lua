@@ -66,7 +66,8 @@ function World:init()
         { point = Util.fromCoordinate(4, 0) },
         base,
         self.mapRenderer:getGridSize(),
-        self.points
+        self.points,
+        self.gameObjects
     )
     table.insert(self.gameObjects, self.spawner)
     local mapSize = self.mapRenderer:getDimensions();
@@ -81,7 +82,7 @@ function World:init()
 end
 
 function World:update(dt)
-    for i = 1, #self.gameObjects, 1 do
+    for i = #self.gameObjects, 1, -1 do
         self.gameObjects[i]:update(dt)
     end
 
@@ -92,7 +93,7 @@ function World:update(dt)
 end
 
 function World:fixedUpdate(dt)
-    for i = 1, #self.gameObjects, 1 do
+    for i = #self.gameObjects, 1, -1 do
         self.gameObjects[i]:fixedUpdate(dt)
     end
 end

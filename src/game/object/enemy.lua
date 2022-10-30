@@ -34,7 +34,8 @@ setmetatable(Enemy, {
 ---@param path table<Point>
 ---@param grid Size
 ---@param obstaclesPool Point[]
-function Enemy:init(o, parent, base, path, grid, obstaclesPool)
+---@param gameObjectsPool GameObject[]
+function Enemy:init(o, parent, base, path, grid, obstaclesPool, gameObjectsPool)
     GameObject.init(self, o)
 
     ---@type Base
@@ -69,10 +70,14 @@ function Enemy:init(o, parent, base, path, grid, obstaclesPool)
     self.grid = grid
     ---@type Point[]
     self.obstaclesPool = obstaclesPool
+    ---@type GameObject[]
+    self.gameObjectsPool = gameObjectsPool
 
     Publisher.register(self, "path.updated", function()
         self.currentPath = self:constructPath(self.base:getPoint())
     end)
+
+    table.insert(gameObjectsPool, self)
 end
 
 ---Constructs the path if the previous path was obstructed.
@@ -182,6 +187,12 @@ end
 function Enemy:die()
     self.health = 0
     self.dead = true
+
+    for i = #self.gameObjectsPool, 1, -1 do
+        if self.gameObjectsPool[i] == self then
+            table.remove(self.gameObjectsPool, i)
+        end
+    end
 
     Publisher.publish(Event("enemy.death", self))
 end
