@@ -133,7 +133,7 @@ function Enemy:update(_)
     end
 
     local currentPointInTheMiddle = self:getCurrentPoint()
-    if currentPointInTheMiddle.x == self.point.x and currentPointInTheMiddle.y == self.point.y then
+    if currentPointInTheMiddle == self.point then
         if self.currentPath:empty() then
             self.currentPath = self:constructPath(self.base:getPoint())
             self.currentPath:pop()
