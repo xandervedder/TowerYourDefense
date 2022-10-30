@@ -39,7 +39,7 @@ function PlacementTool:init(o)
 
     --[[
         Lambda initializations, used to customize the logic
-        of the tool from outside.
+        of the tool from the outside.
     ]]
     ---Lambda that runs when the click has executed.
     ---@type function
