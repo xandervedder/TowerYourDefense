@@ -6,7 +6,7 @@ __set_up_tyd_command() {
     sudo chmod u+x tools/tyd.lua
     RC_LOCATION=~/.${1}rc
     echo "export PATH=\"$PWD/tools:$PATH\"" >> $RC_LOCATION
-    echo "alias tyd='tyd.lua'" >> $RC_LOCATION
+    echo "alias tyd=\"tyd.lua\"" >> $RC_LOCATION
 } 
 
 echo "Where should I install the 'tyd' command?"
