@@ -13,6 +13,28 @@ function TestAStar:setUp()
     self.aStar = AStar(WeightedGraph(5, 5), Point(0, 0), Point(5, 5))
 end
 
+function TestAStar:testShouldNotBeSearchableWhenSurroundedByAllSides()
+    ---@type AStar
+    local aStar = AStar(
+        WeightedGraph(
+            5,
+            5,
+            {
+                Point(4, 3),
+                Point(3, 4),
+                Point(2, 3),
+                Point(3, 2),
+            }),
+        Point(0, 0),
+        Point(3, 3))
+
+    Lu.assertFalse(aStar:isSearchable())
+end
+
+function TestAStar:testShouldBeSearchableWhenNotSurrounded()
+    Lu.assertIsTrue(self.aStar:isSearchable())
+end
+
 function TestAStar:testHashingMethod()
     Lu.assertEquals(self.aStar:toHash(Point(0, 0)), "0,0")
 end
