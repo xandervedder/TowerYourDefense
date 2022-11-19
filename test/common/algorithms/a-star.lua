@@ -31,6 +31,40 @@ function TestAStar:testShouldNotBeSearchableWhenSurroundedByAllSides()
     Lu.assertFalse(aStar:isSearchable())
 end
 
+function TestAStar:testShouldNotBeSearchableWhenSurroundedByAllSidesWithOneSpaceBetween()
+    ---@type AStar
+    local aStar = AStar(
+        WeightedGraph(
+            6,
+            6,
+            {
+                -- Under
+                Point(1, 1),
+                Point(2, 1),
+                Point(3, 1),
+                Point(4, 1),
+                -- Right side
+                Point(5, 1),
+                Point(5, 2),
+                Point(5, 3),
+                Point(5, 4),
+                -- Above
+                Point(5, 5),
+                Point(4, 5),
+                Point(3, 5),
+                Point(2, 5),
+                -- Left side
+                Point(1, 5),
+                Point(1, 4),
+                Point(1, 3),
+                Point(1, 2),
+            }),
+        Point(0, 0),
+        Point(3, 3))
+
+    Lu.assertFalse(aStar:isSearchable())
+end
+
 function TestAStar:testShouldBeSearchableWhenNotSurrounded()
     Lu.assertIsTrue(self.aStar:isSearchable())
 end

@@ -39,22 +39,9 @@ end
 
 ---Checks if the search operation is possible.
 ---This prevents errors when the goal is not reachable (surrounded by obstacles)
+---@return boolean
 function AStar:isSearchable()
-    ---@type Point[]
-    local neighbours = {
-        Point(self.goal.x + 1, self.goal.y),
-        Point(self.goal.x - 1, self.goal.y),
-        Point(self.goal.x, self.goal.y + 1),
-        Point(self.goal.x, self.goal.y - 1),
-    }
-
-    for i = #neighbours, 1, -1 do
-        if self.graph:obstructed(neighbours[i]) then
-            table.remove(neighbours, i)
-        end
-    end
-
-    return #neighbours ~= 0
+    return pcall(function() self:search():reconstructPath():get() end)
 end
 
 ---Returns the most optimal path in terms of distance.
