@@ -1,5 +1,3 @@
-local AStar = require("src.common.algorithms.a-star")
-local WeightedGraph = require("src.common.algorithms.weighted-graph")
 local Point = require("src.common.objects.point")
 local Queue = require("src.common.collections.queue")
 
@@ -8,6 +6,7 @@ local Event = require("src.game.event.event")
 local GameObject = require("src.game.object.gameobject")
 local Publisher = require("src.game.event.publisher")
 local Util = require("src.game.util.util")
+local PathHelper = require("src.game.util.path-helper")
 
 --TODO: move to common
 local Size = require("src.gui.style.property.size")
@@ -76,22 +75,22 @@ function Enemy:init(o, parent, base, path, grid, obstaclesPool, gameObjectsPool)
     self.type = "Enemy"
 
     Publisher.register(self, "path.updated", function()
-        self.currentPath = self:constructPath(self.base:getPoint())
+        self.currentPath = self:constructPath()
     end)
 
     table.insert(gameObjectsPool, self)
 end
 
----Constructs the path if the previous path was obstructed.
----@param point Point
----@return Queue<Point>
-function Enemy:constructPath(point)
-    ---@type WeightedGraph
-    local graph = WeightedGraph(self.grid.w, self.grid.h, self.obstaclesPool)
-    return Queue(AStar(graph, self.currentPoint, Util.toGridPoint(point))
-        :search()
-        :reconstructPath()
-        :get())
+---Constructs the path
+---@return Queue
+function Enemy:constructPath()
+    return PathHelper.getPathQueue(
+        self.grid.w,
+        self.grid.h,
+        self.currentPoint,
+        Util.toGridPoint(self.base:getPoint()),
+        self.obstaclesPool
+    )
 end
 
 function Enemy:draw()
@@ -137,7 +136,7 @@ function Enemy:update(_)
     local currentPointInTheMiddle = self:getCurrentPoint()
     if currentPointInTheMiddle == self.point then
         if self.currentPath:empty() then
-            self.currentPath = self:constructPath(self.base:getPoint())
+            self.currentPath = self:constructPath()
             self.currentPath:pop()
         end
 

@@ -1,5 +1,3 @@
-local AStar = require("src.common.algorithms.a-star")
-local WeightedGraph = require("src.common.algorithms.weighted-graph")
 local Point = require("src.common.objects.point")
 
 local Constants = require("src.game.constants")
@@ -8,6 +6,7 @@ local GameObject = require("src.game.object.gameobject")
 local Event = require("src.game.event.event")
 local Publisher = require("src.game.event.publisher")
 local Util = require("src.game.util.util")
+local PathHelper = require("src.game.util.path-helper")
 
 --[[
     Implementation of spawner mechanics. Handles where enemies will travel and
@@ -165,14 +164,13 @@ function Spawner:shouldUpdatePath()
 end
 
 function Spawner:setPath()
-    self.path = AStar(
-        WeightedGraph(self.grid.w, self.grid.h, self.obstaclesPool),
+    self.path = PathHelper.getPath(
+        self.grid.w,
+        self.grid.h,
         Util.toGridPoint(self:getPoint()),
-        Util.toGridPoint(self.base:getPoint())
+        Util.toGridPoint(self.base:getPoint()),
+        self.obstaclesPool
     )
-        :search()
-        :reconstructPath()
-        :get()
 
     Publisher.publish(Event("path.updated"))
 end
