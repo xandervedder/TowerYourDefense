@@ -45,8 +45,6 @@ function Container:draw()
 end
 
 function Container:update(dt)
-    Element.update(self, dt)
-
     if self.root then
         self:updateRoot()
     end
@@ -64,6 +62,11 @@ function Container:update(dt)
     if center.y then self.child:setPosition(self.child.style.position.x, (size.h - self.child.style.size.h) / 2) end
 
     self:handleChildAlignment()
+
+    --! Important: this should be the last thing that this method does.
+    --! This prevents the jumping gui components, as previously the elements would be updated before the
+    --! position of said element would be updated thus it would render it once at x and y 0.
+    Element.update(self, dt)
 end
 
 ---If the element is the root, we update the height, width and position dependent on the window size.
