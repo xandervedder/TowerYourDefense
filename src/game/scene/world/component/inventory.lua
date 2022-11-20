@@ -23,7 +23,7 @@ setmetatable(Inventory, {
     end
 })
 
-function Inventory:init(_)
+function Inventory:init()
     -- For now, we will use a single type of material,
     -- this will change in the future.
     ---@type number
@@ -61,12 +61,17 @@ end
 function Inventory:onEvent(event)
     if event:getName() == "inventory.increase" then
         self.amount = self.amount + event:getPayload().amount
-
-        ---@type Element|nil
-        local textView = self.element:querySelector(self.selector)
-        ---@cast textView TextView
-        textView.text = tostring(self.amount)
+        self:updateText()
     end
+end
+
+---Updates the text on the TextView.
+---@private
+function Inventory:updateText()
+    ---@type Element|nil
+    local textView = self.element:querySelector(self.selector)
+    ---@cast textView TextView
+    textView.text = tostring(self.amount)
 end
 
 function Inventory:draw()
@@ -86,6 +91,7 @@ end
 ---@param amount number
 function Inventory:subtract(amount)
     self.amount = self.amount - amount
+    self:updateText()
 end
 
 return Inventory
