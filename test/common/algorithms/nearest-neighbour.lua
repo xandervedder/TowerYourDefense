@@ -12,8 +12,6 @@ TestNearestNeighbour = {}
 function TestNearestNeighbour:setUp()
     ---@type NearestNeighbour
     self.neighbour = NearestNeighbour({
-        Point(0, 1),
-        Point(1, 1),
         Point(1, 2),
         Point(2, 1),
         Point(2, 2),
@@ -22,22 +20,23 @@ function TestNearestNeighbour:setUp()
     })
 end
 
-function TestNearestNeighbour:testShouldPowerUpCorrectlyWithTheSameValues()
-    Lu.assertEquals(self.neighbour:toPower(Point(2, 2)), 8)
-end
-
-function TestNearestNeighbour:testShouldPowerUpCorrectlyWithDifferingValues()
-    Lu.assertEquals(self.neighbour:toPower(Point(2, 1)), 5)
-end
-
 function TestNearestNeighbour:testShouldCalculateDistanceCorrectlyWithZero()
-    Lu.assertEquals(self.neighbour:distance(0, Point(2, 1)), 5)
+    Lu.assertEquals(math.floor(self.neighbour:distance(Point(0, 0), Point(2, 1))), 2)
 end
 
 function TestNearestNeighbour:testShouldCalculateDistanceCorrectlyWithDifferingStartValue()
-    Lu.assertEquals(self.neighbour:distance(1, Point(2, 1)), 4)
+    Lu.assertEquals(math.floor(self.neighbour:distance(Point(1, 0), Point(2, 1))), 1)
 end
 
-function TestNearestNeighbour:testShouldGetTheNearestNeighbour()
+function TestNearestNeighbour:testShouldGetTheNearestNeighbourWithOneValue()
+    self.neighbour = NearestNeighbour({ Point(0, 1)})
     Lu.assertEquals(self.neighbour:get(Point(0, 0)), Point(0, 1))
+end
+
+function TestNearestNeighbour:testShouldGetTheNearestNeighbourWithMultipleValues()
+    Lu.assertEquals(self.neighbour:get(Point(0, 0)), Point(1, 2))
+end
+
+function TestNearestNeighbour:testShouldGetTheNearestNeighbourWithDifferentStartPoint()
+    Lu.assertEquals(self.neighbour:get(Point(2, 3)), Point(2, 2))
 end

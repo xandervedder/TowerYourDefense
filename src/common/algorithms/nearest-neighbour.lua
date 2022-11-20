@@ -1,5 +1,3 @@
-local Point = require("src.common.objects.point")
-
 --[[
     Very simplified version of the nearest neighbour algorithm that will work
     for my use cases.
@@ -28,18 +26,16 @@ end
 ---@param startPoint Point
 ---@return Point
 function NearestNeighbour:get(startPoint)
-    local start = self:toPower(startPoint)
-
     local nearestPoint = nil
     local nearestValue = nil
     for _, point in pairs(self.points) do
         if nearestPoint == nil then
             nearestPoint = point
-            nearestValue = self:distance(start, point)
+            nearestValue = self:distance(startPoint, point)
             goto continue
         end
 
-        local poweredSum = self:distance(start, point)
+        local poweredSum = self:distance(startPoint, point)
         if poweredSum < nearestValue then
             nearestPoint = point
             nearestValue = poweredSum
@@ -51,19 +47,12 @@ function NearestNeighbour:get(startPoint)
     return nearestPoint
 end
 
----Returns the sum of the points' x and y to the power of 2.
----@param point Point
----@return number
-function NearestNeighbour:toPower(point)
-    return math.pow(point.x, 2) + math.pow(point.y, 2)
-end
-
 ---Calculates the final distance between the startpoint and the endpoint.
----@param start number
+---@param start Point
 ---@param point Point
 ---@return number
 function NearestNeighbour:distance(start, point)
-    return math.abs(start - self:toPower(point))
+    return math.sqrt(math.pow(point.x - start.x, 2) + math.pow(point.y - start.y, 2))
 end
 
 return NearestNeighbour
