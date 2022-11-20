@@ -22,10 +22,10 @@ setmetatable(PathHelper, {
 ---@param height number
 ---@param currentPoint Point
 ---@param targetPoint Point
----@param obstaclesPool Point[]
+---@param obstacles Pool
 ---@return Queue
-function PathHelper.getPathQueue(width, height, currentPoint, targetPoint, obstaclesPool)
-    return Queue(PathHelper.getPath(width, height, currentPoint, targetPoint, obstaclesPool))
+function PathHelper.getPathQueue(width, height, currentPoint, targetPoint, obstacles)
+    return Queue(PathHelper.getPath(width, height, currentPoint, targetPoint, obstacles))
 end
 
 ---Gets the next path from the updated location.
@@ -34,24 +34,22 @@ end
 ---@param height number
 ---@param currentPoint Point
 ---@param targetPoint Point
----@param obstaclesPool Point[]
+---@param obstaclesPool Pool
 ---@return Point[]
 function PathHelper.getPath(width, height, currentPoint, targetPoint, obstaclesPool)
+    obstaclesPool:restore()
+    local obstacles = obstaclesPool:get()
+
     ---@type NearestNeighbour
-    local nearestNeighbour = NearestNeighbour(obstaclesPool)
-    local graph = WeightedGraph(width, height, obstaclesPool)
+    local nearestNeighbour = NearestNeighbour(obstacles)
+    local graph = WeightedGraph(width, height, obstacles)
     ---@type AStar
     local aStar = AStar(graph, currentPoint, targetPoint)
     if not aStar:isSearchable() then
         local point = nearestNeighbour:get(currentPoint)
-        -- TODO: This could a specific class (obstaclepool with softDelete and restore)
-        -- We still want to hide from the pool temporarily (what if the path changes).
-        for i = #obstaclesPool, 1, -1 do
-            if obstaclesPool[i] == point then
-                table.remove(obstaclesPool, i)
-            end
-        end
-
+        obstaclesPool:softDeleteBy(function(o) return o == point end)
+        obstacles = obstaclesPool:get()
+        graph = WeightedGraph(width, height, obstacles)
         aStar = AStar(graph, currentPoint, point)
     end
 

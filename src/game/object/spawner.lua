@@ -3,6 +3,7 @@ local Point = require("src.common.objects.point")
 local Constants = require("src.game.constants")
 local Enemy = require("src.game.object.enemy")
 local GameObject = require("src.game.object.gameobject")
+local Pool = require("src.game.object.pool")
 local Event = require("src.game.event.event")
 local Publisher = require("src.game.event.publisher")
 local Util = require("src.game.util.util")
@@ -15,8 +16,9 @@ local PathHelper = require("src.game.util.path-helper")
 
 ---@class Spawner : GameObject
 local Spawner = {}
----@type Enemy[]
-Spawner.enemies = {}
+---@type Pool[]
+---@private
+Spawner.allEnemies = {}
 Spawner.__index = Spawner
 
 setmetatable(Spawner, {
@@ -32,33 +34,42 @@ setmetatable(Spawner, {
 ---@param o table
 ---@param base Base
 ---@param grid Size
----@param obstaclesPool Point[]
----@param gameObjectsPool GameObject[]
-function Spawner:init(o, base, grid, obstaclesPool, gameObjectsPool)
+---@param obstacles Pool
+---@param gameObjects Pool
+function Spawner:init(o, base, grid, obstacles, gameObjects)
     GameObject.init(self, o)
 
     ---@type Base
+    ---@private
     self.base = base
     ---@type Size
+    ---@private
     self.grid = grid
-    ---@type Point[]
-    self.obstaclesPool = obstaclesPool or {}
-    ---@type GameObject[]
-    self.gameObjectsPool = gameObjectsPool
+    ---@type Pool
+    ---@private
+    self.obstacles = obstacles or {}
+    ---@type Pool
+    ---@private
+    self.gameObjects = gameObjects
     ---@type number
+    ---@private
     self.obstructionRange = 1;
     ---@type number
+    ---@privatte
     self.deltaPassed = 0
     ---@type Point[]
+    ---@private
     self.path = {}
     ---@type number
+    ---@private
     self.spawnRate = self.spawnRate or 1 -- In seconds
+
     self.register(self)
+    ---@type Pool
     self.enemies = self.getEnemies(self)
+    self.type = "Spawner"
 
     self:setPath()
-
-    self.type = "Spawner"
 
     Publisher.register(self, "objects.updated", function()
         if self:shouldUpdatePath() then
@@ -67,6 +78,7 @@ function Spawner:init(o, base, grid, obstaclesPool, gameObjectsPool)
     end)
 end
 
+---Draw method.
 function Spawner:draw()
     love.graphics.setColor(0, 1, 0)
     love.graphics.rectangle(
@@ -85,6 +97,8 @@ function Spawner:draw()
     self:drawSpawnedEnemies()
 end
 
+---Draws a debug path, useful to know where enemies are generally headed.
+---@private
 function Spawner:drawDebugPath()
     ---@type table<number>
     local lineLocations = {}
@@ -104,12 +118,16 @@ function Spawner:drawDebugPath()
     love.graphics.circle("fill", lineLocations[lastItemIndex - 1], lineLocations[lastItemIndex], 25)
 end
 
+---Draws all the enemies that have spawned.
+---@private
 function Spawner:drawSpawnedEnemies()
-    for i = 1, #self.enemies, 1 do
-        self.enemies[i]:draw()
+    for _, enemy in pairs(self.enemies:get()) do
+        enemy:draw()
     end
 end
 
+---Update method
+---@param dt number
 function Spawner:update(dt)
     self.deltaPassed = self.deltaPassed + dt
     if self.deltaPassed >= self.spawnRate then
@@ -117,10 +135,10 @@ function Spawner:update(dt)
         self:spawn()
     end
 
-    self:despawnOutOfBoundsEnemies()
     self:updateSpawnedEnemies(dt)
 end
 
+---Spawns an enemy.
 function Spawner:spawn()
     ---@type Enemy
     local enemy = Enemy({
@@ -128,23 +146,15 @@ function Spawner:spawn()
             self.point.x + (self.size.w / 2) - (Enemy.SIZE.w / 2),
             self.point.y + (self.size.h / 2) - (Enemy.SIZE.h / 2)
         ),
-    }, self, self.base, self.path, self.grid, self.obstaclesPool, self.gameObjectsPool)
+    }, self, self.base, self.path, self.grid, self.obstacles, self.gameObjects)
 
-    table.insert(self.enemies, enemy)
+    self.enemies:add(enemy)
 end
 
-function Spawner:despawnOutOfBoundsEnemies()
-    local x, y = love.graphics.getDimensions()
-    for i = #self.enemies, 1, -1 do
-        local position = self.enemies[i]:getMiddle()
-        if position.x > x or position.y > y then
-            table.remove(self.enemies, i)
-        end
-    end
-end
-
+---Updates all the spawned enemies.
+---@param dt number
 function Spawner:updateSpawnedEnemies(dt)
-    for _, enemy in pairs(self.enemies) do
+    for _, enemy in pairs(self.enemies:get()) do
         enemy:update(dt)
     end
 end
@@ -152,56 +162,64 @@ end
 ---Checks whether any object in the objectpool is 'colliding' with one of the paths.
 ---@return boolean
 function Spawner:shouldUpdatePath()
-    for _, obstaclePoint in pairs(self.obstaclesPool) do
+    local collidingObjects = self.obstacles:getBy(function(o)
         for _, pathPoint in pairs(self.path) do
-            if obstaclePoint == pathPoint then
+            if o == pathPoint then
                 return true
             end
         end
-    end
 
-    return false
+        return false
+    end)
+
+    return #collidingObjects > 0
 end
 
+---Sets the path that the enemies will follow. 
+---This method is generally called as a result from an event.
 function Spawner:setPath()
     self.path = PathHelper.getPath(
         self.grid.w,
         self.grid.h,
         Util.toGridPoint(self:getPoint()),
         Util.toGridPoint(self.base:getPoint()),
-        self.obstaclesPool
+        self.obstacles
     )
 
     Publisher.publish(Event("path.updated"))
 end
 
+---Registers a new pool to the Spawner instance.
+---@param instance any
 function Spawner.register(instance)
-    Spawner.enemies[instance] = {}
+    Spawner.allEnemies[instance] = Pool()
 end
 
+---Removes an enemy caused by a death event.
+---@param event Event
 function Spawner.removeEnemy(event)
-    local enemyRef = event:getPayload()
-    local eTable = Spawner.enemies[enemyRef.parent]
-    for i = #eTable, 1, -1 do
-        local enemy = eTable[i]
-        if enemy == enemyRef then
-            table.remove(eTable, i)
-        end
-    end
+    ---@type Enemy
+    local enemy = event:getPayload()
+    Spawner.allEnemies[enemy.parent]:delete(enemy)
 end
 
+---Gets the enemies of a certain Spawner instance
+---@param instance Spawner
+---@return Pool
 function Spawner.getEnemies(instance)
-    return Spawner.enemies[instance]
+    return Spawner.allEnemies[instance]
 end
 
-function Spawner.allEnemies()
-    local flatEnemiesList = {}
-    for _, eTable in pairs(Spawner.enemies) do
-        for _, enemy in pairs(eTable) do
-            table.insert(flatEnemiesList, enemy)
+---Gets all enemies that have been registered to any Spawner.
+function Spawner.getAllEnemies()
+    local enemies = {}
+    for _, pool in pairs(Spawner.allEnemies) do
+        for _, enemy in pairs(pool:get()) do
+            table.insert(enemies, enemy)
         end
     end
-    return flatEnemiesList
+
+    return enemies
 end
 
 Publisher.register(Spawner, "enemy.death", Spawner.removeEnemy)

@@ -9,12 +9,13 @@ local DoubleBarrelTurret = require("src.game.object.tower.turret.double-barrel-t
 local MapRenderer = require("src.game.graphics.map.map-renderer")
 local MegaTowerTool = require("src.game.tool.mega-tower-tool")
 local Player = require("src.game.object.player")
+local Pool = require("src.game.object.pool")
+local Spawner = require("src.game.object.spawner")
 local Scene = require("src.game.scene.scene")
 local SingleBarrelTurret = require("src.game.object.tower.turret.single-barrel-turret")
 local Tower = require("src.game.object.tower.tower")
 local TripleBarrelTurret = require("src.game.object.tower.turret.triple-barrel-turret")
 local Util = require("src.game.util.util")
-local Spawner = require("src.game.object.spawner")
 
 local CollectorHotbarItem = require("src.game.scene.world.component.hotbar-item.collector-hotbar-item")
 local Hotbar = require("src.game.scene.world.component.hotbar")
@@ -54,13 +55,12 @@ function World:init()
     self.camera:followObject(self.player)
     ---@type Base
     local base = Base({ point = Util.fromCoordinate(2, 3) })
-    ---@type GameObject[]
-    self.gameObjects = {
-        base,
-        self.player,
-    }
-    ---@type Point[]
-    self.points = {}
+    ---@type Pool
+    self.gameObjects = Pool()
+    self.gameObjects:add(base)
+    self.gameObjects:add(self.player)
+    ---@type Pool
+    self.points = Pool()
     ---@type Spawner
     self.spawner = Spawner(
         { point = Util.fromCoordinate(4, 0) },
@@ -69,7 +69,7 @@ function World:init()
         self.points,
         self.gameObjects
     )
-    table.insert(self.gameObjects, self.spawner)
+    self.gameObjects:add(self.spawner)
     local mapSize = self.mapRenderer:getDimensions();
     self.canvas = love.graphics.newCanvas(mapSize.w, mapSize.h)
     ---@type MegaTowerTool
@@ -82,19 +82,19 @@ function World:init()
 end
 
 function World:update(dt)
-    for i = #self.gameObjects, 1, -1 do
-        self.gameObjects[i]:update(dt)
+    for _, object in pairs(self.gameObjects:get()) do
+        object:update(dt)
     end
 
     self.camera:update(dt)
     self.ui:update(dt)
     self.inventory:update(dt)
-    self.megaTowerTool:update(dt)
+    self.megaTowerTool:update()
 end
 
 function World:fixedUpdate(dt)
-    for i = #self.gameObjects, 1, -1 do
-        self.gameObjects[i]:fixedUpdate(dt)
+    for _, object in pairs(self.gameObjects:get()) do
+        object:fixedUpdate(dt)
     end
 end
 
@@ -105,8 +105,8 @@ function World:draw()
         love.graphics.setColor(1, 1, 1)
 
         self.mapRenderer:draw()
-        for i = 1, #self.gameObjects, 1 do
-            self.gameObjects[i]:draw()
+        for _, gameObject in pairs(self.gameObjects:get()) do
+            gameObject:draw()
         end
 
         -- TODO: I do not like this solution, fix this...
@@ -207,8 +207,8 @@ end
 ---Updates the contents of the point and object pool.
 ---@param gameObject GameObject
 function World:updateObjectPool(gameObject)
-    table.insert(self.gameObjects, gameObject)
-    table.insert(self.points, Util.toGridPoint(gameObject:getPoint()))
+    self.gameObjects:add(gameObject)
+    self.points:add(Util.toGridPoint(gameObject:getPoint()))
 
     Publisher.publish(Event("objects.updated"))
 end

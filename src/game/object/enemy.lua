@@ -32,9 +32,9 @@ setmetatable(Enemy, {
 ---@param base Base
 ---@param path table<Point>
 ---@param grid Size
----@param obstaclesPool Point[]
----@param gameObjectsPool GameObject[]
-function Enemy:init(o, parent, base, path, grid, obstaclesPool, gameObjectsPool)
+---@param obstacles Pool
+---@param gameObjects Pool
+function Enemy:init(o, parent, base, path, grid, obstacles, gameObjects)
     GameObject.init(self, o)
 
     ---@type Base
@@ -67,10 +67,10 @@ function Enemy:init(o, parent, base, path, grid, obstaclesPool, gameObjectsPool)
     self.size = self.SIZE
     ---@type Size
     self.grid = grid
-    ---@type Point[]
-    self.obstaclesPool = obstaclesPool
-    ---@type GameObject[]
-    self.gameObjectsPool = gameObjectsPool
+    ---@type Pool
+    self.obstacles = obstacles
+    ---@type Pool
+    self.gameObjects = gameObjects
 
     self.type = "Enemy"
 
@@ -78,7 +78,7 @@ function Enemy:init(o, parent, base, path, grid, obstaclesPool, gameObjectsPool)
         self.currentPath = self:constructPath()
     end)
 
-    table.insert(gameObjectsPool, self)
+    table.insert(gameObjects, self)
 end
 
 ---Constructs the path
@@ -89,7 +89,7 @@ function Enemy:constructPath()
         self.grid.h,
         self.currentPoint,
         Util.toGridPoint(self.base:getPoint()),
-        self.obstaclesPool
+        self.obstacles
     )
 end
 
@@ -125,8 +125,7 @@ function Enemy:draw()
     )
 end
 
----@param _ number
-function Enemy:update(_)
+function Enemy:update()
     if Util.isWithinPosition(self.point, self.base:getPoint(), self.base:getSize()) then
         self.base:damage(self.dmg)
         self:die()
@@ -188,12 +187,7 @@ end
 function Enemy:die()
     self.health = 0
     self.dead = true
-
-    for i = #self.gameObjectsPool, 1, -1 do
-        if self.gameObjectsPool[i] == self then
-            table.remove(self.gameObjectsPool, i)
-        end
-    end
+    self.gameObjects:delete(self)
 
     Publisher.publish(Event("enemy.death", self))
 end

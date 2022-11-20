@@ -16,7 +16,7 @@ setmetatable(MegaTowerTool, {
 })
 
 function MegaTowerTool:init(o)
-    ---@type GameObject[]
+    ---@type Pool
     self.pool = o.pool
     ---@type Camera
     self.camera = o.camera
@@ -58,8 +58,7 @@ function MegaTowerTool:draw()
     )
 end
 
----@param dt number
-function MegaTowerTool:update(dt)
+function MegaTowerTool:update()
     if not self.active then return end
 
     self.occupied = {
@@ -75,7 +74,7 @@ function MegaTowerTool:update(dt)
 
     local grid = Util.fromMousePoint(self.mouse.x, self.mouse.y)
     local size = Util.size(1)
-    for _, gameObject in pairs(self.pool) do
+    for _, gameObject in pairs(self.pool:get()) do
         local p = gameObject:getPoint()
         if p.x == grid.x and p.y == grid.y then self.occupied.tl = gameObject end
         if p.x == grid.x + size.w and p.y == grid.y then self.occupied.tr = gameObject end
@@ -146,15 +145,13 @@ function MegaTowerTool:mousePressed(_, _, _, _, _)
     self.tower.turret.firingDelay = self.tower.turret.firingDelay * 4
     self.tower.base.scale = 2
 
-    -- TODO: util method
-    for i = #self.pool, 1, -1 do
-        local gameObject = self.pool[i]
+    self.pool:deleteBy(function(o)
         for _, tower in pairs({ self.occupied.tr, self.occupied.bl, self.occupied.br }) do
-            if tower == gameObject then
-                table.remove(self.pool, i)
-            end
+            if tower == o then return true end
         end
-    end
+
+        return false
+    end)
 end
 
 ---Toggles the state of the tool.

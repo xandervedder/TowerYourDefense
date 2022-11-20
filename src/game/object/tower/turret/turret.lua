@@ -102,7 +102,7 @@ function Turret:updateShells()
 end
 
 function Turret:findNextEnemy()
-    local enemies = Spawner.allEnemies()
+    local enemies = Spawner.getAllEnemies()
     for _, enemy in pairs(enemies) do
         if self:withinRange(enemy) then
             self.enemy = enemy

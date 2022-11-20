@@ -26,8 +26,8 @@ function PlacementTool:init(o)
     self.enabled = false
     ---@type GameObject
     self.gameObject = o.object({})
-    ---@type GameObject[]
-    self.gameObjectPool = o.pool
+    ---@type Pool
+    self.gameObjects = o.pool
     ---@type GameObject
     self.gameObjectRef = o.object
     ---@type boolean
@@ -89,7 +89,7 @@ end
 ---Checks whether the tool is obstructed by something in the object pool.
 ---@return boolean
 function PlacementTool:isObstructed()
-    for _, gameObject in pairs(self.gameObjectPool) do
+    for _, gameObject in pairs(self.gameObjects:get()) do
         local grid = Util.fromMousePoint(self.mouse.x, self.mouse.y)
         if gameObject:isWithinObstructionRange(Util.toGridPoint(grid)) or self.obstructionLambda() then
             return true
