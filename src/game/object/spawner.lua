@@ -146,7 +146,7 @@ function Spawner:spawn()
             self.point.x + (self.size.w / 2) - (Enemy.SIZE.w / 2),
             self.point.y + (self.size.h / 2) - (Enemy.SIZE.h / 2)
         ),
-    }, self, self.base, self.path, self.grid, self.obstacles, self.gameObjects)
+    }, self, self.base, self.path, self.grid, self.gameObjects)
 
     self.enemies:add(enemy)
 end

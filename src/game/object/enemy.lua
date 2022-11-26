@@ -3,7 +3,7 @@ local Queue = require("src.common.collections.queue")
 
 local Constants = require("src.game.constants")
 local Event = require("src.game.event.event")
-local GameObject = require("src.game.object.gameobject")
+local Damageable = require("src.game.object.damageable")
 local Publisher = require("src.game.event.publisher")
 local Util = require("src.game.util.util")
 local PathHelper = require("src.game.util.path-helper")
@@ -11,14 +11,14 @@ local PathHelper = require("src.game.util.path-helper")
 --TODO: move to common
 local Size = require("src.gui.style.property.size")
 
----@class Enemy : GameObject
+---@class Enemy : Damageable
 local Enemy = {}
 Enemy.__index = Enemy
 ---@type Size
 Enemy.SIZE = Size(16, 16)
 
 setmetatable(Enemy, {
-    __index = GameObject,
+    __index = Damageable,
     __call = function(cls, ...)
         local self = setmetatable({}, cls)
         self:init(...)
@@ -32,10 +32,9 @@ setmetatable(Enemy, {
 ---@param base Base
 ---@param path table<Point>
 ---@param grid Size
----@param obstacles Pool
 ---@param gameObjects Pool
-function Enemy:init(o, parent, base, path, grid, obstacles, gameObjects)
-    GameObject.init(self, o)
+function Enemy:init(o, parent, base, path, grid, gameObjects)
+    Damageable.init(self, o, 250)
 
     ---@type Base
     self.base = base
@@ -58,8 +57,6 @@ function Enemy:init(o, parent, base, path, grid, obstacles, gameObjects)
     ---@type number
     self.dmg = 25
     ---@type number
-    self.health = 100
-    ---@type number
     self.originalHealth = self.health
     ---@type number
     self.speed = 0.25
@@ -68,29 +65,11 @@ function Enemy:init(o, parent, base, path, grid, obstacles, gameObjects)
     ---@type Size
     self.grid = grid
     ---@type Pool
-    self.obstacles = obstacles
-    ---@type Pool
     self.gameObjects = gameObjects
 
     self.type = "Enemy"
 
-    Publisher.register(self, "path.updated", function()
-        self.currentPath = self:constructPath()
-    end)
-
     table.insert(gameObjects, self)
-end
-
----Constructs the path
----@return Queue
-function Enemy:constructPath()
-    return PathHelper.getPathQueue(
-        self.grid.w,
-        self.grid.h,
-        self.currentPoint,
-        Util.toGridPoint(self.base:getPoint()),
-        self.obstacles
-    )
 end
 
 function Enemy:draw()
@@ -127,18 +106,20 @@ end
 
 function Enemy:update()
     if Util.isWithinPosition(self.point, self.base:getPoint(), self.base:getSize()) then
-        self.base:damage(self.dmg)
-        self:die()
+        self:dealDamageTo(self.base)
         return
     end
 
     local currentPointInTheMiddle = self:getCurrentPoint()
-    if currentPointInTheMiddle == self.point then
-        if self.currentPath:empty() then
-            self.currentPath = self:constructPath()
-            self.currentPath:pop()
-        end
+    local match = self.gameObjects:getBy(function(o)
+        return o:isDamageable() and Util.isWithinPosition(self.point, o:getPoint(), o:getSize())
+    end)
+    if #match > 0 then
+        self:dealDamageTo(match[1])
+        return
+    end
 
+    if currentPointInTheMiddle == self.point then
         self.currentPoint = self.currentPath:pop()
         currentPointInTheMiddle = self:getCurrentPoint()
     end
@@ -158,6 +139,13 @@ function Enemy:update()
     end
 end
 
+---Deals damage to a damageable and kills itself.
+---@param damageable Damageable
+function Enemy:dealDamageTo(damageable)
+    damageable:damage(self.dmg)
+    self:die()
+end
+
 ---Gets the current Point, but to the middle of it.
 ---@return Point
 function Enemy:getCurrentPoint()
@@ -174,28 +162,12 @@ end
 ---@return Direction
 function Enemy:getDirection() return self.direction end
 
----Reduces the health of an enemy by the damage given.
----@param dmg number
-function Enemy:damage(dmg)
-    self.health = self.health - dmg
-    if self.health < 0 or self.health == 0 then
-        self:die()
-    end
-end
-
 ---Kills the enemy.
 function Enemy:die()
-    self.health = 0
-    self.dead = true
+    Damageable.die(self)
+
     self.gameObjects:delete(self)
-
     Publisher.publish(Event("enemy.death", self))
-end
-
----Returns whether the enemy is dead or not.
----@return boolean
-function Enemy:isDead()
-    return self.dead
 end
 
 return Enemy
