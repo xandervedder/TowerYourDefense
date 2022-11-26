@@ -1,13 +1,14 @@
 local Base = require("src.game.object.tower.base.base")
+local Damageable = require("src.game.object.damageable")
 local GameObject = require("src.game.object.gameobject")
 local SingleBarrelTurret = require("src.game.object.tower.turret.single-barrel-turret")
 
----@class Tower : GameObject
+---@class Tower : Damageable
 local Tower = {}
 Tower.__index = Tower
 
 setmetatable(Tower, {
-    __index = GameObject,
+    __index = Damageable,
     __call = function(cls, ...)
         local self = setmetatable({}, cls)
         self:init(...)
@@ -17,8 +18,11 @@ setmetatable(Tower, {
 
 Tower.bulletSize = 0.75
 
-function Tower:init(o)
-    GameObject.init(self, o)
+---Constructor
+---@param o any
+---@param gameObjects Pool
+function Tower:init(o, gameObjects)
+    Damageable.init(self, o, 100)
 
     -- Attributes of the Tower
     ---@type TowerBase
@@ -31,6 +35,8 @@ function Tower:init(o)
     self.type = "Tower"
     -- TODO:
     self.shell = nil
+    ---@type Pool
+    self.gameObjects = gameObjects
 end
 
 function Tower:draw()
@@ -65,6 +71,12 @@ function Tower:toImage()
     end
 
     return baseImages
+end
+
+function Tower:die()
+    Damageable.die(self)
+
+    self.gameObjects:delete(self)
 end
 
 return Tower

@@ -135,4 +135,8 @@ function GameObject:isWithinObstructionRange(point)
            (point.y >= topLeft.y and point.y <= bottomRight.y)
 end
 
+---Is the game object damageable?
+---@return boolean
+function GameObject:isDamageable() return false end
+
 return GameObject

@@ -130,7 +130,7 @@ function PlacementTool:mousePressed(_, _, button, _, _)
     if self.shouldClickLambda() then return end
 
     ---@type GameObject
-    local object = self.gameObjectRef({ point = Util.fromMousePoint(self.mouse.x, self.mouse.y) })
+    local object = self.gameObjectRef({ point = Util.fromMousePoint(self.mouse.x, self.mouse.y) }, self.gameObjects)
     self.objectCreatedLambda(object)
     Publisher.publish(Event("objects.created", object))
 
