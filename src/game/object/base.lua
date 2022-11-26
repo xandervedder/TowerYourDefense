@@ -1,11 +1,11 @@
-local GameObject = require("src.game.object.gameobject")
+local Damageable = require("src.game.object.damageable")
 
----@class Base : GameObject
+---@class Base : Damageable
 local Base = {}
 Base.__index = Base
 
 setmetatable(Base, {
-    __index = GameObject,
+    __index = Damageable,
     __call = function(cls, ...)
         local self = setmetatable({}, cls)
         self:init(...)
@@ -14,10 +14,9 @@ setmetatable(Base, {
 })
 
 function Base:init(o)
-    GameObject.init(self, o)
+    Damageable.init(self, o, 1000)
 
     self.destroyed = false
-    self.health = 1000
     self.originalHealth = self.health
 
     self.type = "Base"
@@ -57,22 +56,6 @@ function Base:draw()
         self.size.w * percentage,
         10
     )
-end
-
-function Base:update()
-    if self.isdmged then
-        self.health = self.health - 25
-        self.isdmged = false
-    end
-end
-
-function Base:damage(dmg)
-    if self.destroyed then return end
-
-    self.health = self.health - dmg
-    if self.health == 0 or self.health < 0 then
-        self.destroyed = true
-    end
 end
 
 return Base
