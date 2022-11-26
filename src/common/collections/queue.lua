@@ -77,7 +77,7 @@ end
 ---Returns whether the Queue is empty or not.
 ---@return boolean
 function Queue:empty()
-    return #self.data == 0
+    return self.first > self.last
 end
 
 return Queue
