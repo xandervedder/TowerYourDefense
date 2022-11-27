@@ -8,7 +8,7 @@ local Camera = require("src.game.camera.camera")
 local DoubleBarrelTurret = require("src.game.object.tower.turret.double-barrel-turret")
 local MapRenderer = require("src.game.graphics.map.map-renderer")
 local MegaTowerTool = require("src.game.tool.mega-tower-tool")
-local Player = require("src.game.object.player")
+local Mech = require("src.game.object.mech")
 local Pool = require("src.game.object.pool")
 local Spawner = require("src.game.object.spawner")
 local Scene = require("src.game.scene.scene")
@@ -48,17 +48,17 @@ function World:init()
     self.mapRenderer = MapRenderer()
     ---@type Inventory
     self.inventory = Inventory()
-    ---@type Player
-    self.player = Player({ point = Util.fromCoordinate(3, 3) })
+    ---@type Mech
+    self.mech = Mech({ point = Util.fromCoordinate(3, 3) })
     ---@type Camera
     self.camera = Camera({ screen = { love.graphics.getDimensions() } })
-    self.camera:followObject(self.player)
+    self.camera:followObject(self.mech)
     ---@type Base
     local base = Base({ point = Util.fromCoordinate(2, 3) })
     ---@type Pool
     self.gameObjects = Pool()
     self.gameObjects:add(base)
-    self.gameObjects:add(self.player)
+    self.gameObjects:add(self.mech)
     ---@type Pool
     self.points = Pool()
     ---@type Spawner
@@ -127,7 +127,7 @@ function World:draw()
 end
 
 function World:keyPressed(key)
-    self.player:keyPressed(key)
+    self.mech:keyPressed(key)
 
     if key == "q" then
         self.megaTowerTool:toggle()
@@ -135,7 +135,7 @@ function World:keyPressed(key)
 end
 
 function World:keyReleased(key)
-    self.player:keyReleased(key)
+    self.mech:keyReleased(key)
 end
 
 function World:mouseMoved(x, y, dx, dy, touch)

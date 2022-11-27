@@ -3,11 +3,11 @@ local GameObject = require("src.game.object.gameobject")
 -- TODO: location of import
 local Size = require("src.gui.style.property.size")
 
----@class Player : GameObject
-local Player = {}
-Player.__index = Player
+---@class Mech : GameObject
+local Mech = {}
+Mech.__index = Mech
 
-setmetatable(Player, {
+setmetatable(Mech, {
     __index = GameObject,
     __call = function(cls, ...)
         local self = setmetatable({}, cls)
@@ -16,7 +16,7 @@ setmetatable(Player, {
     end
 })
 
-function Player:init(o)
+function Mech:init(o)
     GameObject.init(self, o)
 
     self.controls = {
@@ -29,32 +29,32 @@ function Player:init(o)
     ---@type Size
     self.size = Size(self.size.w / 2, self.size.h / 2)
 
-    self.type = "Player"
+    self.type = "Mech"
 end
 
-function Player:draw()
+function Mech:draw()
     if self.controls.hide then return end
 
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.rectangle("fill", self.point.x, self.point.y, self.size.w, self.size.h)
 end
 
-function Player:update(dt)
+function Mech:update(dt)
     if self.controls.up then self.point.y = self.point.y - 2 end
     if self.controls.down then self.point.y = self.point.y + 2 end
     if self.controls.left then self.point.x = self.point.x - 2 end
     if self.controls.right then self.point.x = self.point.x + 2 end
 end
 
-function Player:keyPressed(key)
+function Mech:keyPressed(key)
     self:keyProcessor(key, true)
 end
 
-function Player:keyReleased(key)
+function Mech:keyReleased(key)
     self:keyProcessor(key, false)
 end
 
-function Player:keyProcessor(key, on)
+function Mech:keyProcessor(key, on)
     if key == "up" then self.controls.up = on end
     if key == "down" then self.controls.down = on end
     if key == "left" then self.controls.left = on end
@@ -62,4 +62,4 @@ function Player:keyProcessor(key, on)
     if key == "h" then self.controls.hide = on end
 end
 
-return Player
+return Mech
