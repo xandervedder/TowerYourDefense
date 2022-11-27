@@ -24,9 +24,49 @@ function Damageable:init(o, health)
     GameObject.init(self, o)
 
     ---@type number
+    self.originalHealth = health
+    ---@type number
     self.health = health
     ---@type boolean
     self.dead = false
+    ---@type boolean
+    self.damaged = false
+    ---@type number
+    self.percentage = 1
+end
+
+---Draw method
+function Damageable:draw()
+    --? Only draw if the damageable has been damaged.
+    if not self.damaged then return end
+
+    love.graphics.setColor(1, 0, 0)
+    love.graphics.rectangle(
+        "fill",
+        self.point.x,
+        self.point.y + self.size.h + 5, -- Offset
+        self.size.w,
+        10
+    )
+
+    love.graphics.setColor(0, 1, 0)
+    love.graphics.rectangle(
+        "fill",
+        self.point.x,
+        self.point.y + self.size.h + 5, -- Offset
+        self.size.w * self.percentage,
+        10
+    )
+end
+
+---Update method.
+---@param dt number
+function Damageable:update(dt)
+    self.percentage = 1 * self.health / self.originalHealth
+    
+    if self.health ~= self.originalHealth then
+        self.damaged = true
+    end
 end
 
 ---Damages the damageable.

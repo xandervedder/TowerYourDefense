@@ -68,12 +68,15 @@ function Enemy:init(o, parent, base, path, grid, gameObjects)
     self.gameObjects = gameObjects
 
     self.type = "Enemy"
+    self.size = self.SIZE
 
     table.insert(gameObjects, self)
 end
 
 function Enemy:draw()
     if self.dead then return end
+
+    Damageable.draw(self)
 
     love.graphics.setColor(1, 0, 0)
     love.graphics.rectangle(
@@ -83,28 +86,13 @@ function Enemy:draw()
         self.SIZE.w,
         self.SIZE.h
     )
-
-    love.graphics.setColor(1, 0, 0)
-    love.graphics.rectangle(
-        "fill",
-        self.point.x,
-        self.point.y + self.SIZE.h + 5, -- Offset
-        self.SIZE.w,
-        10
-    )
-
-    local percentage = 1 * self.health / self.originalHealth
-    love.graphics.setColor(0, 1, 0)
-    love.graphics.rectangle(
-        "fill",
-        self.point.x,
-        self.point.y + self.SIZE.h + 5, -- Offset
-        self.SIZE.w * percentage,
-        10
-    )
 end
 
-function Enemy:update()
+---Update method.
+---@param dt number
+function Enemy:update(dt)
+    Damageable.update(self, dt)
+
     if Util.isWithinPosition(self.point, self.base:getPoint(), self.base:getSize()) then
         self:dealDamageTo(self.base)
         return

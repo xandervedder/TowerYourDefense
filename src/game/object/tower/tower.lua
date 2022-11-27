@@ -22,7 +22,7 @@ Tower.bulletSize = 0.75
 ---@param o any
 ---@param gameObjects Pool
 function Tower:init(o, gameObjects)
-    Damageable.init(self, o, 100)
+    Damageable.init(self, o, 1000)
 
     -- Attributes of the Tower
     ---@type TowerBase
@@ -40,11 +40,15 @@ function Tower:init(o, gameObjects)
 end
 
 function Tower:draw()
+    Damageable.draw(self)
+
     self.base:draw()
     self.turret:draw()
 end
 
 function Tower:update(dt)
+    Damageable.update(self, dt)
+
     self.turret:update(dt)
 end
 
