@@ -43,12 +43,26 @@ end
 ---Loads the sheet and assigns both the imageData and Image to the object.
 ---@param location string
 ---@param filterType? string
+---@deprecated
 function GameObject:setSheet(location, filterType)
     -- TODO: move to constructor
     filterType = filterType or "nearest"
     self.sheetData = love.image.newImageData(location)
     self.sheet = love.graphics.newImage(self.sheetData)
     self.sheet:setFilter(filterType, filterType)
+end
+
+---Loads and creates a sheet.
+---@param location string
+---@param filterType? string
+---@return love.Image
+function GameObject:createSheet(location, filterType)
+    local filter = filterType or "nearest"
+    local data = love.image.newImageData(location)
+    local sheet = love.graphics.newImage(data)
+    sheet:setFilter(filter, filter)
+
+    return sheet
 end
 
 function GameObject:draw() end

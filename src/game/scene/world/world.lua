@@ -48,10 +48,10 @@ function World:init()
     self.mapRenderer = MapRenderer()
     ---@type Inventory
     self.inventory = Inventory()
-    ---@type Mech
-    self.mech = Mech({ point = Util.fromCoordinate(3, 3) })
     ---@type Camera
     self.camera = Camera({ screen = { love.graphics.getDimensions() } })
+    ---@type Mech
+    self.mech = Mech({ point = Util.fromCoordinate(3, 3) }, self.camera)
     self.camera:followObject(self.mech)
     ---@type Base
     local base = Base({ point = Util.fromCoordinate(2, 3) })
@@ -141,11 +141,17 @@ end
 function World:mouseMoved(x, y, dx, dy, touch)
     self.ui:mouseMoved(x, y, dx, dy, touch)
     self.megaTowerTool:mouseMoved(x, y, dx, dy, touch)
+    self.mech:mouseMoved(x, y, dx, dy, touch)
 end
 
 function World:mousePressed(x, y, button, touch, presses)
     self.ui:mousePressed(x, y, button, touch, presses)
     self.megaTowerTool:mousePressed(x, y, button, touch, presses)
+    self.mech:mousePressed()
+end
+
+function World:mouseReleased()
+    self.mech:mouseReleased()
 end
 
 function World:resize()
