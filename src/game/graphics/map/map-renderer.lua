@@ -27,7 +27,7 @@ setmetatable(MapRenderer, {
     end
 })
 
-function MapRenderer:init(o)
+function MapRenderer:init()
     -- For some reason, we cannot directly insert the string that
     -- comes from the love.filesystem.read() method.
     self.levelDataString = love.filesystem.read(self.LEVEL_DIRECTORY .. "main.json")
