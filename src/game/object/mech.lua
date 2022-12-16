@@ -60,7 +60,7 @@ function Mech:init(o, camera)
     self.shells = {}
     ---@type boolean
     self.mouseDown = false
-    self.damage = 20;
+    self.shellDamage = 20;
 
     self.mechSheet = self:createSheet(self.MECH_PATH)
     self.legsQuad = love.graphics.newQuad(Constants.tile.w * 2, 0, Constants.tile.w * 2, Constants.tile.h * 2, self.mechSheet:getDimensions())
@@ -171,7 +171,7 @@ function Mech:handleCollision()
         else
             for _, enemy in pairs(enemies) do
                 if Util.isWithin(shell, enemy) then
-                    enemy:damage(self.damage)
+                    enemy:damage(self.shellDamage)
                     table.remove(self.shells, i)
                 end
             end
