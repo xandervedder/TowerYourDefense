@@ -16,6 +16,7 @@ local SingleBarrelTurret = require("src.game.object.tower.turret.single-barrel-t
 local Tower = require("src.game.object.tower.tower")
 local TripleBarrelTurret = require("src.game.object.tower.turret.triple-barrel-turret")
 local Util = require("src.game.util.util")
+local Constants = require("src.game.constants")
 
 local CollectorHotbarItem = require("src.game.scene.world.component.hotbar-item.collector-hotbar-item")
 local Hotbar = require("src.game.scene.world.component.hotbar")
@@ -46,6 +47,7 @@ function World:init()
 
     ---@type MapRenderer
     self.mapRenderer = MapRenderer()
+    Constants.world = self.mapRenderer:getDimensions()
     ---@type Inventory
     self.inventory = Inventory()
     ---@type Camera

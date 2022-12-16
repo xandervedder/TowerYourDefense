@@ -8,6 +8,11 @@ Constants.tile = {
     h = 16,
     w = 16,
 }
+-- Not really a constant now, now is it?
+Constants.world = {
+    h = 0,
+    w = 0,
+}
 
 function Constants.tile.scaledHeight()
     return Constants.tile.h * Constants.scale

@@ -160,15 +160,13 @@ end
 function Mech:handleCollision()
     if #self.shells == 0 then return end
 
-    local height, width = love.graphics.getDimensions()
     local enemies = Spawner.getAllEnemies()
-
     for i = #self.shells, 1, -1 do
         local shell = self.shells[i]
         local x = shell.x
         local y = shell.y
 
-        if (x > width or x < 0) or (y > height or y < 0) then -- Off screen
+        if (x > Constants.world.w or x < 0) or (y > Constants.world.h or y < 0) then -- Off screen
             table.remove(self.shells, i)
         else
             for _, enemy in pairs(enemies) do

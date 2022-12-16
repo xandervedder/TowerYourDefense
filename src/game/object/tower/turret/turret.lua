@@ -1,6 +1,6 @@
 local Point = require("src.common.objects.point")
 
-local C = require("src.game.constants")
+local Constants = require("src.game.constants")
 local GameObject = require("src.game.object.gameobject")
 local Spawner = require("src.game.object.spawner")
 local Util = require("src.game.util.util")
@@ -22,7 +22,7 @@ function Turret:init(o)
     GameObject.init(self, o)
     GameObject.setSheet(self, o.location)
 
-    self.quad = love.graphics.newQuad(o.q.x, o.q.y, C.tile.w, C.tile.h, self.sheet:getDimensions())
+    self.quad = love.graphics.newQuad(o.q.x, o.q.y, Constants.tile.w, Constants.tile.h, self.sheet:getDimensions())
 
     ---@type table
     self.activeShells = {}
@@ -55,7 +55,7 @@ function Turret:draw()
     for i = 1, #self.activeShells, 1 do
         local bullet = self.activeShells[i]
         love.graphics.setColor(0, 0, 0)
-        love.graphics.circle("fill", bullet.x, bullet.y, 0.75 * C.scale * self.scale)
+        love.graphics.circle("fill", bullet.x, bullet.y, 0.75 * Constants.scale * self.scale)
     end
 
     love.graphics.setColor(1, 1, 1)
@@ -65,11 +65,11 @@ function Turret:draw()
         self.center.x,
         self.center.y,
         self.rotation,
-        C.scale * self.scale,
-        C.scale * self.scale,
+        Constants.scale * self.scale,
+        Constants.scale * self.scale,
         -- Origin points will be in the center of the image:
-        C.tile.w / 2,
-        C.tile.h / 2
+        Constants.tile.w / 2,
+        Constants.tile.h / 2
     )
 end
 
@@ -175,8 +175,6 @@ function Turret:rotateBarrel(dt)
 end
 
 function Turret:checkCollision()
-    local height, width = love.graphics.getDimensions()
-
     for i = #self.activeShells, 1, -1 do
         local bullet = self.activeShells[i]
         local x = bullet.x
@@ -185,7 +183,7 @@ function Turret:checkCollision()
         if Util.isWithin(bullet, self.enemy) then
             self.enemy:damage(self.damage)
             table.remove(self.activeShells, i)
-        elseif (x > width or x < 0) or (y > height or y < 0) then -- Off screen
+        elseif (x > Constants.world.w or x < 0) or (y > Constants.world.h or y < 0) then -- Off screen
             table.remove(self.activeShells, i)
         end
     end
