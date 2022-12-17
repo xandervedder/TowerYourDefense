@@ -5,6 +5,7 @@ local Publisher = require("src.game.event.publisher")
 
 local Base = require("src.game.object.base")
 local Camera = require("src.game.camera.camera")
+local Wave = require("src.game.concept.wave")
 local DoubleBarrelTurret = require("src.game.object.tower.turret.double-barrel-turret")
 local MapRenderer = require("src.game.graphics.map.map-renderer")
 local MegaTowerTool = require("src.game.tool.mega-tower-tool")
@@ -72,6 +73,8 @@ function World:init()
         self.gameObjects
     )
     self.gameObjects:add(self.spawner)
+    ---@type Wave
+    self.wave = Wave({ self.spawner });
     local mapSize = self.mapRenderer:getDimensions();
     self.canvas = love.graphics.newCanvas(mapSize.w, mapSize.h)
     ---@type MegaTowerTool
@@ -91,6 +94,7 @@ function World:update(dt)
     self.camera:update(dt)
     self.ui:update(dt)
     self.inventory:update(dt)
+    self.wave:update(dt)
     self.megaTowerTool:update()
 end
 

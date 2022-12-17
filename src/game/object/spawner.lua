@@ -39,36 +39,49 @@ setmetatable(Spawner, {
 function Spawner:init(o, base, grid, obstacles, gameObjects)
     GameObject.init(self, o)
 
+    ---@private
     ---@type Base
-    ---@private
     self.base = base
+    ---@private
+    ---@type boolean
+    self.shouldSpawn = false
+    ---@private
+    ---@type integer
+    self.spawnAmount = 0
+    ---@private
+    ---@type integer
+    self.spawnedAmount = 0
+    ---@private
+    ---@type number
+    self.enemyHealth = 0
+    ---@private
     ---@type Size
-    ---@private
     self.grid = grid
-    ---@type Pool
     ---@private
+    ---@type Pool
     self.obstacles = obstacles or {}
+    ---@private
     ---@type Pool
-    ---@private
     self.gameObjects = gameObjects
-    ---@type number
     ---@private
+    ---@type number
     self.obstructionRange = 1;
+    ---@private
     ---@type number
-    ---@privatte
     self.deltaPassed = 0
+    ---@private
     ---@type Point[]
-    ---@private
     self.path = {}
+    ---@private Spawn rate in seconds.
     ---@type number
-    ---@private
-    self.spawnRate = self.spawnRate or 1 -- In seconds
+    self.spawnRate = self.spawnRate or 1
 
     self.register(self)
+    ---@private
     ---@type Pool
     self.enemies = self.getEnemies(self)
-    self.type = "Spawner"
 
+    self.type = "Spawner"
     self:setPath()
 
     Publisher.register(self, "objects.updated", function()
@@ -97,8 +110,8 @@ function Spawner:draw()
     self:drawSpawnedEnemies()
 end
 
----Draws a debug path, useful to know where enemies are generally headed.
 ---@private
+---Draws a debug path, useful to know where enemies are generally headed.
 function Spawner:drawDebugPath()
     ---@type table<number>
     local lineLocations = {}
@@ -118,8 +131,8 @@ function Spawner:drawDebugPath()
     love.graphics.circle("fill", lineLocations[lastItemIndex - 1], lineLocations[lastItemIndex], 25)
 end
 
----Draws all the enemies that have spawned.
 ---@private
+---Draws all the enemies that have spawned.
 function Spawner:drawSpawnedEnemies()
     for _, enemy in pairs(self.enemies:get()) do
         enemy:draw()
@@ -129,26 +142,44 @@ end
 ---Update method
 ---@param dt number
 function Spawner:update(dt)
-    self.deltaPassed = self.deltaPassed + dt
-    if self.deltaPassed >= self.spawnRate then
-        self.deltaPassed = 0
+    if self:hasWaitedEnough(dt) and self.shouldSpawn then
         self:spawn()
     end
 
     self:updateSpawnedEnemies(dt)
 end
 
----Spawns an enemy.
+---Method that checks whether or not a Spawner has waited enough time to spawn a new enemy.
+---@param dt any
+---@return boolean
+function Spawner:hasWaitedEnough(dt)
+    self.deltaPassed = self.deltaPassed + dt
+    if self.deltaPassed >= self.spawnRate then
+        self.deltaPassed = 0
+        return true
+    end
+
+    return false
+end
+
+---@private
+---Spawns enemies untill the spawn amount is reached.
 function Spawner:spawn()
+    if self.spawnAmount == self.spawnedAmount then
+        self.shouldSpawn = false
+        return
+    end
+
     ---@type Enemy
     local enemy = Enemy({
         point = Point(
             self.point.x + (self.size.w / 2) - (Enemy.SIZE.w / 2),
             self.point.y + (self.size.h / 2) - (Enemy.SIZE.h / 2)
         ),
-    }, self, self.base, self.path, self.grid, self.gameObjects)
+    }, self, self.base, self.path, self.grid, self.gameObjects, self.enemyHealth)
 
     self.enemies:add(enemy)
+    self.spawnedAmount = self.spawnedAmount + 1
 end
 
 ---Updates all the spawned enemies.
@@ -187,6 +218,22 @@ function Spawner:setPath()
     )
 
     Publisher.publish(Event("path.updated"))
+end
+
+---Begins spawning a certain amount of enemies.
+---@param amount integer
+---@param health number
+function Spawner:beginSpawning(amount, health)
+    self.shouldSpawn = true
+    self.spawnAmount = amount
+    self.spawnedAmount = 0
+    self.enemyHealth = health
+end
+
+---Determines whether or not the Spawner is done with spawning the amount of enemies.
+---@return boolean
+function Spawner:isDone()
+    return not self.shouldSpawn and self.enemies:size() == 0
 end
 
 ---Registers a new pool to the Spawner instance.

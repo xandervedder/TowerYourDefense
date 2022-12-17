@@ -33,8 +33,9 @@ setmetatable(Enemy, {
 ---@param path table<Point>
 ---@param grid Size
 ---@param gameObjects Pool
-function Enemy:init(o, parent, base, path, grid, gameObjects)
-    Damageable.init(self, o, 250)
+---@param health number
+function Enemy:init(o, parent, base, path, grid, gameObjects, health)
+    Damageable.init(self, o, health)
 
     ---@type Base
     self.base = base
