@@ -70,6 +70,7 @@ function Enemy:init(o, parent, base, path, grid, gameObjects)
     self.type = "Enemy"
     self.size = self.SIZE
 
+    -- TODO: this looks strange?
     table.insert(gameObjects, self)
 end
 
