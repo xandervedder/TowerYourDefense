@@ -23,12 +23,16 @@ local CollectorHotbarItem = require("src.game.scene.world.component.hotbar-item.
 local Hotbar = require("src.game.scene.world.component.hotbar")
 local TowerHotbarItem = require("src.game.scene.world.component.hotbar-item.tower-hotbar-item")
 local Inventory = require("src.game.scene.world.component.inventory")
+local WaveCount = require("src.game.scene.world.component.wave-count")
 
+local Style = require("src.gui.style.style")
+local Align = require("src.gui.style.property.align")
 local Color = require("src.gui.style.property.color")
 local Container = require("src.gui.layout.container")
+local HBox = require("src.gui.layout.h-box")
 local DirBool = require("src.gui.style.property.dir-bool")
 local Side = require("src.gui.style.property.side")
-local Style = require("src.gui.style.style")
+local Size = require("src.gui.style.property.size")
 
 ---@class World : Scene
 local World = {}
@@ -51,6 +55,8 @@ function World:init()
     Constants.world = self.mapRenderer:getDimensions()
     ---@type Inventory
     self.inventory = Inventory()
+    ---@type WaveCount
+    self.waveCount = WaveCount()
     ---@type Camera
     self.camera = Camera({ screen = { love.graphics.getDimensions() } })
     ---@type Mech
@@ -81,6 +87,7 @@ function World:init()
     self.megaTowerTool = MegaTowerTool({ camera = self.camera, pool = self.gameObjects })
 
     self:initUI()
+    self:initTopBar()
 
     ---@param event Event
     Publisher.register(self, "objects.created", function(event) self:updateObjectPool(event.payload) end)
@@ -92,9 +99,9 @@ function World:update(dt)
     end
 
     self.camera:update(dt)
-    self.ui:update(dt)
-    self.inventory:update(dt)
     self.wave:update(dt)
+    self.ui:update(dt)
+    self.topBar:update(dt)
     self.megaTowerTool:update()
 end
 
@@ -129,7 +136,7 @@ function World:draw()
 
     -- UI should be drawn ontop of canvas
     self.ui:draw()
-    self.inventory:draw()
+    self.topBar:draw()
 end
 
 function World:keyPressed(key)
@@ -210,6 +217,30 @@ function World:initUI()
                             Point(5, 2),
                         }
                     }),
+                }
+            })
+        }
+    })
+end
+
+function World:initTopBar()
+    ---@type Element
+    self.topBar = Container({
+        root = true,
+        style = Style({
+            color = Color(0, 0, 0, 0),
+            padding = Side(20, 20, 20, 20),
+            grow = DirBool(true, true),
+        }),
+        children = {
+            HBox({
+                style = Style({
+                    align = Align(false, true),
+                    size = Size(270, 120),
+                }),
+                children = {
+                    self.waveCount,
+                    self.inventory,
                 }
             })
         }
