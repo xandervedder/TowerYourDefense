@@ -85,7 +85,7 @@ function Wave:start()
         spawner:beginSpawning(spawnAmount, enemyHealth)
     end
 
-    Publisher.publish(Event())
+    Publisher.publish(Event("wave.started", self.currentWave))
 end
 
 ---Gets the enemy spawn count for the next wave.
