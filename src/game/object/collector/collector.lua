@@ -2,6 +2,7 @@ local C = require("src.game.constants")
 local Event = require("src.game.event.event")
 local GameObject = require("src.game.object.gameobject")
 local Publisher = require("src.game.event.publisher")
+local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
 
 ---@class Collector : GameObject
 local Collector = {}
@@ -18,10 +19,10 @@ setmetatable(Collector, {
 
 function Collector:init(o)
     GameObject.init(self, o)
-    GameObject.setSheet(self, "assets/graphics/collection-spritesheet.png")
 
-    self.structureQuad = love.graphics.newQuad(0, 0, C.tile.w, C.tile.h, self.sheet:getDimensions())
-    self.drillQuad = love.graphics.newQuad(C.tile.w, 0, C.tile.w, C.tile.h, self.sheet:getDimensions())
+    self.sprite = SpriteLoader.getSprite("collection")
+    self.structureQuad = love.graphics.newQuad(0, 0, C.tile.w, C.tile.h, self.sprite.image:getDimensions())
+    self.drillQuad = love.graphics.newQuad(C.tile.w, 0, C.tile.w, C.tile.h, self.sprite.image:getDimensions())
 
     self.center = {
         x = self.point.x + self.size.w / 2,
@@ -36,7 +37,7 @@ end
 function Collector:draw()
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.draw(
-        self.sheet,
+        self.sprite.image,
         self.drillQuad,
         self.center.x,
         self.center.y,
@@ -48,7 +49,7 @@ function Collector:draw()
         C.tile.h / 2
     )
 
-    love.graphics.draw(self.sheet, self.structureQuad, self.point.x, self.point.y, 0, C.scale, C.scale)
+    love.graphics.draw(self.sprite.image, self.structureQuad, self.point.x, self.point.y, 0, C.scale, C.scale)
 end
 
 function Collector:update(dt)
@@ -61,8 +62,8 @@ function Collector:update(dt)
     end
 end
 
-function Collector:toImage()
-    return GameObject.imagesFromQuads(self.sheetData, { self.structureQuad, self.drillQuad })
+function Collector:toImages()
+    return GameObject.imagesFromQuads(self.sprite.imageData, { self.structureQuad, self.drillQuad })
 end
 
 return Collector

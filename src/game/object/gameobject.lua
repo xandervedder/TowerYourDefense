@@ -40,31 +40,6 @@ function GameObject:init(o)
     self.type = "GameObject"
 end
 
----Loads the sheet and assigns both the imageData and Image to the object.
----@param location string
----@param filterType? string
----@deprecated
-function GameObject:setSheet(location, filterType)
-    -- TODO: move to constructor
-    filterType = filterType or "nearest"
-    self.sheetData = love.image.newImageData(location)
-    self.sheet = love.graphics.newImage(self.sheetData)
-    self.sheet:setFilter(filterType, filterType)
-end
-
----Loads and creates a sheet.
----@param location string
----@param filterType? string
----@return love.Image
-function GameObject:createSheet(location, filterType)
-    local filter = filterType or "nearest"
-    local data = love.image.newImageData(location)
-    local sheet = love.graphics.newImage(data)
-    sheet:setFilter(filter, filter)
-
-    return sheet
-end
-
 function GameObject:draw() end
 
 ---@param dt number
@@ -98,29 +73,23 @@ end
 
 function GameObject:getSpeed() return self.speed end
 
----@deprecated
+---Stub method that is used to get images that together can represent a graphical
+---representation of a gameobject.
 ---@return love.Image[]
-function GameObject:getSheets() end
-
----@return love.Quad[]
-function GameObject:getQuads() end
-
----Stub method that is used to return images of the game src.game.object.base
----This is useful for external usages of the game objects, since they no longer
----need to make the images by themselves with quads et cetera.
----@return love.Image[]
-function GameObject:toImage() end
+function GameObject:toImages()
+    error("Stub: method not implemented.")
+end
 
 ---Utility method that creates images from its quads and sheet.
----@param sheet love.ImageData
+---@param imageData love.ImageData
 ---@param quads love.Quad[]
 ---@return love.Image[]
-function GameObject.imagesFromQuads(sheet, quads)
+function GameObject.imagesFromQuads(imageData, quads)
     local images = {}
     for _, quad in pairs(quads) do
         local x, y, w, h = quad:getViewport()
         local data = love.image.newImageData(w, h)
-        data:paste(sheet, 0, 0, x, y, w, h)
+        data:paste(imageData, 0, 0, x, y, w, h)
         table.insert(images, love.graphics.newImage(data))
     end
     return images

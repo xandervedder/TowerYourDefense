@@ -68,7 +68,7 @@ function PlacementTool:draw()
     end
 
     local grid = Util.fromMousePoint(self.mouse.x, self.mouse.y)
-    local images = self.gameObject:toImage()
+    local images = self.gameObject:toImages()
     for i = 1, #images, 1 do
         images[i]:setFilter("nearest", "nearest")
         love.graphics.draw(images[i], grid.x, grid.y, 0, Constants.scale, Constants.scale)

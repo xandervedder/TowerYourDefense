@@ -59,17 +59,9 @@ function Tower:setTurret(turret)
     self.turret:setPoint(self.point)
 end
 
-function Tower:getSheets()
-    return { self.turret.sheet, self.base.sheet }
-end
-
-function Tower:getQuads()
-    return { self.turret.quad, self.base.quad }
-end
-
-function Tower:toImage()
-    local baseImages = GameObject.imagesFromQuads(self.base.sheetData, self.base:getQuads())
-    local turretImages = GameObject.imagesFromQuads(self.turret.sheetData, self.turret:getQuads())
+function Tower:toImages()
+    local baseImages = self.base:toImages()
+    local turretImages = self.turret:toImages()
     for _, value in pairs(turretImages) do
         table.insert(baseImages, value)
     end

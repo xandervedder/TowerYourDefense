@@ -1,6 +1,7 @@
 local Constants = require("src.game.constants")
 local Menu = require("src.game.scene.menu")
 local Publisher = require("src.game.event.publisher")
+local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
 local World = require("src.game.scene.world.world")
 
 local Game = {}
@@ -17,6 +18,7 @@ function Game.configure(t)
 end
 
 function Game.load()
+    SpriteLoader.init()
     Publisher.register(Game, "*", Game.on)
 
     Game.scenes = {

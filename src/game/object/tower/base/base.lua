@@ -1,5 +1,6 @@
 local C = require("src.game.constants")
 local GameObject = require("src.game.object.gameobject")
+local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
 
 --[[
     Class used for the base of a Tower.
@@ -25,15 +26,15 @@ setmetatable(Base, {
 
 function Base:init(o)
     GameObject.init(self, o)
-    GameObject.setSheet(self, "/assets/graphics/tower-base-spritesheet.png")
+    self.sprite = SpriteLoader.getSprite("base")
 
-    self.quad = love.graphics.newQuad(0, 0, C.tile.w, C.tile.h, self.sheet:getDimensions())
+    self.quad = love.graphics.newQuad(0, 0, C.tile.w, C.tile.h, self.sprite.image:getDimensions())
 end
 
 function Base:draw()
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(
-        self.sheet,
+        self.sprite.image,
         self.quad,
         self.point.x,
         self.point.y,
@@ -43,8 +44,8 @@ function Base:draw()
     )
 end
 
-function Base:getQuads()
-    return { self.quad }
+function Base:toImages()
+    return GameObject.imagesFromQuads(self.sprite.imageData, { self.quad })
 end
 
 return Base

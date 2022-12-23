@@ -16,7 +16,6 @@ setmetatable(DoubleBarrelTurret, {
 
 function DoubleBarrelTurret:init(o)
     o.q = { x = 16, y = 0 }
-    o.location = "assets/graphics/turret-spritesheet.png"
 
     Turret.init(self, o)
 

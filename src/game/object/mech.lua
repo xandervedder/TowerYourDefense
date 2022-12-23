@@ -1,9 +1,10 @@
+local Point = require("src.common.objects.point")
+
 local Damageable = require("src.game.object.damageable")
 local Spawner = require("src.game.object.spawner")
 local Constants = require("src.game.constants")
+local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
 local Util = require("src.game.util.util")
-
-local Point = require("src.common.objects.point")
 
 -- TODO: location of import
 local Size = require("src.gui.style.property.size")
@@ -62,9 +63,9 @@ function Mech:init(o, camera)
     self.mouseDown = false
     self.shellDamage = 20;
 
-    self.mechSheet = self:createSheet(self.MECH_PATH)
-    self.legsQuad = love.graphics.newQuad(Constants.tile.w * 2, 0, Constants.tile.w * 2, Constants.tile.h * 2, self.mechSheet:getDimensions())
-    self.bodyQuad = love.graphics.newQuad(0, 0, Constants.tile.w * 2, Constants.tile.h * 2, self.mechSheet:getDimensions())
+    self.sprite = SpriteLoader.getSprite("mech")
+    self.legsQuad = love.graphics.newQuad(Constants.tile.w * 2, 0, Constants.tile.w * 2, Constants.tile.h * 2, self.sprite.image:getDimensions())
+    self.bodyQuad = love.graphics.newQuad(0, 0, Constants.tile.w * 2, Constants.tile.h * 2, self.sprite.image:getDimensions())
 end
 
 ---Draw method.
@@ -75,7 +76,7 @@ function Mech:draw()
 
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(
-        self.mechSheet,
+        self.sprite.image,
         self.legsQuad,
         self.center.x,
         self.center.y,
@@ -87,7 +88,7 @@ function Mech:draw()
     )
 
     love.graphics.draw(
-        self.mechSheet,
+        self.sprite.image,
         self.bodyQuad,
         self.center.x,
         self.center.y,

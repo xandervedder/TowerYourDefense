@@ -20,7 +20,7 @@ function CollectorHotbarItem:init(o)
     ---@type Collector
     self.collector = Collector({})
 
-    o.images = self.collector:toImage()
+    o.images = self.collector:toImages()
 
     HotbarItem.init(self, o)
 

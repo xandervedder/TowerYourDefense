@@ -196,17 +196,17 @@ function World:initUI()
                     TowerHotbarItem({
                         constraint = 10,
                         turretType = SingleBarrelTurret,
-                        images = towers[1]:toImage()
+                        images = towers[1]:toImages()
                     }),
                     TowerHotbarItem({
                         constraint = 25,
                         turretType = DoubleBarrelTurret,
-                        images = towers[2]:toImage()
+                        images = towers[2]:toImages()
                     }),
                     TowerHotbarItem({
                         constraint = 50,
                         turretType = TripleBarrelTurret,
-                        images = towers[3]:toImage()
+                        images = towers[3]:toImages()
                     }),
                     CollectorHotbarItem({
                         constraint = 100,

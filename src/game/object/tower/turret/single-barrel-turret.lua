@@ -15,9 +15,7 @@ setmetatable(SingleBarrelTurret, {
 })
 
 function SingleBarrelTurret:init(o)
-    -- q is Quad in this instance
     o.q = { x = 0, y = 0 }
-    o.location = "assets/graphics/turret-spritesheet.png"
 
     Turret.init(self, o)
 

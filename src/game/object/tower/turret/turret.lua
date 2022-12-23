@@ -3,6 +3,7 @@ local Point = require("src.common.objects.point")
 local Constants = require("src.game.constants")
 local GameObject = require("src.game.object.gameobject")
 local Spawner = require("src.game.object.spawner")
+local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
 local Util = require("src.game.util.util")
 
 ---@class Turret : GameObject
@@ -20,9 +21,9 @@ setmetatable(Turret, {
 
 function Turret:init(o)
     GameObject.init(self, o)
-    GameObject.setSheet(self, o.location)
 
-    self.quad = love.graphics.newQuad(o.q.x, o.q.y, Constants.tile.w, Constants.tile.h, self.sheet:getDimensions())
+    self.sprite = SpriteLoader.getSprite("turret")
+    self.quad = love.graphics.newQuad(o.q.x, o.q.y, Constants.tile.w, Constants.tile.h, self.sprite.image:getDimensions())
 
     ---@type table
     self.activeShells = {}
@@ -60,7 +61,7 @@ function Turret:draw()
 
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(
-        self.sheet,
+        self.sprite.image,
         self.quad,
         self.center.x,
         self.center.y,
@@ -221,13 +222,13 @@ function Turret:isAimedAtEnemy()
     return absDiff >= 0 and absDiff <= 3
 end
 
-function Turret:getQuads()
-    return { self.quad }
-end
-
 function Turret:setScale(scaleFactor)
     self.scale = scaleFactor
     self.center = Point(self.point.x + self.size.w / 2, self.point.y + self.size.h / 2)
+end
+
+function Turret:toImages()
+    return GameObject.imagesFromQuads(self.sprite.imageData, { self.quad })
 end
 
 return Turret
