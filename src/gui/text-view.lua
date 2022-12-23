@@ -1,7 +1,5 @@
 local Element = require("src.gui.element")
 
--- TODO: this file could probably be merged with Element.
-
 ---@class TextView : Element
 local TextView = {}
 TextView.__index = TextView
