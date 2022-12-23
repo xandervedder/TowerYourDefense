@@ -79,10 +79,6 @@ function Hotbar:init(o)
     end)
 end
 
-function Hotbar:draw()
-    Container.draw(self)
-end
-
 function Hotbar:update(dt)
     Container.update(self, dt)
     self.tool:update(dt)

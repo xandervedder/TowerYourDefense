@@ -122,7 +122,8 @@ function World:draw()
             gameObject:draw()
         end
 
-        -- TODO: I do not like this solution, fix this...
+        --! The tool should be rendered to the canvas.
+        --! The UI however, should not be rendered to the canvas.
         self.ui:querySelector("hotbar"):getTool():draw()
         self.megaTowerTool:draw()
 
