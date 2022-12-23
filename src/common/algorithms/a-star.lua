@@ -116,7 +116,6 @@ function AStar:reconstructPath()
 end
 
 ---Prints the found path in the console.
----TODO: Would be cool if this could executed automatically if debug mode is on.
 function AStar:print()
     for x = 0, self.graph.height, 1 do
         local output = ""
