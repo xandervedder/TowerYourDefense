@@ -33,29 +33,30 @@ function WaveCount:init(o)
             TextView({
                 id = self.selector,
                 style = Style({
-                    size = Size(125, 60),
+                    size = Size(200, 60),
                     padding = 20
                 }),
-                text = "Wave " .. tostring(self.currentWave),
+                text = "Building phase...",
             })
         }
     })
 
     self.style = Style({
         color = Color(35, 35, 35, 0.9),
-        size = Size(125, 60),
+        size = Size(200, 60),
         margin = Side(0, 20, 0, 0),
     })
 
-    Publisher.register(self, "wave.started", function(event) self:updateText(event:getPayload()) end)
+    Publisher.register(self, "wave.started", function(event) self:updateText("Wave " .. tostring(event:getPayload())) end)
+    Publisher.register(self, "wave.ended", function() self:updateText("Building phase...") end)
 end
 
 ---Updates the wave text.
----@param wave integer
-function WaveCount:updateText(wave)
+---@param text string
+function WaveCount:updateText(text)
     local textView = self:querySelector("wave")
     ---@cast textView TextView
-    textView.text = "Wave " .. tostring(wave)
+    textView.text = text
 end
 
 return WaveCount

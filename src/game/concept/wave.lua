@@ -29,7 +29,7 @@ function Wave:init(spawners)
     self.hasDoneStartUpProcedure = false
     ---@private
     ---@type integer
-    self.countDown = 5
+    self.countDown = 30
     ---@private
     ---@type number
     self.countDownDelta = 0
@@ -61,6 +61,7 @@ function Wave:update(dt)
     end
 
     if self:waveComplete() then
+        Publisher.publish(Event("wave.ended"))
         self:prepareNextWave()
     end
 end

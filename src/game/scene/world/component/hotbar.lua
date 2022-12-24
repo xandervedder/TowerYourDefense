@@ -1,3 +1,4 @@
+local Publisher = require("src.game.event.publisher")
 local PlacementTool = require("src.game.tool.placement-tool")
 
 local Align = require("src.gui.style.property.align")
@@ -35,6 +36,8 @@ function Hotbar:init(o)
 
     ---@type string
     self.id = "hotbar"
+    ---@type boolean
+    self.hide = false
     ---@type Inventory
     self.inventory = o.inventory
     ---@type PlacementTool
@@ -77,9 +80,37 @@ function Hotbar:init(o)
             end
         end
     end)
+
+    Publisher.register(self, "wave.started", function() self:handleWaveStartedEvent() end)
+    Publisher.register(self, "wave.ended", function() self:handleWaveEndedEvent() end)
+end
+
+---Handles the wave started event.
+function Hotbar:handleWaveStartedEvent()
+    self.hide = true
+    self.tool:disable()
+
+    ---@type HotbarItem[]
+    local children = self.child.children
+    for _, child in pairs(children) do
+        child.active = false
+    end
+end
+
+---Handles the wave ended event.
+function Hotbar:handleWaveEndedEvent()
+    self.hide = false
+end
+
+function Hotbar:draw()
+    if self.hide then return end
+
+    Container.draw(self)
 end
 
 function Hotbar:update(dt)
+    if self.hide then return end
+
     Container.update(self, dt)
     self.tool:update(dt)
 
@@ -101,11 +132,15 @@ function Hotbar:checkConstraints()
 end
 
 function Hotbar:mousePressed(x, y, button, touch, presses)
+    if self.hide then return end
+
     Container.mousePressed(self, x, y, button, touch, presses)
     self.tool:mousePressed(nil, nil, button, nil, nil)
 end
 
 function Hotbar:mouseMoved(x, y, dx, dy, touch)
+    if self.hide then return end
+
     Container.mouseMoved(self, x, y, dx, dy, touch)
     self.tool:mouseMoved(x, y, nil, nil, nil)
 end

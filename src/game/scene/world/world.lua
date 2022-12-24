@@ -237,7 +237,7 @@ function World:initTopBar()
             HBox({
                 style = Style({
                     align = Align(false, true),
-                    size = Size(270, 120),
+                    size = Size(345, 120),
                 }),
                 children = {
                     self.waveCount,
