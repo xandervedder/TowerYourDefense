@@ -33,7 +33,7 @@ function WaveCount:init(o)
             TextView({
                 id = self.selector,
                 style = Style({
-                    size = Size(200, 60),
+                    size = Size(235, 60),
                     padding = 20
                 }),
                 text = "Building phase...",
@@ -43,11 +43,12 @@ function WaveCount:init(o)
 
     self.style = Style({
         color = Color(35, 35, 35, 0.9),
-        size = Size(200, 60),
+        size = Size(235, 60),
         margin = Side(0, 20, 0, 0),
     })
 
     Publisher.register(self, "wave.started", function(event) self:updateText("Wave " .. tostring(event:getPayload())) end)
+    Publisher.register(self, "wave.countdown", function(event) self:updateText("Building phase: " .. tostring(event:getPayload())) end)
     Publisher.register(self, "wave.ended", function() self:updateText("Building phase...") end)
 end
 
