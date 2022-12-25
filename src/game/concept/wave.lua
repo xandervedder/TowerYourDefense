@@ -1,3 +1,5 @@
+local Timer = require("src.common.time.timer")
+
 local Event = require("src.game.event.event")
 local Publisher = require("src.game.event.publisher")
 
@@ -7,6 +9,7 @@ local Publisher = require("src.game.event.publisher")
 ]]--
 
 ---@class Wave
+---@overload fun(spawners: Spawner[]): Wave
 local Wave = {}
 Wave.__index = Wave
 
@@ -23,16 +26,16 @@ setmetatable(Wave, {
 function Wave:init(spawners)
     ---@private
     ---@type boolean
-    self.waiting = true
-    ---@private
-    ---@type boolean
     self.hasDoneStartUpProcedure = false
     ---@private
     ---@type integer
-    self.countDown = 30
+    self.waitPeriod = 30
     ---@private
-    ---@type number
-    self.countDownDelta = 0
+    ---@type boolean
+    self.waiting = true
+    ---@private
+    ---@type Timer
+    self.timer = Timer(self.waitPeriod)
     ---@private
     ---@type integer
     self.currentWave = 1;
@@ -50,11 +53,15 @@ end
 ---Update method.
 ---@param dt number
 function Wave:update(dt)
-    if self.waiting then
-        self:waitProcedure(dt)
-        return
+    self.timer:update(dt)
+
+    if self.timer:hasPassed(1) and self.waiting then
+        Publisher.publish(Event("wave.countdown", self.waitPeriod - self.timer:seconds()))
     end
 
+    if not self.timer:hasPassedTargetSeconds() then return end
+
+    self.waiting = false
     if not self.hasDoneStartUpProcedure then
         self:start()
         self.hasDoneStartUpProcedure = true
@@ -63,17 +70,6 @@ function Wave:update(dt)
     if self:waveComplete() then
         Publisher.publish(Event("wave.ended"))
         self:prepareNextWave()
-    end
-end
-
----@private
----A small timeout untill the waves begin.
----@param dt number
-function Wave:waitProcedure(dt)
-    self.countDownDelta = self.countDownDelta + dt
-    if self.countDownDelta >= self.countDown then
-        self.waiting = false
-        self.countDownDelta = 0
     end
 end
 
@@ -117,9 +113,10 @@ end
 ---@private
 ---Prepares the next wave.
 function Wave:prepareNextWave()
-    self.waiting = true
     self.hasDoneStartUpProcedure = false
     self.currentWave = self.currentWave + 1
+    self.timer:reset()
+    self.waiting = true
 end
 
 return Wave
