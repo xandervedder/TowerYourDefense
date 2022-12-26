@@ -1,4 +1,4 @@
-local GameObject = require("src.game.object.gameobject")
+local GameObject = require("src.game.object.game-object")
 
 --[[
     Represents a damageable type, everything related to dealing damage.

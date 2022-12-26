@@ -1,5 +1,5 @@
 local C = require("src.game.constants")
-local GameObject = require("src.game.object.gameobject")
+local GameObject = require("src.game.object.game-object")
 local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
 
 --[[

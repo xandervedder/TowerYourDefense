@@ -1,7 +1,7 @@
 require("test.setup")
 
 local Enemy = require("src.game.object.enemy")
-local GameObject = require("src.game.object.gameobject")
+local GameObject = require("src.game.object.game-object")
 local Pool = require("src.game.object.pool")
 
 local Lu = require("luaunit")

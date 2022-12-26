@@ -1,6 +1,6 @@
 local C = require("src.game.constants")
 local Event = require("src.game.event.event")
-local GameObject = require("src.game.object.gameobject")
+local GameObject = require("src.game.object.game-object")
 local Publisher = require("src.game.event.publisher")
 local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
 

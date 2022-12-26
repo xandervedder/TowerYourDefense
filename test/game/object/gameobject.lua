@@ -2,7 +2,7 @@ require("test.setup")
 
 local Point = require("src.common.objects.point")
 
-local GameObject = require("src.game.object.gameobject")
+local GameObject = require("src.game.object.game-object")
 local C = require("src.game.constants")
 
 local Lu = require("luaunit")

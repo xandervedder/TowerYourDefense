@@ -1,7 +1,7 @@
 local Point = require("src.common.objects.point")
 
 local Constants = require("src.game.constants")
-local GameObject = require("src.game.object.gameobject")
+local GameObject = require("src.game.object.game-object")
 local Spawner = require("src.game.object.spawner")
 local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
 local Util = require("src.game.util.util")

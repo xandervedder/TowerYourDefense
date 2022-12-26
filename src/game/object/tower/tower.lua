@@ -1,6 +1,6 @@
 local Base = require("src.game.object.tower.base.base")
 local Damageable = require("src.game.object.damageable")
-local GameObject = require("src.game.object.gameobject")
+local GameObject = require("src.game.object.game-object")
 local SingleBarrelTurret = require("src.game.object.tower.turret.single-barrel-turret")
 
 ---@class Tower : Damageable
