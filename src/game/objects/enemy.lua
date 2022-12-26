@@ -3,7 +3,7 @@ local Queue = require("src.common.collections.queue")
 
 local Constants = require("src.game.constants")
 local Event = require("src.game.event.event")
-local Damageable = require("src.game.object.damageable")
+local Damageable = require("src.game.objects.damageable")
 local Publisher = require("src.game.event.publisher")
 local Util = require("src.game.util.util")
 local PathHelper = require("src.game.util.path-helper")

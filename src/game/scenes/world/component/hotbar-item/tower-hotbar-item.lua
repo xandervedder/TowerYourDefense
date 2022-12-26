@@ -1,4 +1,4 @@
-local Tower = require("src.game.object.tower.tower")
+local Tower = require("src.game.objects.tower.tower")
 
 local HotbarItem = require("src.game.scenes.world.component.hotbar-item.hotbar-item")
 

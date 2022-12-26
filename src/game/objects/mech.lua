@@ -1,8 +1,8 @@
 local Point = require("src.common.objects.point")
 
 local Publisher = require("src.game.event.publisher")
-local Damageable = require("src.game.object.damageable")
-local Spawner = require("src.game.object.spawner")
+local Damageable = require("src.game.objects.damageable")
+local Spawner = require("src.game.objects.spawner")
 local Constants = require("src.game.constants")
 local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
 local Util = require("src.game.util.util")

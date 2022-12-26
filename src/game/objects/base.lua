@@ -1,4 +1,4 @@
-local Damageable = require("src.game.object.damageable")
+local Damageable = require("src.game.objects.damageable")
 
 ---@class Base : Damageable
 local Base = {}

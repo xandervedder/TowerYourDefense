@@ -1,4 +1,4 @@
-local Collector = require("src.game.object.collector.collector")
+local Collector = require("src.game.objects.collector.collector")
 local Util = require("src.game.util.util")
 
 local HotbarItem = require("src.game.scenes.world.component.hotbar-item.hotbar-item")

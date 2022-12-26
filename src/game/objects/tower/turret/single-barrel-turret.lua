@@ -1,5 +1,5 @@
 local C = require("src.game.constants")
-local Turret = require("src.game.object.tower.turret.turret")
+local Turret = require("src.game.objects.tower.turret.turret")
 
 ---@class SingleBarrelTurret : Turret
 local SingleBarrelTurret = {}

@@ -1,9 +1,9 @@
 local Point = require("src.common.objects.point")
 
 local Constants = require("src.game.constants")
-local Enemy = require("src.game.object.enemy")
-local GameObject = require("src.game.object.game-object")
-local Pool = require("src.game.object.pool")
+local Enemy = require("src.game.objects.enemy")
+local GameObject = require("src.game.objects.game-object")
+local Pool = require("src.game.objects.pool")
 local Event = require("src.game.event.event")
 local Publisher = require("src.game.event.publisher")
 local Util = require("src.game.util.util")

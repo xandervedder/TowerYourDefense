@@ -1,11 +1,13 @@
 local C = require("src.game.constants")
-local Turret = require("src.game.object.tower.turret.turret")
+local Turret = require("src.game.objects.tower.turret.turret")
 
----@class DoubleBarrelTurret : Turret
-local DoubleBarrelTurret = {}
-DoubleBarrelTurret.__index = DoubleBarrelTurret
+--! Note: quickly made this one is just for fun, code could be duplicated less...
 
-setmetatable(DoubleBarrelTurret, {
+---@class TripleBarrelTurret : Turret
+local TripleBarrelTurret = {}
+TripleBarrelTurret.__index = TripleBarrelTurret
+
+setmetatable(TripleBarrelTurret, {
     __index = Turret,
     __call = function(cls, ...)
         local self = setmetatable({}, cls)
@@ -14,17 +16,17 @@ setmetatable(DoubleBarrelTurret, {
     end
 })
 
-function DoubleBarrelTurret:init(o)
-    o.q = { x = 16, y = 0 }
+function TripleBarrelTurret:init(o)
+    o.q = { x = 32, y = 0 }
 
     Turret.init(self, o)
 
-    self.type = "DoubleBarrelTurret"
+    self.type = "TripleBarrelTurret"
     self.left = 2 * C.scale * self.scale
     self.right = 2 * C.scale * self.scale
 end
 
-function DoubleBarrelTurret:update(dt)
+function TripleBarrelTurret:update(dt)
     Turret.update(self, dt)
 
     if self.enemy == nil then return end
@@ -38,16 +40,18 @@ function DoubleBarrelTurret:update(dt)
     end
 end
 
-function DoubleBarrelTurret:shoot()
+function TripleBarrelTurret:shoot()
     -- TODO: shell should be its own object in a different file
     local leftBarrelShell = self:configureShell(self.left, math.rad(-90))
+    local middleBarrelShell = self:configureShell(0, 0)
     local rightBarrelShell = self:configureShell(self.right, math.rad(90))
 
     table.insert(self.activeShells, leftBarrelShell)
+    table.insert(self.activeShells, middleBarrelShell)
     table.insert(self.activeShells, rightBarrelShell)
 end
 
-function DoubleBarrelTurret:configureShell(addition, radians)
+function TripleBarrelTurret:configureShell(addition, radians)
     local middlePointX = self.center.x + ((8 * C.scale * self.scale) * -math.cos(self.rotation))
     local middlePointY = self.center.y + ((8 * C.scale * self.scale) * -math.sin(self.rotation))
 
@@ -69,12 +73,11 @@ function DoubleBarrelTurret:configureShell(addition, radians)
     return shell
 end
 
-
-function DoubleBarrelTurret:setScale(scaleFactor)
+function TripleBarrelTurret:setScale(scaleFactor)
     Turret.setScale(self, scaleFactor)
 
     self.left = 2 * C.scale * self.scale
     self.right = 2 * C.scale * self.scale
 end
 
-return DoubleBarrelTurret
+return TripleBarrelTurret
