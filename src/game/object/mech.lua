@@ -1,5 +1,6 @@
 local Point = require("src.common.objects.point")
 
+local Publisher = require("src.game.event.publisher")
 local Damageable = require("src.game.object.damageable")
 local Spawner = require("src.game.object.spawner")
 local Constants = require("src.game.constants")
@@ -41,31 +42,47 @@ function Mech:init(o, camera)
     }
     ---@type Size
     self.size = Size(self.size.w / 2, self.size.h / 2)
+    ---@type string
     self.type = "Mech"
 
     ---@type Camera
     self.camera = camera
     ---@type Point
     self.untranslated = Point(0, 0)
+    ---@private
     ---@type Point
     self.mouse = Point(0, 0)
+    ---@private
     ---@type Point
     self.center = self:getMiddle()
 
+    ---@private
     ---@type number
     self.shotSpeed = 5
+    ---@private
     ---@type number
     self.shotDelta = 0;
+    ---@private
     ---@type number
     self.shotDelay = 0.25
+    ---@private
     self.shells = {}
+    ---@private
     ---@type boolean
     self.mouseDown = false
+    ---@private
+    ---@type integer
     self.shellDamage = 20;
+    ---@private
+    ---@type boolean
+    self.turretsEnabled = false;
 
     self.sprite = SpriteLoader.getSprite("mech")
     self.legsQuad = love.graphics.newQuad(Constants.tile.w * 2, 0, Constants.tile.w * 2, Constants.tile.h * 2, self.sprite.image:getDimensions())
     self.bodyQuad = love.graphics.newQuad(0, 0, Constants.tile.w * 2, Constants.tile.h * 2, self.sprite.image:getDimensions())
+
+    Publisher.register(self, "wave.started", function() self.turretsEnabled = true end)
+    Publisher.register(self, "wave.ended", function() self.turretsEnabled = false end)
 end
 
 ---Draw method.
@@ -148,6 +165,7 @@ end
 ---@param dt number
 function Mech:handleTurrets(dt)
     if not self.mouseDown then return end
+    if not self.turretsEnabled then return end
 
     self.shotDelta = self.shotDelta + dt
     if self.shotDelta >= self.shotDelay then
