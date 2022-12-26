@@ -1,6 +1,6 @@
 local Event = require("src.game.event.event")
 local Publisher = require("src.game.event.publisher")
-local Scene = require("src.game.scene.scene")
+local Scene = require("src.game.scenes.scene")
 
 local Button = require("src.gui.button")
 local Color = require("src.gui.style.property.color")

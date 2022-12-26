@@ -1,8 +1,8 @@
 local Constants = require("src.game.constants")
-local Menu = require("src.game.scene.menu")
+local Menu = require("src.game.scenes.menu")
 local Publisher = require("src.game.event.publisher")
 local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
-local World = require("src.game.scene.world.world")
+local World = require("src.game.scenes.world.world")
 
 local Game = {}
 Game.dt = 0

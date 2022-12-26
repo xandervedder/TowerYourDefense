@@ -1,6 +1,6 @@
 local Tower = require("src.game.object.tower.tower")
 
-local HotbarItem = require("src.game.scene.world.component.hotbar-item.hotbar-item")
+local HotbarItem = require("src.game.scenes.world.component.hotbar-item.hotbar-item")
 
 ---@class TowerHotbarItem : HotbarItem
 local TowerHotbarItem = {}

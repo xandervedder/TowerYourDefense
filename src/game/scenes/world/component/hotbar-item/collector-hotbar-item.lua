@@ -1,7 +1,7 @@
 local Collector = require("src.game.object.collector.collector")
 local Util = require("src.game.util.util")
 
-local HotbarItem = require("src.game.scene.world.component.hotbar-item.hotbar-item")
+local HotbarItem = require("src.game.scenes.world.component.hotbar-item.hotbar-item")
 
 ---@class CollectorHotbarItem : HotbarItem
 local CollectorHotbarItem = {}
