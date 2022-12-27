@@ -5,7 +5,7 @@ local Game = require("src.game.game")
     main.lua file clean, since everything is in the src/ folder.
 ]]--
 
-function love.load()
+function love.load(_, _)
     Game.load()
 end
 
@@ -63,7 +63,7 @@ end
     Add this code to bottom of main.lua to override love.run() for Love2D 11.X
     Tickrate is how many frames your simulation happens per second (Timestep)
     Max Frame Skip is how many frames to allow skipped due to lag of simulation outpacing (on slow PCs) tickrate
---]]
+]]--
 
 -- 1 / Ticks Per Second
 local TICK_RATE = 1 / 100
@@ -75,7 +75,7 @@ local MAX_FRAME_SKIP = 25
 
 function love.run()
     if love.load then love.load(love.arg.parseGameArguments(arg), arg) end
- 
+
     -- We don't want the first frame's dt to include time taken by love.load.
     if love.timer then love.timer.step() end
 
@@ -107,7 +107,7 @@ function love.run()
         if love.graphics and love.graphics.isActive() then
             love.graphics.origin()
             love.graphics.clear(love.graphics.getBackgroundColor())
- 
+
             if love.draw then love.draw() end
             love.graphics.present()
         end
