@@ -53,6 +53,8 @@ function HotbarItem:init(o)
     self.active = false
     ---@type boolean
     self.constrained = false
+    ---@type boolean
+    self.hovering = false
     ---@type number
     self.constraint = o.constraint
     ---@type Style
@@ -66,16 +68,14 @@ function HotbarItem:init(o)
         love.mouse.setCursor(love.mouse.getSystemCursor("hand"))
 
         if self.active or self.constrained then return end
-
-        self.style.color = Color(255, 255, 255, 1)
+        self.hovering = true
     end)
 
     self:addEventListener("mouseout", function(_)
         love.mouse.setCursor(love.mouse.getSystemCursor("arrow"))
 
         if self.active or self.constrained then return end
-
-        self.style.color = Color(0, 0, 0, 1)
+        self.hovering = false
     end)
 end
 
@@ -91,6 +91,8 @@ function HotbarItem:update(dt)
         child.style.color = Color(255, 255, 255, 0.5)
     elseif self.active then
         self.style.color = Color(30, 189, 252, 1)
+    elseif self.hovering then
+        self.style.color = Color(255, 255, 255, 1)
     else
         self.style.color = Color(0, 0, 0, 1)
         child.style.color = Color(255, 255, 255, 1)
@@ -109,6 +111,7 @@ function HotbarItem:configureTool(tool, inventory)
     end
     tool.rightClickedLambda = function()
         self.active = false
+        self.hovering = false
     end
 end
 

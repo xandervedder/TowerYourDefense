@@ -94,6 +94,7 @@ function Hotbar:handleWaveStartedEvent()
     local children = self.child.children
     for _, child in pairs(children) do
         child.active = false
+        child.hovering = false
     end
 end
 
