@@ -25,40 +25,40 @@ function Turret:init(o)
     self.sprite = SpriteLoader.getSprite("turret")
     self.quad = love.graphics.newQuad(o.q.x, o.q.y, Constants.tile.w, Constants.tile.h, self.sprite.image:getDimensions())
 
-    ---@private
+    ---@protected
     ---@type table
     self.activeShells = {}
-    ---@private
+    ---@protected
     ---@type Point
     self.center = Point(self.point.x + self.size.w / 2, self.point.y + self.size.h / 2)
-    ---@private
+    ---@protected
     ---@type number
     self.damage = 25
-    ---@private
+    ---@protected
     ---@type number
     self.diff = 0
-    ---@private
+    ---@protected
     ---@type number
     self.elapsedTime = 0
-    ---@private
+    ---@protected
     ---@type Enemy
     self.enemy = nil
-    ---@private
+    ---@protected
     ---@type number
     self.firingDelay = 1
-    ---@private
+    ---@protected
     ---@type Point
     self.projectedEnemyPosition = nil
-    ---@private
+    ---@protected
     ---@type number
     self.range = o.range or 250
-    ---@private
+    ---@protected
     ---@type number
     self.rotation = 0
-    ---@private
+    ---@protected
     ---@type number
     self.rotationSpeed = 100
-    ---@private
+    ---@protected
     ---@type number
     self.shotSpeed = 3
 end
