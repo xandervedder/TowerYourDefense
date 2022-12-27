@@ -202,12 +202,12 @@ function Turret:checkCollision()
     end
 end
 
----Predicts the enemy position by calculating how long it would take for the 'bullet' to travel to the enemy. With
----this information it will also calculate the difference the turret would need to actually hit the enemy.
+---Predicts the enemy position by calculating how long it would take for the 'bullet' to travel to the enemy. 
+---With this information it will also calculate the difference the turret would need to actually hit the enemy.
 ---@param dt number
 ---@return Point
 function Turret:predictPosition(dt)
-    local position = self.enemy:getMiddle()
+    local position = self.enemy:getPoint()
     local distance = math.sqrt(math.pow(self.center.x - position.x, 2) + math.pow(self.center.y - position.y, 2))
     local time = dt * distance / self.shotSpeed
     local steps = time / dt
