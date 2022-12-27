@@ -21,9 +21,7 @@ function MegaTowerTool:init(o)
     ---@type Camera
     self.camera = o.camera
     ---@type Point
-    self.mouse = { x = 0, y = 0 }
-    ---@type Point
-    self.untranslated = { x = 0, y = 0 }
+    self.mouse = Point(0, 0)
     ---@type number
     self.lineWidth = C.scale
     ---@type boolean
@@ -94,6 +92,8 @@ function MegaTowerTool:update()
     else
         self.filled = false
     end
+
+    self.mouse = self.camera:mousePosition()
 end
 
 ---Checks if the gameobjects in the self.occupied space are Towers.
@@ -115,24 +115,6 @@ function MegaTowerTool:checkForTowers(occupiedSpots)
         occupiedSpots.bl.turret.type == type and
         occupiedSpots.br.turret.type == type
     )
-end
-
----Updates the point of the mouse.
----@param x number
----@param y number
-function MegaTowerTool:updatePoint(x, y)
-    -- TODO: this method is the same one as the placement-tool's method:
-    local camera = self.camera:getPoint()
-
-    self.mouse = Point(math.abs(x - camera.x), math.abs(y - camera.y))
-    self.untranslated = Point(x, y)
-end
-
----Function that is called when the mouse has been moved.
----@param x number
----@param y number
-function MegaTowerTool:mouseMoved(x, y, _, _, _)
-    self:updatePoint(x, y)
 end
 
 function MegaTowerTool:mousePressed(_, _, _, _, _)

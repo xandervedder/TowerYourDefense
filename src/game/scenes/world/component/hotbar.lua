@@ -143,7 +143,6 @@ function Hotbar:mouseMoved(x, y, dx, dy, touch)
     if self.hide then return end
 
     Container.mouseMoved(self, x, y, dx, dy, touch)
-    self.tool:mouseMoved(x, y, nil, nil, nil)
 end
 
 function Hotbar:getTool()

@@ -34,8 +34,6 @@ function PlacementTool:init(o)
     self.obstructed = false
     ---@type Point
     self.mouse = Point(0, 0)
-    ---@type Point
-    self.untranslated = Point(0, 0)
 
     --[[
         Lambda initializations, used to customize the logic
@@ -80,10 +78,7 @@ function PlacementTool:update(_)
     if not self.enabled then return end
 
     self.obstructed = self:isObstructed();
-
-    local x = self.untranslated.x
-    local y = self.untranslated.y
-    self:updatePosition(x, y)
+    self.mouse = self.camera:mousePosition()
 end
 
 ---Checks whether the tool is obstructed by something in the object pool.
@@ -95,25 +90,7 @@ function PlacementTool:isObstructed()
             return true
         end
     end
-
     return false
-end
-
----Updates the position of the mouse based on where it is in the grid.
----@param x number
----@param y number
-function PlacementTool:updatePosition(x, y)
-    local camera = self.camera:getPoint()
-
-    self.mouse = Point(math.abs(x - camera.x), math.abs(y - camera.y))
-    self.untranslated = Point(x, y)
-end
-
----Function that is called when the mouse has been moved.
----@param x number
----@param y number
-function PlacementTool:mouseMoved(x, y, _, _, _)
-    self:updatePosition(x, y)
 end
 
 ---Function that is called when the mouse has been pressed.

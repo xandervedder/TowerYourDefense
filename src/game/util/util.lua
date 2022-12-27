@@ -85,4 +85,14 @@ function Util.isWithinSurface(p1, p2, s1, s2)
            s1.h + p1.y > p2.y
 end
 
+---Returns x if it is within the minimum and maximum range.
+---If x is outside the range either the minimum or maximum is returned.
+---@param x number
+---@param min number
+---@param max number
+---@return number
+function math.clamp(x, min, max)
+    return x < min and min or (x > max and max or x)
+end
+
 return Util

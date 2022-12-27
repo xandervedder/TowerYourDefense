@@ -58,7 +58,7 @@ function World:init()
     ---@type WaveCount
     self.waveCount = WaveCount()
     ---@type Camera
-    self.camera = Camera({ screen = { love.graphics.getDimensions() } })
+    self.camera = Camera()
     ---@type Base
     local base = Base({ point = Util.fromCoordinate(2, 3) })
     ---@type Pool
@@ -154,7 +154,6 @@ end
 
 function World:mouseMoved(x, y, dx, dy, touch)
     self.ui:mouseMoved(x, y, dx, dy, touch)
-    self.megaTowerTool:mouseMoved(x, y, dx, dy, touch)
     self.mech:mouseMoved(x, y, dx, dy, touch)
 end
 

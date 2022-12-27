@@ -145,8 +145,7 @@ end
 function Mech:update(dt)
     Damageable.update(self, dt)
 
-    local camera = self.camera:getPoint()
-    self.mouse = Point(math.abs(self.untranslated.x - camera.x), math.abs(self.untranslated.y - camera.y))
+    self.mouse = self.camera:mousePosition()
     self.rotation = self:rotateBodyToMousePoint()
 
     self:handleMovement()
