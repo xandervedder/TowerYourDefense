@@ -140,6 +140,7 @@ function MegaTowerTool:mousePressed(_, _, _, _, _)
 
     self.tower.turret:setSize(2)
     self.tower.turret:setScale(2)
+    --TODO: setters (protected access)
     self.tower.turret.range = self.tower.turret.range * 2
     self.tower.turret.damage = self.tower.turret.damage * 5
     self.tower.turret.firingDelay = self.tower.turret.firingDelay * 4
