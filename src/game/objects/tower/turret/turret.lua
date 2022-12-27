@@ -25,28 +25,40 @@ function Turret:init(o)
     self.sprite = SpriteLoader.getSprite("turret")
     self.quad = love.graphics.newQuad(o.q.x, o.q.y, Constants.tile.w, Constants.tile.h, self.sprite.image:getDimensions())
 
+    ---@private
     ---@type table
     self.activeShells = {}
+    ---@private
     ---@type Point
     self.center = Point(self.point.x + self.size.w / 2, self.point.y + self.size.h / 2)
+    ---@private
     ---@type number
     self.damage = 25
+    ---@private
     ---@type number
     self.diff = 0
+    ---@private
     ---@type number
     self.elapsedTime = 0
+    ---@private
     ---@type Enemy
     self.enemy = nil
+    ---@private
     ---@type number
-    self.firingDelay = 0.2
+    self.firingDelay = 1
+    ---@private
     ---@type Point
     self.projectedEnemyPosition = nil
+    ---@private
     ---@type number
     self.range = o.range or 250
+    ---@private
     ---@type number
     self.rotation = 0
+    ---@private
     ---@type number
-    self.rotationSpeed = 1
+    self.rotationSpeed = 100
+    ---@private
     ---@type number
     self.shotSpeed = 3
 end
@@ -132,6 +144,8 @@ function Turret:withinRange(enemy)
     return trX * trX + trY * trY <= self.range * self.range
 end
 
+---Rotates the barrel of the turret.
+---@param dt number
 function Turret:rotateBarrel(dt)
     if not self:withinRange(self.enemy) then return end
 
@@ -157,24 +171,22 @@ function Turret:rotateBarrel(dt)
     local target = math.deg(radians)
     local current = math.deg(self.rotation)
     self.diff = current - target
+    if math.abs(self.diff) < 1 then return end
 
-    if math.abs(self.diff) > 1 then
-        -- When the barrel needs to move from 20 -> 290
-        if 360 - target + current < 180 then
-            self.rotation = self.rotation + (-0.01 * self.rotationSpeed)
-        -- When the barrel needs to move from 290 -> 20
-        elseif math.abs(self.diff) > 180 then
-            self.rotation = self.rotation + (0.01 * self.rotationSpeed)
-        elseif target > current then
-            self.rotation = self.rotation + (0.01 * self.rotationSpeed)
-        else
-            self.rotation = self.rotation + (-0.01 * self.rotationSpeed)
-        end
+    -- When the barrel needs to move from 20 -> 290
+    if 360 - target + current < 180 then
+        self.rotation = self.rotation + (-0.01 * self.rotationSpeed) * dt
+    -- When the barrel needs to move from 290 -> 20
+    elseif math.abs(self.diff) > 180 then
+        self.rotation = self.rotation + (0.01 * self.rotationSpeed) * dt
+    elseif target > current then
+        self.rotation = self.rotation + (0.01 * self.rotationSpeed) * dt
+    else
+        self.rotation = self.rotation + (-0.01 * self.rotationSpeed) * dt
     end
-
-    return self.rotation
 end
 
+---Checks if any of the shells - active to this turret - has a collision with the targeted enemy.
 function Turret:checkCollision()
     for i = #self.activeShells, 1, -1 do
         local bullet = self.activeShells[i]
