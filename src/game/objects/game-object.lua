@@ -63,6 +63,8 @@ function GameObject:setPoint(point)
     self.point = point
 end
 
+---Gets the size.
+---@return Size
 function GameObject:getSize() return self.size end
 
 ---Sets the size according to the given scale

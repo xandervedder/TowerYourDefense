@@ -72,4 +72,17 @@ function Util.isWithinPosition(p1, p2, s2)
     return (p1.x > p2.x and p1.x < p2.x + s2.w) and (p1.y > p2.y and p1.y < p2.y + s2.h)
 end
 
+--TODO: ... you know what
+---Checks if point 1 is in point 2, including its surface area
+---@param p1 Point
+---@param p2 Point
+---@param s1 Size
+---@param s2 Size
+function Util.isWithinSurface(p1, p2, s1, s2)
+    return p1.x < p2.x + s2.w and
+           p1.x + s1.w > p2.x and
+           p1.y < p2.y + s2.h and
+           s1.h + p1.y > p2.y
+end
+
 return Util

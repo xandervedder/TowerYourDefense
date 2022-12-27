@@ -31,7 +31,8 @@ setmetatable(Mech, {
 ---Constructor
 ---@param o any
 ---@param camera Camera
-function Mech:init(o, camera)
+---@param gameObjects Pool
+function Mech:init(o, camera, gameObjects)
     Damageable.init(self, o, 500)
 
     self.controls = {
@@ -76,6 +77,9 @@ function Mech:init(o, camera)
     ---@private
     ---@type boolean
     self.turretsEnabled = false;
+    ---@private
+    ---@type Pool
+    self.gameObjects = gameObjects
 
     self.sprite = SpriteLoader.getSprite("mech")
     self.legsQuad = love.graphics.newQuad(Constants.tile.w * 2, 0, Constants.tile.w * 2, Constants.tile.h * 2, self.sprite.image:getDimensions())
@@ -121,6 +125,8 @@ function Mech:draw()
         love.graphics.setColor(0, 0, 0)
         love.graphics.circle("fill", shell.x, shell.y, 0.75 * Constants.scale * self.scale)
     end
+
+    self.type = "mech"
 end
 
 ---Gets the rotation of the legs.
@@ -143,14 +149,33 @@ function Mech:update(dt)
     self.mouse = Point(math.abs(self.untranslated.x - camera.x), math.abs(self.untranslated.y - camera.y))
     self.rotation = self:rotateBodyToMousePoint()
 
-    if self.controls.up then self.point.y = self.point.y - 2 end
-    if self.controls.down then self.point.y = self.point.y + 2 end
-    if self.controls.left then self.point.x = self.point.x - 2 end
-    if self.controls.right then self.point.x = self.point.x + 2 end
-
+    self:handleMovement()
     self:handleShells()
     self:handleTurrets(dt)
     self:handleCollision()
+end
+
+---Handles the movement of the Mech. 
+---Also checks if the movement will cause a collision with something.
+function Mech:handleMovement()
+    ---@type Point
+    local newPoint = Point( self.point.x, self.point.y)
+    if self.controls.up    then newPoint.y = self.point.y - 2 end
+    if self.controls.down  then newPoint.y = self.point.y + 2 end
+    if self.controls.left  then newPoint.x = self.point.x - 2 end
+    if self.controls.right then newPoint.x = self.point.x + 2 end
+
+    for _, gameObject in pairs(self.gameObjects:get()) do
+        if gameObject.type == "mech" then goto continue end
+
+        if Util.isWithinSurface(newPoint, gameObject:getPoint(), self:getSize(), gameObject:getSize()) then
+            return
+        end
+
+        ::continue::
+    end
+
+    self.point = newPoint
 end
 
 ---Handles updating of the shells.

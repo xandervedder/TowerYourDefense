@@ -59,15 +59,15 @@ function World:init()
     self.waveCount = WaveCount()
     ---@type Camera
     self.camera = Camera({ screen = { love.graphics.getDimensions() } })
-    ---@type Mech
-    self.mech = Mech({ point = Util.fromCoordinate(3, 3) }, self.camera)
-    self.camera:followObject(self.mech)
     ---@type Base
     local base = Base({ point = Util.fromCoordinate(2, 3) })
     ---@type Pool
     self.gameObjects = Pool()
+    ---@type Mech
+    self.mech = Mech({ point = Util.fromCoordinate(3, 3) }, self.camera, self.gameObjects)
     self.gameObjects:add(base)
     self.gameObjects:add(self.mech)
+    self.camera:followObject(self.mech)
     ---@type Pool
     self.points = Pool()
     ---@type Spawner
