@@ -164,6 +164,15 @@ function Mech:handleMovement()
     if self.controls.left  then newPoint.x = self.point.x - 2 end
     if self.controls.right then newPoint.x = self.point.x + 2 end
 
+    local worldSize = Constants.world
+    local size = self:getSize()
+    if (newPoint.x < 0 or newPoint.x >= worldSize.w) or
+       (newPoint.y < 0 or newPoint.y >= worldSize.h) or
+       (newPoint.x + size.w < 0 or newPoint.x + size.w >= worldSize.w) or
+       (newPoint.y + size.h < 0 or newPoint.y + size.h >= worldSize.h) then
+        return
+    end
+
     for _, gameObject in pairs(self.gameObjects:get()) do
         if gameObject.type == "mech" then goto continue end
 
