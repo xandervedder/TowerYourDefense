@@ -86,6 +86,9 @@ function Mech:init(o, camera, gameObjects)
     ---@private
     ---@type Sprite
     self.sprite = SpriteLoader.getSprite("mech")
+    ---@private
+    ---@type number
+    self.legRotation = self:getLegRotation()
 
     local height = Constants.tile.h
     local width = Constants.tile.w
@@ -126,7 +129,7 @@ function Mech:draw()
         self.animator:activeQuad(),
         self.center.x,
         self.center.y,
-        self:getLegRotation(),
+        self.legRotation,
         Constants.scale / 2,
         Constants.scale / 2,
         Constants.tile.w,
@@ -158,6 +161,8 @@ end
 ---@private
 ---@return number
 function Mech:getLegRotation()
+    if not self:isMoving() then return self.legRotation end
+
     if self.controls.up and self.controls.left then return math.rad(225) end
     if self.controls.up and self.controls.right then return math.rad(315) end
     if self.controls.down and self.controls.right then return math.rad(45) end
@@ -185,6 +190,7 @@ function Mech:update(dt)
     self.animator:update(dt)
     self.mouse = self.camera:mousePosition()
     self.rotation = self:rotateBodyToMousePoint()
+    self.legRotation = self:getLegRotation()
 
     self:handleMovement()
     self:handleShells()
