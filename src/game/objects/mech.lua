@@ -4,11 +4,14 @@ local Publisher = require("src.game.event.publisher")
 local Damageable = require("src.game.objects.damageable")
 local Spawner = require("src.game.objects.spawner")
 local Constants = require("src.game.constants")
+local SpriteAnimator = require("src.game.graphics.sprite-animator")
 local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
 local Util = require("src.game.util.util")
 
 -- TODO: location of import
 local Size = require("src.gui.style.property.size")
+
+require("src.game.graphics.love-extensions")
 
 --[[
     The mech that the player controls.
@@ -35,6 +38,7 @@ setmetatable(Mech, {
 function Mech:init(o, camera, gameObjects)
     Damageable.init(self, o, 500)
 
+    ---@private
     self.controls = {
         up = false,
         down = false,
@@ -46,10 +50,9 @@ function Mech:init(o, camera, gameObjects)
     ---@type string
     self.type = "Mech"
 
+    ---@private
     ---@type Camera
     self.camera = camera
-    ---@type Point
-    self.untranslated = Point(0, 0)
     ---@private
     ---@type Point
     self.mouse = Point(0, 0)
@@ -80,10 +83,32 @@ function Mech:init(o, camera, gameObjects)
     ---@private
     ---@type Pool
     self.gameObjects = gameObjects
-
+    ---@private
+    ---@type Sprite
     self.sprite = SpriteLoader.getSprite("mech")
-    self.legsQuad = love.graphics.newQuad(Constants.tile.w * 2, 0, Constants.tile.w * 2, Constants.tile.h * 2, self.sprite.image:getDimensions())
-    self.bodyQuad = love.graphics.newQuad(0, 0, Constants.tile.w * 2, Constants.tile.h * 2, self.sprite.image:getDimensions())
+
+    local height = Constants.tile.h
+    local width = Constants.tile.w
+    ---@private
+    self.bodyQuad = love.newQuad(0, 0, width * 2, height * 2, self.sprite)
+    ---@private
+    self.legsDefaultStateQuad = love.newQuad(width * 2, 0, width * 2, height * 2, self.sprite)
+    ---@private
+    self.rightLegMovingQuad = love.newQuad(0, height * 2, width * 2, height * 2, self.sprite)
+    ---@private
+    self.rightLegMovedQuad = love.newQuad(width * 2, height * 2, width * 2, height * 2, self.sprite)
+    ---@private
+    self.leftLegMovingQuad = love.newQuad(width * 4, height * 2, width * 2, height * 2, self.sprite)
+    ---@private
+    self.leftLegMovedQuad = love.newQuad(width * 6, height * 2, width * 2, height * 2, self.sprite)
+    ---@private
+    ---@type SpriteAnimator
+    self.animator = SpriteAnimator(self.legsDefaultStateQuad, {
+        { quad = self.rightLegMovingQuad, time = 0.1 },
+        { quad = self.rightLegMovedQuad, time = 0.25 },
+        { quad = self.leftLegMovingQuad, time = 0.1 },
+        { quad = self.leftLegMovedQuad, time = 0.25 },
+    })
 
     Publisher.register(self, "wave.started", function() self.turretsEnabled = true end)
     Publisher.register(self, "wave.ended", function() self.turretsEnabled = false end)
@@ -98,14 +123,14 @@ function Mech:draw()
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(
         self.sprite.image,
-        self.legsQuad,
+        self.animator:activeQuad(),
         self.center.x,
         self.center.y,
         self:getLegRotation(),
         Constants.scale / 2,
         Constants.scale / 2,
-        (Constants.tile.w * 2) / 2,
-        (Constants.tile.h * 2) / 2
+        Constants.tile.w,
+        Constants.tile.h
     )
 
     love.graphics.draw(
@@ -117,8 +142,8 @@ function Mech:draw()
         Constants.scale / 2,
         Constants.scale / 2,
         -- Origin points will be in the center of the image:
-        (Constants.tile.w * 2) / 2,
-        (Constants.tile.h * 2) / 2
+        Constants.tile.w,
+        Constants.tile.h
     )
 
     for _, shell in pairs(self.shells) do
@@ -130,11 +155,17 @@ function Mech:draw()
 end
 
 ---Gets the rotation of the legs.
+---@private
 ---@return number
 function Mech:getLegRotation()
-    if self.controls.up then return math.rad(90) end
-    if self.controls.down then return math.rad(-90) end
-    if self.controls.right then return math.rad(180) end
+    if self.controls.up and self.controls.left then return math.rad(225) end
+    if self.controls.up and self.controls.right then return math.rad(315) end
+    if self.controls.down and self.controls.right then return math.rad(45) end
+    if self.controls.down and self.controls.left then return math.rad(135) end
+
+    if self.controls.up then return math.rad(-90) end
+    if self.controls.down then return math.rad(90) end
+    if self.controls.left then return math.rad(180) end
 
     --? This is the default position:
     return math.rad(0)
@@ -145,6 +176,13 @@ end
 function Mech:update(dt)
     Damageable.update(self, dt)
 
+    if not self:isMoving() then
+        self.animator:pause()
+    else
+        self.animator:resume()
+    end
+
+    self.animator:update(dt)
     self.mouse = self.camera:mousePosition()
     self.rotation = self:rotateBodyToMousePoint()
 
@@ -154,8 +192,15 @@ function Mech:update(dt)
     self:handleCollision()
 end
 
+---Determines whether the mech is moving or not.
+---@return boolean
+function Mech:isMoving()
+    return self.controls.up or self.controls.down or self.controls.left or self.controls.right
+end
+
 ---Handles the movement of the Mech. 
 ---Also checks if the movement will cause a collision with something.
+---@private
 function Mech:handleMovement()
     ---@type Point
     local newPoint = Point( self.point.x, self.point.y)
@@ -164,29 +209,45 @@ function Mech:handleMovement()
     if self.controls.left  then newPoint.x = self.point.x - 2 end
     if self.controls.right then newPoint.x = self.point.x + 2 end
 
+    if self:collidesWithWorld(newPoint) or self:collidesWithObject(newPoint) then return end
+
+    self.point = newPoint
+end
+
+---Checks if the Mech collides with the world.
+---@private
+---@param point Point
+---@return boolean
+function Mech:collidesWithWorld(point)
     local worldSize = Constants.world
     local size = self:getSize()
-    if (newPoint.x < 0 or newPoint.x >= worldSize.w) or
-       (newPoint.y < 0 or newPoint.y >= worldSize.h) or
-       (newPoint.x + size.w < 0 or newPoint.x + size.w >= worldSize.w) or
-       (newPoint.y + size.h < 0 or newPoint.y + size.h >= worldSize.h) then
-        return
-    end
+    return
+        (point.x < 0 or point.x >= worldSize.w) or
+        (point.y < 0 or point.y >= worldSize.h) or
+        (point.x + size.w < 0 or point.x + size.w >= worldSize.w) or
+        (point.y + size.h < 0 or point.y + size.h >= worldSize.h)
+end
 
+---Checks if the Mech collides with any object.
+---@private
+---@param point Point
+---@return boolean
+function Mech:collidesWithObject(point)
     for _, gameObject in pairs(self.gameObjects:get()) do
         if gameObject.type == "mech" then goto continue end
 
-        if Util.isWithinSurface(newPoint, gameObject:getPoint(), self:getSize(), gameObject:getSize()) then
-            return
+        if Util.isWithinSurface(point, gameObject:getPoint(), self:getSize(), gameObject:getSize()) then
+            return true
         end
 
         ::continue::
     end
 
-    self.point = newPoint
+    return false
 end
 
 ---Handles updating of the shells.
+---@private
 function Mech:handleShells()
     for _, shell in pairs(self.shells) do
         shell.x = shell.x + shell.velocity.x
@@ -195,6 +256,7 @@ function Mech:handleShells()
 end
 
 ---Handles the shooting of both turrets.
+---@private
 ---@param dt number
 function Mech:handleTurrets(dt)
     if not self.mouseDown then return end
@@ -263,16 +325,6 @@ function Mech:keyProcessor(key, on)
     if key == "left" or key == "a" then self.controls.left = on end
     if key == "right" or key == "d" then self.controls.right = on end
     if key == "h" then self.controls.hide = on end
-end
-
----Mouse moved event.
----@param x number
----@param y number
----@param dx number
----@param dy number
----@param touch boolean
-function Mech:mouseMoved(x, y, dx, dy, touch)
-    self.untranslated = Point(x, y)
 end
 
 ---Mouse pressed event.

@@ -98,7 +98,7 @@ function World:update(dt)
         object:update(dt)
     end
 
-    self.camera:update(dt)
+    self.camera:update()
     self.wave:update(dt)
     self.ui:update(dt)
     self.topBar:update(dt)
@@ -154,7 +154,6 @@ end
 
 function World:mouseMoved(x, y, dx, dy, touch)
     self.ui:mouseMoved(x, y, dx, dy, touch)
-    self.mech:mouseMoved(x, y, dx, dy, touch)
 end
 
 function World:mousePressed(x, y, button, touch, presses)
