@@ -46,6 +46,13 @@ function Timer:hasPassed(time)
     return flooredRemainder == 0
 end
 
+---Checks whether or not the delta has passed the amount given.
+---@param time number
+---@return boolean
+function Timer:hasPassedExact(time)
+    return self.deltaPassed >= time
+end
+
 ---Returns whether the specified amount of seconds have passed.
 ---@return boolean
 function Timer:hasPassedTargetSeconds()
