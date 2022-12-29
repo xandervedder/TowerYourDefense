@@ -51,3 +51,8 @@ end
 function TestTimer:testSecondsGetterWithZero()
     Lu.assertEquals(self.timer:seconds(), 0)
 end
+
+function TestTimer:testSecondsHavePassedWithIrregularNumbers()
+    self.timer:update(0.5)
+    Lu.assertTrue(self.timer:hasPassed(0.5))
+end

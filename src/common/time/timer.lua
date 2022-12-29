@@ -3,7 +3,7 @@
 ]]--
 
 ---@class Timer
----@overload fun(seconds: number): Timer
+---@overload fun(seconds?: number): Timer
 local Timer = {}
 Timer.__index = Timer
 
@@ -16,11 +16,11 @@ setmetatable(Timer, {
 })
 
 ---Constructor.
----@param seconds number
+---@param seconds? number
 function Timer:init(seconds)
     ---@private
     ---@type integer
-    self.targetSeconds = seconds
+    self.targetSeconds = seconds or 0
     ---@private
     ---@type number
     self.deltaPassed = 0
@@ -37,10 +37,10 @@ function Timer:seconds()
     return math.floor(self.deltaPassed)
 end
 
----Checks whether or not `x` amount of seconds have passed.
----@param seconds any
-function Timer:hasPassed(seconds)
-    local remainder = self.deltaPassed % seconds
+---Checks whether a certain amount of time has passed.
+---@param time number
+function Timer:hasPassed(time)
+    local remainder = self.deltaPassed % time
     --? Everything below 1 is fine.
     local flooredRemainder = math.floor(remainder)
     return flooredRemainder == 0
