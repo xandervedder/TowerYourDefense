@@ -136,7 +136,7 @@ end
 ---Gets the dimensions of the to be rendered map.
 ---@return Size
 function MapRenderer:getDimensions()
-    return Size(C.tile.scaledHeight() * #self.quads[1], C.tile.scaledWidth() * #self.quads)
+    return Size(C.tile.scaledWidth() * #self.quads[1], (C.tile.scaledHeight() * #self.quads) + 35)
 end
 
 ---Gets the grid size of the map, which tells how many cells are within the map.
