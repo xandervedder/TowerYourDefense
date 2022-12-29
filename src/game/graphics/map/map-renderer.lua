@@ -8,6 +8,7 @@ local C = require("src.game.constants")
 local Size = require("src.gui.style.property.size")
 
 ---@class MapRenderer
+---@overload fun(): MapRenderer
 local MapRenderer = {}
 MapRenderer.__index = MapRenderer
 MapRenderer.LEVEL_DIRECTORY = "/assets/map/"
@@ -27,6 +28,7 @@ setmetatable(MapRenderer, {
     end
 })
 
+---Constructor of MapRenderer.
 function MapRenderer:init()
     -- For some reason, we cannot directly insert the string that
     -- comes from the love.filesystem.read() method.
@@ -46,6 +48,7 @@ function MapRenderer:init()
     self:prepareQuads()
 end
 
+---Prepares the quads before they can be rendered.
 function MapRenderer:prepareQuads()
     ---@type table
     self.quads = {}
@@ -136,7 +139,7 @@ end
 ---Gets the dimensions of the to be rendered map.
 ---@return Size
 function MapRenderer:getDimensions()
-    return Size(C.tile.scaledWidth() * #self.quads[1], (C.tile.scaledHeight() * #self.quads) + 35)
+    return Size(C.tile.scaledWidth() * #self.quads[1], (C.tile.scaledHeight() * #self.quads))
 end
 
 ---Gets the grid size of the map, which tells how many cells are within the map.

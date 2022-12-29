@@ -8,11 +8,12 @@ local Game = {}
 Game.dt = 0
 
 function Game.configure(t)
+    -- https://love2d.org/wiki/Config_Files
     t.window.title = "Tower Your Defense"
-    t.window.width = 1920
-    t.window.height = 1080
     t.window.display = 2 --* For now...
-    t.window.resizable = true
+    t.window.resizable = false
+    t.window.fullscreen = true
+    t.window.borderless = true
     t.window.highdpi = true
     t.vsync = 0
 end
@@ -31,7 +32,11 @@ function Game.load()
 end
 
 function Game.draw()
+    love.graphics.setColor(1, 0, 0)
+    love.graphics.rectangle("fill", 0, 0, Constants.world.w, Constants.world.w)
+
     Game.scene:draw()
+
 
     -- For debugging
     love.graphics.setColor(0, 1, 0)

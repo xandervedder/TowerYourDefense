@@ -52,7 +52,8 @@ function World:init()
 
     ---@type MapRenderer
     self.mapRenderer = MapRenderer()
-    Constants.world = self.mapRenderer:getDimensions()
+    self:setWorldScale()
+
     ---@type Inventory
     self.inventory = Inventory()
     ---@type WaveCount
@@ -81,8 +82,7 @@ function World:init()
     self.gameObjects:add(self.spawner)
     ---@type Wave
     self.wave = Wave({ self.spawner });
-    local mapSize = self.mapRenderer:getDimensions();
-    self.canvas = love.graphics.newCanvas(mapSize.w, mapSize.h)
+    self.canvas = love.graphics.newCanvas(Constants.world.w, Constants.world.h)
     ---@type MegaTowerTool
     self.megaTowerTool = MegaTowerTool({ camera = self.camera, pool = self.gameObjects })
 
@@ -91,6 +91,23 @@ function World:init()
 
     ---@param event Event
     Publisher.register(self, "objects.created", function(event) self:updateObjectPool(event.payload) end)
+end
+
+---Modifies the scale of the world if it cannot completely fill the screen,
+---this is mostly usefull for screens that have a high resolution.
+function World:setWorldScale()
+    Constants.world = self.mapRenderer:getDimensions()
+    local width, height = love.graphics.getDimensions()
+    local diffX = Constants.world.w - width
+    local diffY = Constants.world.h - height
+    if diffX >= 0 and diffY >= 0 then return end
+
+    local scaleX = width / Constants.world.w
+    local scaleY = height / Constants.world.h
+    local scale = math.ceil(math.max(scaleX, scaleY))
+    Constants.scale = (Constants.scale * scale) - scale
+    --? After updating the scale, we should also update the size of the world accordingly.
+    Constants.world = self.mapRenderer:getDimensions()
 end
 
 function World:update(dt)

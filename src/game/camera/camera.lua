@@ -52,6 +52,7 @@ function Camera:followObject(object)
     self.point = self.object:getMiddle()
 end
 
+---Resize method of the camera.
 function Camera:resize()
     local width, height = love.graphics.getDimensions()
     self.screen = Point(width, height)
