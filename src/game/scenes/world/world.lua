@@ -94,7 +94,7 @@ function World:init()
 end
 
 ---Modifies the scale of the world if it cannot completely fill the screen,
----this is mostly usefull for screens that have a high resolution.
+---this is mostly useful for screens that have a high resolution.
 function World:setWorldScale()
     Constants.world = self.mapRenderer:getDimensions()
     local width, height = love.graphics.getDimensions()
