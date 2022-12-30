@@ -27,15 +27,13 @@ setmetatable(Base, {
 function Base:init(o)
     GameObject.init(self, o)
     self.sprite = SpriteLoader.getSprite("base")
-
-    self.quad = love.graphics.newQuad(0, 0, C.tile.w, C.tile.h, self.sprite.image:getDimensions())
 end
 
 function Base:draw()
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(
         self.sprite.image,
-        self.quad,
+        self.sprite.quads[1],
         self.point.x,
         self.point.y,
         0,
@@ -45,7 +43,7 @@ function Base:draw()
 end
 
 function Base:toImages()
-    return GameObject.imagesFromQuads(self.sprite.imageData, { self.quad })
+    return GameObject.imagesFromQuads(self.sprite.imageData, { self.sprite.quads[1] })
 end
 
 return Base

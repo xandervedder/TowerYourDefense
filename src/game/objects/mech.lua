@@ -89,28 +89,13 @@ function Mech:init(o, camera, gameObjects)
     ---@private
     ---@type number
     self.legRotation = self:getLegRotation()
-
-    local height = Constants.tile.h
-    local width = Constants.tile.w
-    ---@private
-    self.bodyQuad = love.newQuad(0, 0, width * 2, height * 2, self.sprite)
-    ---@private
-    self.legsDefaultStateQuad = love.newQuad(width * 2, 0, width * 2, height * 2, self.sprite)
-    ---@private
-    self.rightLegMovingQuad = love.newQuad(0, height * 2, width * 2, height * 2, self.sprite)
-    ---@private
-    self.rightLegMovedQuad = love.newQuad(width * 2, height * 2, width * 2, height * 2, self.sprite)
-    ---@private
-    self.leftLegMovingQuad = love.newQuad(width * 4, height * 2, width * 2, height * 2, self.sprite)
-    ---@private
-    self.leftLegMovedQuad = love.newQuad(width * 6, height * 2, width * 2, height * 2, self.sprite)
     ---@private
     ---@type SpriteAnimator
-    self.animator = SpriteAnimator(self.legsDefaultStateQuad, {
-        { quad = self.rightLegMovingQuad, time = 0.1 },
-        { quad = self.rightLegMovedQuad, time = 0.25 },
-        { quad = self.leftLegMovingQuad, time = 0.1 },
-        { quad = self.leftLegMovedQuad, time = 0.25 },
+    self.animator = SpriteAnimator(self.sprite.quads[2], {
+        { quad = self.sprite.quads[5], time = 0.1  }, -- Right leg moving
+        { quad = self.sprite.quads[6], time = 0.25 }, -- Right leg moved
+        { quad = self.sprite.quads[7], time = 0.1  }, -- Left leg moving
+        { quad = self.sprite.quads[8], time = 0.25 }, -- Left leg moved
     })
 
     Publisher.register(self, "wave.started", function() self.turretsEnabled = true end)
@@ -138,7 +123,7 @@ function Mech:draw()
 
     love.graphics.draw(
         self.sprite.image,
-        self.bodyQuad,
+        self.sprite.quads[1],
         self.center.x,
         self.center.y,
         self.rotation,

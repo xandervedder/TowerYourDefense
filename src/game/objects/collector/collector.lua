@@ -21,8 +21,6 @@ function Collector:init(o)
     GameObject.init(self, o)
 
     self.sprite = SpriteLoader.getSprite("collection")
-    self.structureQuad = love.graphics.newQuad(0, 0, C.tile.w, C.tile.h, self.sprite.image:getDimensions())
-    self.drillQuad = love.graphics.newQuad(C.tile.w, 0, C.tile.w, C.tile.h, self.sprite.image:getDimensions())
 
     self.center = {
         x = self.point.x + self.size.w / 2,
@@ -38,7 +36,7 @@ function Collector:draw()
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.draw(
         self.sprite.image,
-        self.drillQuad,
+        self.sprite.quads[2],
         self.center.x,
         self.center.y,
         self.rotation,
@@ -49,7 +47,7 @@ function Collector:draw()
         C.tile.h / 2
     )
 
-    love.graphics.draw(self.sprite.image, self.structureQuad, self.point.x, self.point.y, 0, C.scale, C.scale)
+    love.graphics.draw(self.sprite.image, self.sprite.quads[1], self.point.x, self.point.y, 0, C.scale, C.scale)
 end
 
 function Collector:update(dt)
@@ -63,7 +61,7 @@ function Collector:update(dt)
 end
 
 function Collector:toImages()
-    return GameObject.imagesFromQuads(self.sprite.imageData, { self.structureQuad, self.drillQuad })
+    return GameObject.imagesFromQuads(self.sprite.imageData, { self.sprite.quads[1], self.sprite.quads[2] })
 end
 
 return Collector
