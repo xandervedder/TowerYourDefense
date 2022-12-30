@@ -6,7 +6,6 @@ local Event = require("src.game.event.event")
 local Damageable = require("src.game.objects.damageable")
 local Publisher = require("src.game.event.publisher")
 local Util = require("src.game.util.util")
-local PathHelper = require("src.game.util.path-helper")
 
 --TODO: move to common
 local Size = require("src.gui.style.property.size")
