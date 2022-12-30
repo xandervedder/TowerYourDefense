@@ -1,3 +1,5 @@
+local Event = require("src.game.event.event")
+local Publisher = require("src.game.event.publisher")
 local Damageable = require("src.game.objects.damageable")
 
 ---@class Base : Damageable
@@ -36,6 +38,12 @@ function Base:draw()
 
     love.graphics.setColor(1, 1, 1)
     love.graphics.print("BASE", self.point.x, self.point.y)
+end
+
+function Base:die()
+    Damageable.die(self)
+
+    Publisher.publish(Event("game.over"))
 end
 
 return Base

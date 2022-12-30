@@ -4,6 +4,7 @@ local Publisher = require("src.game.event.publisher")
 local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
 local World = require("src.game.scenes.world.world")
 
+---@class Game
 local Game = {}
 Game.dt = 0
 
@@ -29,14 +30,19 @@ function Game.load()
 
     -- Is the current active scene
     Game.scene = Game.scenes.menu
+
+    Publisher.register(Game, "game.restart", function() Game.restart() end)
+end
+
+---Restarts the game by recreating the world.
+---Note: this might not be the most efficient way of doing this, but it will do for now.
+function Game.restart()
+    Game.scene = Game.scenes.menu
+    Game.scenes.world = World()
 end
 
 function Game.draw()
-    love.graphics.setColor(1, 0, 0)
-    love.graphics.rectangle("fill", 0, 0, Constants.world.w, Constants.world.w)
-
     Game.scene:draw()
-
 
     -- For debugging
     love.graphics.setColor(0, 1, 0)

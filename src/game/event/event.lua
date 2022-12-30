@@ -1,4 +1,5 @@
 ---@class Event
+---@overload fun(name: string, payload: table?): Event
 local Event = {}
 Event.__index = Event
 

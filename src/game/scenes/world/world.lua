@@ -1,11 +1,10 @@
 local Point = require("src.common.objects.point")
 
-local Event = require("src.game.event.event")
-local Publisher = require("src.game.event.publisher")
-
 local Base = require("src.game.objects.base")
 local Camera = require("src.game.camera.camera")
 local Wave = require("src.game.concept.wave")
+local Event = require("src.game.event.event")
+local Publisher = require("src.game.event.publisher")
 local DoubleBarrelTurret = require("src.game.objects.tower.turret.double-barrel-turret")
 local MapRenderer = require("src.game.graphics.map.map-renderer")
 local MegaTowerTool = require("src.game.tool.mega-tower-tool")
@@ -25,14 +24,17 @@ local TowerHotbarItem = require("src.game.scenes.world.component.hotbar-item.tow
 local Inventory = require("src.game.scenes.world.component.inventory")
 local WaveCount = require("src.game.scenes.world.component.wave-count")
 
+local Container = require("src.gui.layout.container")
+local HBox = require("src.gui.layout.h-box")
+local VBox = require("src.gui.layout.v-box")
 local Style = require("src.gui.style.style")
 local Align = require("src.gui.style.property.align")
 local Color = require("src.gui.style.property.color")
-local Container = require("src.gui.layout.container")
-local HBox = require("src.gui.layout.h-box")
 local DirBool = require("src.gui.style.property.dir-bool")
 local Side = require("src.gui.style.property.side")
 local Size = require("src.gui.style.property.size")
+local Button = require("src.gui.button")
+local TextView = require("src.gui.text-view")
 
 ---@class World : Scene
 local World = {}
@@ -85,12 +87,16 @@ function World:init()
     self.canvas = love.graphics.newCanvas(Constants.world.w, Constants.world.h)
     ---@type MegaTowerTool
     self.megaTowerTool = MegaTowerTool({ camera = self.camera, pool = self.gameObjects })
+    ---@type boolean
+    self.isGameOver = false
 
     self:initUI()
     self:initTopBar()
+    self:initGameOverOverlay()
 
     ---@param event Event
     Publisher.register(self, "objects.created", function(event) self:updateObjectPool(event.payload) end)
+    Publisher.register(self, "game.over", function() self.isGameOver = true end)
 end
 
 ---Modifies the scale of the world if it cannot completely fill the screen,
@@ -111,6 +117,11 @@ function World:setWorldScale()
 end
 
 function World:update(dt)
+    if self.isGameOver then
+        self.gameOverOverlay:update(dt)
+        return
+    end
+
     for _, object in pairs(self.gameObjects:get()) do
         object:update(dt)
     end
@@ -129,6 +140,11 @@ function World:fixedUpdate(dt)
 end
 
 function World:draw()
+    if self.isGameOver then
+        self.gameOverOverlay:draw()
+        return
+    end
+
     love.graphics.push()
 
     self.canvas:renderTo(function ()
@@ -175,11 +191,13 @@ end
 
 function World:mousePressed(x, y, button, touch, presses)
     self.ui:mousePressed(x, y, button, touch, presses)
+    self.gameOverOverlay:mousePressed(x, y, button, touch, presses)
     self.megaTowerTool:mousePressed(x, y, button, touch, presses)
     self.mech:mousePressed()
 end
 
 function World:mouseReleased()
+    self.gameOverOverlay:mouseReleased()
     self.mech:mouseReleased()
 end
 
@@ -257,6 +275,50 @@ function World:initTopBar()
                 children = {
                     self.waveCount,
                     self.inventory,
+                }
+            })
+        }
+    })
+end
+
+function World:initGameOverOverlay()
+    ---@type Element
+    self.gameOverOverlay = Container({
+        root = true,
+        style = Style({
+            color = Color(35, 35, 35, 1),
+            grow = DirBool(true, true),
+            padding = 20,
+        }),
+        children = {
+            Container({
+                style = Style({
+                    center = DirBool(true, true),
+                    color = Color(76, 76, 76, 1),
+                    padding = 20,
+                    size = Size(380, 220),
+                }),
+                children = {
+                    VBox({
+                        style = Style({ grow = DirBool(true, true) }),
+                        children = {
+                            TextView({
+                                style = Style({ size = Size(125, 60), }),
+                                text = "Game Over!",
+                            }),
+                            Button({
+                                text = "Quit to menu",
+                                method = function()
+                                    Publisher.publish(Event("game.restart"))
+                                end,
+                                style = Style({
+                                    size = Size(0, 100),
+                                    color = Color(127, 127, 127, 1),
+                                    margin = 20
+                                }),
+                            })
+                        }
+                    })
                 }
             })
         }
