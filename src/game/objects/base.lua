@@ -35,7 +35,6 @@ function Base:draw()
     Damageable.draw(self)
 
     love.graphics.setColor(1, 1, 1)
-    love.graphics.setColor(1, 1, 1)
     love.graphics.draw(
         self.sprite.image,
         self.sprite.quads[1],
