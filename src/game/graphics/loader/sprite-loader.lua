@@ -11,9 +11,10 @@ SpriteLoader.__index = SpriteLoader
 SpriteLoader.SPRITE_SHEETS = {
     BASE = "assets/graphics/base/base.png",
     COLLECTION = "assets/graphics/collection-spritesheet.png",
+    MECH = "assets/graphics/mech/mech.png",
+    SPAWNER = "assets/graphics/spawner/spawner.png",
     TOWER_BASE = "assets/graphics/tower-base-spritesheet.png",
     TURRET = "assets/graphics/turret-spritesheet.png",
-    MECH = "assets/graphics/mech/mech.png",
 }
 
 ---@private
@@ -29,9 +30,10 @@ function SpriteLoader.init()
     self.data = {
         base = self.prepareSprite(self.SPRITE_SHEETS.BASE),
         collection = self.prepareSprite(self.SPRITE_SHEETS.COLLECTION),
+        mech = self.prepareSprite(self.SPRITE_SHEETS.MECH, 32, 32),
+        spawner = self.prepareSprite(self.SPRITE_SHEETS.SPAWNER),
         towerBase = self.prepareSprite(self.SPRITE_SHEETS.TOWER_BASE),
         turret = self.prepareSprite(self.SPRITE_SHEETS.TURRET),
-        mech = self.prepareSprite(self.SPRITE_SHEETS.MECH, 32, 32),
     }
 end
 

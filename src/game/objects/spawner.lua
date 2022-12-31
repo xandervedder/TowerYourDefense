@@ -1,6 +1,7 @@
 local Point = require("src.common.objects.point")
 
 local Constants = require("src.game.constants")
+local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
 local Enemy = require("src.game.objects.enemy")
 local GameObject = require("src.game.objects.game-object")
 local Pool = require("src.game.objects.pool")
@@ -81,8 +82,15 @@ function Spawner:init(o, base, grid, obstacles, gameObjects)
     ---@type Pool
     self.enemies = self.getEnemies(self)
 
+    ---@type string
     self.type = "Spawner"
     self:setPath()
+
+    ---@private
+    ---@type Sprite
+    self.sprite = SpriteLoader.getSprite("spawner")
+    ---@type Point
+    self.center = self:getMiddle()
 
     Publisher.register(self, "objects.updated", function()
         if self:shouldUpdatePath() then
@@ -93,19 +101,22 @@ end
 
 ---Draw method.
 function Spawner:draw()
-    love.graphics.setColor(0, 1, 0)
-    love.graphics.rectangle(
-        "fill",
-        self.point.x,
-        self.point.y,
-        self.size.w,
-        self.size.h
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.draw(
+        self.sprite.image,
+        self.sprite.quads[1],
+        self.center.x,
+        self.center.y,
+        0,
+        Constants.scale,
+        Constants.scale,
+        -- Origin points will be in the center of the image:
+        Constants.tile.w / 2,
+        Constants.tile.h / 2
     )
 
-    love.graphics.setColor(0, 0, 0)
-    love.graphics.print("SPAWNER", self.point.x, self.point.y)
-
     --TODO: add console command for this (see update v0.1.1)
+    love.graphics.setColor(0, 0, 0)
     self:drawDebugPath()
     self:drawSpawnedEnemies()
 end
