@@ -75,7 +75,7 @@ function Spawner:init(o, base, grid, obstacles, gameObjects)
     self.path = {}
     ---@private Spawn rate in seconds.
     ---@type number
-    self.spawnRate = self.spawnRate or 1
+    self.spawnRate = 2
 
     self.register(self)
     ---@private
@@ -101,6 +101,8 @@ end
 
 ---Draw method.
 function Spawner:draw()
+    self:drawSpawnedEnemies()
+
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(
         self.sprite.image,
@@ -118,7 +120,6 @@ function Spawner:draw()
     --TODO: add console command for this (see update v0.1.1)
     love.graphics.setColor(0, 0, 0)
     self:drawDebugPath()
-    self:drawSpawnedEnemies()
 end
 
 ---@private
@@ -184,8 +185,8 @@ function Spawner:spawn()
     ---@type Enemy
     local enemy = Enemy({
         point = Point(
-            self.point.x + (self.size.w / 2) - (Enemy.SIZE.w / 2),
-            self.point.y + (self.size.h / 2) - (Enemy.SIZE.h / 2)
+            self.point.x + (self.size.w / 2) - (Constants.tile.scaledWidth() / 2),
+            self.point.y + (self.size.h / 2) - (Constants.tile.scaledHeight() / 2)
         ),
     }, self, self.base, self.path, self.grid, self.gameObjects, self.enemyHealth)
 

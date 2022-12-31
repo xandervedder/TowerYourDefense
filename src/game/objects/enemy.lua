@@ -3,8 +3,9 @@ local Queue = require("src.common.collections.queue")
 
 local Constants = require("src.game.constants")
 local Event = require("src.game.event.event")
-local Damageable = require("src.game.objects.damageable")
 local Publisher = require("src.game.event.publisher")
+local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
+local Damageable = require("src.game.objects.damageable")
 local Util = require("src.game.util.util")
 
 --TODO: move to common
@@ -13,8 +14,6 @@ local Size = require("src.gui.style.property.size")
 ---@class Enemy : Damageable
 local Enemy = {}
 Enemy.__index = Enemy
----@type Size
-Enemy.SIZE = Size(16, 16)
 
 setmetatable(Enemy, {
     __index = Damageable,
@@ -59,16 +58,17 @@ function Enemy:init(o, parent, base, path, grid, gameObjects, health)
     ---@type number
     self.originalHealth = self.health
     ---@type number
-    self.speed = 0.25
-    ---@type Size
-    self.size = self.SIZE
+    self.speed = 10 * Constants.scale
     ---@type Size
     self.grid = grid
     ---@type Pool
     self.gameObjects = gameObjects
+    ---@type Sprite
+    self.sprite = SpriteLoader.getSprite("enemy")
+    ---@type Point
+    self.center = self:getMiddle()
 
     self.type = "Enemy"
-    self.size = self.SIZE
 
     -- TODO: this looks strange?
     table.insert(gameObjects, self)
@@ -79,13 +79,15 @@ function Enemy:draw()
 
     Damageable.draw(self)
 
-    love.graphics.setColor(1, 0, 0)
-    love.graphics.rectangle(
-        "fill",
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.draw(
+        self.sprite.image,
+        self.sprite.quads[1],
         self.point.x,
         self.point.y,
-        self.SIZE.w,
-        self.SIZE.h
+        0,
+        Constants.scale,
+        Constants.scale
     )
 end
 
@@ -114,16 +116,16 @@ function Enemy:update(dt)
     end
 
     if currentPointInTheMiddle.x > self.point.x then
-        self.point.x = self.point.x + self.speed
+        self.point.x = self.point.x + math.floor(self.speed * dt)
         self.direction = "right"
     elseif currentPointInTheMiddle.x < self.point.x then
-        self.point.x = self.point.x - self.speed
+        self.point.x = self.point.x - math.floor(self.speed * dt)
         self.direction = "left"
     elseif currentPointInTheMiddle.y > self.point.y then
-        self.point.y = self.point.y + self.speed
+        self.point.y = self.point.y + math.floor(self.speed * dt)
         self.direction = "bottom"
     else
-        self.point.y = self.point.y - self.speed
+        self.point.y = self.point.y - math.floor(self.speed * dt)
         self.direction = "top"
     end
 end
@@ -140,9 +142,11 @@ end
 function Enemy:getCurrentPoint()
     local x = self.currentPoint.x
     local y = self.currentPoint.y
+    local scaledWidth = Constants.tile.scaledWidth()
+    local scaledHeight = Constants.tile.scaledHeight()
     return Point(
-        (x * Constants.tile.scaledWidth()) + (Constants.tile.scaledWidth() / 2) - (self.SIZE.w / 2),
-        (y * Constants.tile.scaledHeight()) + (Constants.tile.scaledHeight() / 2) - (self.SIZE.h / 2)
+        (x * scaledWidth) + (scaledWidth / 2) - (scaledWidth / 2),
+        (y * scaledHeight) + (scaledHeight / 2) - (scaledHeight / 2)
     )
 end
 
