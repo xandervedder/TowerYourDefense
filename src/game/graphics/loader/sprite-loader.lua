@@ -9,6 +9,7 @@ local Constants = require("src.game.constants")
 local SpriteLoader = {}
 SpriteLoader.__index = SpriteLoader
 SpriteLoader.SPRITE_SHEETS = {
+    BASE = "assets/graphics/base/base.png",
     COLLECTION = "assets/graphics/collection-spritesheet.png",
     TOWER_BASE = "assets/graphics/tower-base-spritesheet.png",
     TURRET = "assets/graphics/turret-spritesheet.png",
@@ -26,8 +27,9 @@ function SpriteLoader.init()
 
     ---@private
     self.data = {
+        base = self.prepareSprite(self.SPRITE_SHEETS.BASE),
         collection = self.prepareSprite(self.SPRITE_SHEETS.COLLECTION),
-        base = self.prepareSprite(self.SPRITE_SHEETS.TOWER_BASE),
+        towerBase = self.prepareSprite(self.SPRITE_SHEETS.TOWER_BASE),
         turret = self.prepareSprite(self.SPRITE_SHEETS.TURRET),
         mech = self.prepareSprite(self.SPRITE_SHEETS.MECH, 32, 32),
     }

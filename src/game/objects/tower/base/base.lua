@@ -26,7 +26,7 @@ setmetatable(Base, {
 
 function Base:init(o)
     GameObject.init(self, o)
-    self.sprite = SpriteLoader.getSprite("base")
+    self.sprite = SpriteLoader.getSprite("towerBase")
 end
 
 function Base:draw()

@@ -1,8 +1,11 @@
+local Constants = require("src.game.constants")
 local Event = require("src.game.event.event")
 local Publisher = require("src.game.event.publisher")
+local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
 local Damageable = require("src.game.objects.damageable")
 
 ---@class Base : Damageable
+---@overload fun(): Base
 local Base = {}
 Base.__index = Base
 
@@ -15,31 +18,39 @@ setmetatable(Base, {
     end
 })
 
+---Constructor of Base.
 function Base:init(o)
     Damageable.init(self, o, 1000)
 
-    self.destroyed = false
-    self.originalHealth = self.health
-
+    ---@type string
     self.type = "Base"
+    ---@type Sprite
+    self.sprite = SpriteLoader.getSprite("base")
+    ---@type Point
+    self.center = self:getMiddle()
 end
 
+---Draw method of Base.
 function Base:draw()
     Damageable.draw(self)
 
-    love.graphics.setColor(0, 0, 1)
-    love.graphics.rectangle(
-        "fill",
-        self.point.x,
-        self.point.y,
-        self.size.w,
-        self.size.h
-    )
-
     love.graphics.setColor(1, 1, 1)
-    love.graphics.print("BASE", self.point.x, self.point.y)
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.draw(
+        self.sprite.image,
+        self.sprite.quads[1],
+        self.center.x,
+        self.center.y,
+        0,
+        Constants.scale,
+        Constants.scale,
+        -- Origin points will be in the center of the image:
+        Constants.tile.w / 2,
+        Constants.tile.h / 2
+    )
 end
 
+---Method that excutes when the base gets destroyed.
 function Base:die()
     Damageable.die(self)
 
