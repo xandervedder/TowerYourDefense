@@ -66,6 +66,7 @@ function Enemy:init(o, parent, base, path, grid, gameObjects, health)
     ---@type Sprite
     self.sprite = SpriteLoader.getSprite("enemy")
     ---@type Point
+    --TODO: is this being used or not?
     self.center = self:getMiddle()
 
     self.type = "Enemy"
@@ -103,7 +104,9 @@ function Enemy:update(dt)
 
     local currentPointInTheMiddle = self:getCurrentPoint()
     local match = self.gameObjects:getBy(function(o)
-        return o:isDamageable() and Util.isWithinPosition(self.point, o:getPoint(), o:getSize())
+        if o.type ~= 'Base' then return false end
+
+        return o:isDamageable() and Util.isWithinPosition(self.point, o:getPoint(), o:getSize()) or self.point == o:getPoint()
     end)
     if #match > 0 then
         self:dealDamageTo(match[1])
