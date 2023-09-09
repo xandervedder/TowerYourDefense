@@ -116,18 +116,40 @@ function Enemy:update(dt)
     end
 
     if currentPointInTheMiddle.x > self.point.x then
-        self.point.x = self.point.x + math.floor(self.speed * dt)
+        self.point.x = self:limitHigh(self.point.x + (self.speed * dt), currentPointInTheMiddle.x)
         self.direction = "right"
     elseif currentPointInTheMiddle.x < self.point.x then
-        self.point.x = self.point.x - math.floor(self.speed * dt)
+        self.point.x = self:limitLow(self.point.x - (self.speed * dt), currentPointInTheMiddle.x)
         self.direction = "left"
     elseif currentPointInTheMiddle.y > self.point.y then
-        self.point.y = self.point.y + math.floor(self.speed * dt)
+        self.point.y = self:limitHigh(self.point.y + (self.speed * dt), currentPointInTheMiddle.y)
         self.direction = "bottom"
     else
-        self.point.y = self.point.y - math.floor(self.speed * dt)
+        self.point.y = self:limitLow(self.point.y - (self.speed * dt), currentPointInTheMiddle.y)
         self.direction = "top"
     end
+end
+
+---Limits the value only if it's higher
+---@param value number
+---@param limiter number
+---@return number
+function Enemy:limitHigh(value, limiter)
+    if value > limiter then
+        return limiter
+    end
+    return value
+end
+
+---Limits the value only if it's lower.
+---@param value number
+---@param limiter number
+---@return number
+function Enemy:limitLow(value, limiter)
+    if value < limiter then
+        return limiter
+    end
+    return value
 end
 
 ---Deals damage to a damageable and kills itself.
