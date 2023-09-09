@@ -30,8 +30,8 @@ function Point:__add(otherPoint)
 end
 
 ---Subtract metamethod.
----@param otherPoint any
----@return unknown
+---@param otherPoint Point
+---@return Point
 function Point:__sub(otherPoint)
     return Point(self.x - otherPoint.x, self.y - otherPoint.y)
 end
