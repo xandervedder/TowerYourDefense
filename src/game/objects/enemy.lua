@@ -104,7 +104,7 @@ function Enemy:update(dt)
 
     local currentPointInTheMiddle = self:getCurrentPoint()
     local match = self.gameObjects:getBy(function(o)
-        if o.type ~= 'Base' then return false end
+        if o.type ~= 'Base' or o.type ~= 'Mech' then return false end
 
         return o:isDamageable() and Util.isWithinPosition(self.point, o:getPoint(), o:getSize()) or self.point == o:getPoint()
     end)

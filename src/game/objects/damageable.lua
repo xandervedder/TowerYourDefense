@@ -23,14 +23,19 @@ setmetatable(Damageable, {
 function Damageable:init(o, health)
     GameObject.init(self, o)
 
+    ---@protected
     ---@type number
     self.originalHealth = health
+    ---@protected
     ---@type number
     self.health = health
+    ---@protected
     ---@type boolean
     self.dead = false
+    ---@protected
     ---@type boolean
     self.damaged = false
+    ---@protected
     ---@type number
     self.percentage = 1
 end
@@ -39,6 +44,7 @@ end
 function Damageable:draw()
     --? Only draw if the damageable has been damaged.
     if not self.damaged then return end
+    if self.dead then return end
 
     love.graphics.setColor(1, 0, 0)
     love.graphics.rectangle(
@@ -63,7 +69,7 @@ end
 ---@param dt number
 function Damageable:update(dt)
     self.percentage = 1 * self.health / self.originalHealth
-    
+
     if self.health ~= self.originalHealth then
         self.damaged = true
     end
@@ -83,13 +89,18 @@ end
 ---Kills the damageable.
 function Damageable:die()
     self.dead = true
-    -- release from object pool
 end
 
 ---Returns whether the damageable is dead.
 ---@return boolean
 function Damageable:isDead()
     return self.dead
+end
+
+---Resets the damageable to its initial state.
+function Damageable:resetState()
+    self.dead = false
+    self.health = self.originalHealth
 end
 
 ---Overrides the GameObject method, ideally we would use types for this.

@@ -1,4 +1,5 @@
 local Point = require("src.common.objects.point")
+local Timer = require("src.common.time.timer")
 
 local Publisher = require("src.game.event.publisher")
 local Damageable = require("src.game.objects.damageable")
@@ -97,6 +98,13 @@ function Mech:init(o, camera, gameObjects)
         { quad = self.sprite.quads[7], time = 0.1  }, -- Left leg moving
         { quad = self.sprite.quads[8], time = 0.25 }, -- Left leg moved
     })
+    ---@private
+    ---@type number
+    self.respawnTimeout = 10
+    --@private
+    ---@type Timer
+    self.timer = Timer(self.respawnTimeout)
+    self.dead = true
 
     Publisher.register(self, "wave.started", function() self.turretsEnabled = true end)
     Publisher.register(self, "wave.ended", function() self.turretsEnabled = false end)
@@ -106,9 +114,13 @@ end
 function Mech:draw()
     Damageable.draw(self)
 
-    self.center = self:getMiddle()
+    if self.dead then
+        love.graphics.setColor(1, 1, 1, 0.25)
+    else
+        love.graphics.setColor(1, 1, 1)
+    end
 
-    love.graphics.setColor(1, 1, 1)
+
     love.graphics.draw(
         self.sprite.image,
         self.animator:activeQuad(),
@@ -138,8 +150,6 @@ function Mech:draw()
         love.graphics.setColor(0, 0, 0)
         love.graphics.circle("fill", shell.x, shell.y, 0.75 * Constants.scale * self.scale)
     end
-
-    self.type = "mech"
 end
 
 ---Gets the rotation of the legs.
@@ -166,12 +176,18 @@ end
 function Mech:update(dt)
     Damageable.update(self, dt)
 
+    if self.dead then
+        self:handleRespawn(dt)
+        return
+    end
+
     if not self:isMoving() then
         self.animator:pause()
     else
         self.animator:resume()
     end
 
+    self.center = self:getMiddle()
     self.animator:update(dt)
     self.mouse = self.camera:mousePosition()
     self.rotation = self:rotateBodyToMousePoint()
@@ -225,7 +241,7 @@ end
 ---@return boolean
 function Mech:collidesWithObject(point)
     for _, gameObject in pairs(self.gameObjects:get()) do
-        if gameObject.type == "mech" then goto continue end
+        if gameObject.type == "Mech" then goto continue end
 
         if Util.isWithinSurface(point, gameObject:getPoint(), self:getSize(), gameObject:getSize()) then
             return true
@@ -352,6 +368,16 @@ function Mech:shoot(addition, radians)
     shell.velocity.y = -math.sin(self.rotation) * shell.speed
 
     return shell
+end
+
+---Respawns the mech if it 'died'.
+---@param dt any
+function Mech:handleRespawn(dt)
+    self.timer:update(dt)
+
+    if self.timer:hasPassedTargetSeconds() then
+        self:resetState()
+    end
 end
 
 return Mech
