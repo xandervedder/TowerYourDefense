@@ -13,3 +13,6 @@
 # to keep it in the repository if possible (untill I find a better solution).
 profiler.lua
 profiler.log
+
+# The game's binaries
+/bin/*
