@@ -104,7 +104,6 @@ function Mech:init(o, camera, gameObjects)
     --@private
     ---@type Timer
     self.timer = Timer(self.respawnTimeout)
-    self.dead = true
 
     Publisher.register(self, "wave.started", function() self.turretsEnabled = true end)
     Publisher.register(self, "wave.ended", function() self.turretsEnabled = false end)
