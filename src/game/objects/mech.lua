@@ -21,6 +21,7 @@ require("src.game.graphics.love-extensions")
 ---@class Mech : Damageable
 local Mech = {}
 Mech.__index = Mech
+---@private
 Mech.MECH_PATH = "/assets/graphics/mech/mech.png"
 
 setmetatable(Mech, {
@@ -46,10 +47,6 @@ function Mech:init(o, camera, gameObjects)
         left = false,
         right = false,
     }
-    ---@type Size
-    self.size = Size(self.size.w / 2, self.size.h / 2)
-    ---@type string
-    self.type = "Mech"
 
     ---@private
     ---@type Camera
@@ -101,9 +98,14 @@ function Mech:init(o, camera, gameObjects)
     ---@private
     ---@type number
     self.respawnTimeout = 10
-    --@private
+    ---@private
     ---@type Timer
     self.timer = Timer(self.respawnTimeout)
+
+    ---@type Size
+    self.size = Size(self.size.w / 2, self.size.h / 2)
+    ---@type string
+    self.type = "Mech"
 
     Publisher.register(self, "wave.started", function() self.turretsEnabled = true end)
     Publisher.register(self, "wave.ended", function() self.turretsEnabled = false end)

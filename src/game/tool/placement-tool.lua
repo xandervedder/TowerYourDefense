@@ -8,6 +8,7 @@ local Util = require("src.game.util.util")
 ---@class PlacementTool
 local PlacementTool = {}
 PlacementTool.__index = PlacementTool
+---@private
 PlacementTool.RIGHT_MOUSE_BUTTON = 2
 
 setmetatable(PlacementTool, {
@@ -20,18 +21,25 @@ setmetatable(PlacementTool, {
 
 ---@param o table
 function PlacementTool:init(o)
+    ---@private
     ---@type Camera
     self.camera = o.camera
+    ---@private
     ---@type boolean
     self.enabled = false
+    ---@private
     ---@type GameObject
     self.gameObject = o.object({})
+    ---@private
     ---@type Pool
     self.gameObjects = o.pool
+    ---@private
     ---@type GameObject
     self.gameObjectRef = o.object
+    ---@private
     ---@type boolean
     self.obstructed = false
+    ---@private
     ---@type Point
     self.mouse = Point(0, 0)
 

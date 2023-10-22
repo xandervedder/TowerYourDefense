@@ -1,7 +1,5 @@
 local PriorityQueue = require("src.common.collections.priority-queue")
 
-local Point = require("src.common.objects.point")
-
 --[[
     A* Algorithm implementation in Lua.
 ]]--
@@ -27,12 +25,16 @@ setmetatable(AStar, {
 ---@param start Point
 ---@param goal Point
 function AStar:init(graph, start, goal)
+    ---@private
     ---@type WeightedGraph
     self.graph = graph
+    ---@private
     ---@type Point
     self.start = start
+    ---@private
     ---@type Point
     self.goal = goal
+    ---@private
     ---@type table<Point>
     self.path = nil
 end
@@ -50,7 +52,7 @@ function AStar:search()
     local hashStart = self:toHash(self.start)
     ---@type PriorityQueue
     local frontier = PriorityQueue()
-    frontier:push({self.start, 0})
+    frontier:push({ self.start, 0 })
 
     ---@type table<Point, Point>
     local cameFrom = {}

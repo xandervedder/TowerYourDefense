@@ -15,14 +15,17 @@ setmetatable(PriorityQueue, {
 })
 
 function PriorityQueue:init()
-    ---@type table<table<any, number>>
+    ---@generic T
+    ---@private
+    ---@type table<{[0]: T, [1]: number}>
     self.elements = {}
 end
 
 ---Adds data to the queue and ordens it according to the priority.
 ---
 ---Note: the first number in the table is the value (which can be anything), the second one is the priority.
----@param data table<any, number>
+---@generic T
+---@param data table<{[0]: T, [1]: number}>
 function PriorityQueue:push(data)
     if data == nil then error("Data cannot be empty.") end
     if type(data) ~= "table" then error("Data must be of table type. Type '" .. type(data) .. "' given.") end
@@ -68,7 +71,8 @@ function PriorityQueue:beginHeapify()
 end
 
 ---Returns the item that is at the front of the queue.
----@return any
+---@generic T
+---@return T
 function PriorityQueue:pop()
     -- This implementation only heapifies once an item is requested to be removed from the queue.
     self:beginHeapify()

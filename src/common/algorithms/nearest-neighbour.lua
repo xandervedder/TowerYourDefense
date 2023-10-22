@@ -18,6 +18,7 @@ setmetatable(NearestNeighbour, {
 ---Constructor.
 ---@param points Point[]
 function NearestNeighbour:init(points)
+    ---@private
     ---@type Point[]
     self.points = points
 end

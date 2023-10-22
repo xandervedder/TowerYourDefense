@@ -9,7 +9,6 @@ local Publisher = require("src.game.event.publisher")
 ]]--
 
 ---@class Wave
----@overload fun(spawners: Spawner[]): Wave
 local Wave = {}
 Wave.__index = Wave
 

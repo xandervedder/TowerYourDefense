@@ -57,6 +57,7 @@ function HotbarItem:init(o)
     self.hovering = false
     ---@type number
     self.constraint = o.constraint
+    ---@private
     ---@type Style
     self.style = Style({
         color = Color(0, 0, 0, 1),

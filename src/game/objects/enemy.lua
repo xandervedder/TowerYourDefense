@@ -8,9 +8,6 @@ local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
 local Damageable = require("src.game.objects.damageable")
 local Util = require("src.game.util.util")
 
---TODO: move to common
-local Size = require("src.gui.style.property.size")
-
 ---@class Enemy : Damageable
 local Enemy = {}
 Enemy.__index = Enemy
@@ -35,43 +32,54 @@ setmetatable(Enemy, {
 function Enemy:init(o, parent, base, path, grid, gameObjects, health)
     Damageable.init(self, o, health)
 
+    ---@private
     ---@type Base
     self.base = base
-    ---@type Spawner
-    self.parent = parent
+    ---@private
     ---@type Queue
     self.currentPath = Queue(path)
     --? Ignore first Point as it's the same as the start (we already know this).
     self.currentPath:pop()
+    ---@private
     ---@type Point
     self.currentPoint = self.currentPath:pop()
+    ---@private
     ---@type boolean
     self.dead = false
+    ---@private
     ---@alias Direction
     --- | "up"
     --- | "right"
     --- | "down"
     --- | "left" 
     self.direction = "right"
+    ---@private
     ---@type number
     self.dmg = 25
+    ---@private
     ---@type number
     self.originalHealth = self.health
+    ---@private
     ---@type number
     self.speed = 10 * Constants.scale
+    ---@private
     ---@type Size
     self.grid = grid
+    ---@private
     ---@type Pool
     self.gameObjects = gameObjects
+    ---@private
     ---@type Sprite
     self.sprite = SpriteLoader.getSprite("enemy")
+    ---@private
     ---@type Point
     --TODO: is this being used or not?
     self.center = self:getMiddle()
 
     self.type = "Enemy"
+    ---@type Spawner
+    self.parent = parent
 
-    -- TODO: this looks strange?
     table.insert(gameObjects, self)
 end
 
@@ -177,7 +185,7 @@ end
 
 -- TODO: This should be based on the current force... improve:
 ---Returns the direction the enemy is currently walking towards.
----@return Direction
+---@return string
 function Enemy:getDirection() return self.direction end
 
 ---Kills the enemy.

@@ -11,6 +11,7 @@ setmetatable(Scene, {
 })
 
 function Scene:init(o)
+    ---@protected
     self.name = o.name or "unknown"
 end
 

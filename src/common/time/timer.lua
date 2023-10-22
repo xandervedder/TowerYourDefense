@@ -3,7 +3,6 @@
 ]]--
 
 ---@class Timer
----@overload fun(seconds?: number): Timer
 local Timer = {}
 Timer.__index = Timer
 
@@ -33,12 +32,14 @@ function Timer:update(dt)
 end
 
 ---Gets the amount of seconds that have passed since starting the timer.
+---@return number
 function Timer:seconds()
     return math.floor(self.deltaPassed)
 end
 
 ---Checks whether a certain amount of time has passed.
 ---@param time number
+---@return boolean
 function Timer:hasPassed(time)
     local remainder = self.deltaPassed % time
     --? Everything below 1 is fine.

@@ -19,10 +19,14 @@ setmetatable(Turret, {
     end
 })
 
+
+--Constructor.
 function Turret:init(o)
     GameObject.init(self, o)
 
+    ---@private
     self.sprite = SpriteLoader.getSprite("turret")
+    ---@private
     self.quad = love.graphics.newQuad(o.q.x, o.q.y, Constants.tile.w, Constants.tile.h, self.sprite.image:getDimensions())
 
     ---@protected
@@ -31,9 +35,7 @@ function Turret:init(o)
     ---@protected
     ---@type Point
     self.center = Point(self.point.x + self.size.w / 2, self.point.y + self.size.h / 2)
-    ---@protected
-    ---@type number
-    self.damage = 25
+
     ---@protected
     ---@type number
     self.diff = 0
@@ -44,14 +46,8 @@ function Turret:init(o)
     ---@type Enemy
     self.enemy = nil
     ---@protected
-    ---@type number
-    self.firingDelay = 1
-    ---@protected
     ---@type Point
     self.projectedEnemyPosition = nil
-    ---@protected
-    ---@type number
-    self.range = o.range or 250
     ---@protected
     ---@type number
     self.rotation = 0
@@ -61,6 +57,13 @@ function Turret:init(o)
     ---@protected
     ---@type number
     self.shotSpeed = 3
+
+    ---@type number
+    self.damage = 25
+    ---@type number
+    self.range = o.range or 250
+    ---@type number
+    self.firingDelay = 1
 end
 
 function Turret:draw()

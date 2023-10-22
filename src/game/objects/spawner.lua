@@ -81,14 +81,13 @@ function Spawner:init(o, base, grid, obstacles, gameObjects)
     ---@private
     ---@type Pool
     self.enemies = self.getEnemies(self)
+    ---@private
+    ---@type Sprite
+    self.sprite = SpriteLoader.getSprite("spawner")
 
     ---@type string
     self.type = "Spawner"
     self:setPath()
-
-    ---@private
-    ---@type Sprite
-    self.sprite = SpriteLoader.getSprite("spawner")
     ---@type Point
     self.center = self:getMiddle()
 
@@ -143,8 +142,8 @@ function Spawner:drawDebugPath()
     love.graphics.circle("fill", lineLocations[lastItemIndex - 1], lineLocations[lastItemIndex], 25)
 end
 
----@private
 ---Draws all the enemies that have spawned.
+---@private
 function Spawner:drawSpawnedEnemies()
     for _, enemy in pairs(self.enemies:get()) do
         enemy:draw()
@@ -174,8 +173,8 @@ function Spawner:hasWaitedEnough(dt)
     return false
 end
 
----@private
 ---Spawns enemies untill the spawn amount is reached.
+---@private
 function Spawner:spawn()
     if self.spawnAmount == self.spawnedAmount then
         self.shouldSpawn = false

@@ -1,5 +1,10 @@
 local Constants = require("src.game.constants")
 
+---@class Sprite
+---@field imageData love.ImageData
+---@field image love.Image
+---@field quads love.Quad[]
+
 --[[
     SpriteLoader for TowerYourDefense.
     This should be the only place where images are loaded, only loads the images once.
@@ -38,11 +43,6 @@ function SpriteLoader.init()
         turret = self.prepareSprite(self.SPRITE_SHEETS.TURRET),
     }
 end
-
----@class Sprite
----@field imageData love.ImageData
----@field image love.Image
----@field quads love.Quad[]
 
 ---Loads and returns the image with accompanied imageData.
 ---@private

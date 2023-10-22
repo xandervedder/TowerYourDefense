@@ -36,10 +36,13 @@ function Hotbar:init(o)
 
     ---@type string
     self.id = "hotbar"
+    ---@private
     ---@type boolean
     self.hide = false
+    ---@private
     ---@type Inventory
     self.inventory = o.inventory
+    ---@private
     ---@type PlacementTool
     self.tool = PlacementTool({
         camera = o.camera,
@@ -49,6 +52,7 @@ function Hotbar:init(o)
             return self.mouseEntered
         end
     })
+    ---@private
     ---@type Style
     self.style = Style({
         align = Align(false, false, true),
@@ -145,6 +149,7 @@ function Hotbar:mouseMoved(x, y, dx, dy, touch)
     Container.mouseMoved(self, x, y, dx, dy, touch)
 end
 
+---@return PlacementTool
 function Hotbar:getTool()
     return self.tool
 end

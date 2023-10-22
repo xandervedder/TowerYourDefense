@@ -41,6 +41,7 @@ function Inventory:init()
         }
     })
 
+    ---@private
     self.style = Style({
         color = Color(35, 35, 35, 0.9),
         size = Size(125, 60),

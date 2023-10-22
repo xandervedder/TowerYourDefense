@@ -16,14 +16,18 @@ setmetatable(TripleBarrelTurret, {
     end
 })
 
+--Constructor.
 function TripleBarrelTurret:init(o)
     o.q = { x = 32, y = 0 }
 
     Turret.init(self, o)
 
-    self.type = "TripleBarrelTurret"
+    ---@private
     self.left = 2 * C.scale * self.scale
+    ---@private
     self.right = 2 * C.scale * self.scale
+
+    self.type = "TripleBarrelTurret"
 end
 
 function TripleBarrelTurret:update(dt)

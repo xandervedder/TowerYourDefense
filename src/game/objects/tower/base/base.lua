@@ -24,8 +24,11 @@ setmetatable(Base, {
     end
 })
 
+--Constructor.
 function Base:init(o)
     GameObject.init(self, o)
+
+    ---@private
     self.sprite = SpriteLoader.getSprite("towerBase")
 end
 
@@ -42,6 +45,7 @@ function Base:draw()
     )
 end
 
+---@return love.Image[]
 function Base:toImages()
     return GameObject.imagesFromQuads(self.sprite.imageData, { self.sprite.quads[1] })
 end

@@ -16,18 +16,25 @@ setmetatable(MegaTowerTool, {
 })
 
 function MegaTowerTool:init(o)
+    ---@private
     ---@type Pool
     self.pool = o.pool
+    ---@private
     ---@type Camera
     self.camera = o.camera
+    ---@private
     ---@type Point
     self.mouse = Point(0, 0)
+    ---@private
     ---@type number
     self.lineWidth = C.scale
+    ---@private
     ---@type boolean
     self.active = false
+    ---@private
     ---@type boolean
     self.filled = false
+    ---@private
     ---@type Tower
     self.tower = nil
 end
@@ -59,6 +66,7 @@ end
 function MegaTowerTool:update()
     if not self.active then return end
 
+    ---@private
     self.occupied = {
         ---@type GameObject
         tl = nil, -- Top left

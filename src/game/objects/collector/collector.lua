@@ -17,18 +17,25 @@ setmetatable(Collector, {
     end
 })
 
+--Constructor.
 function Collector:init(o)
     GameObject.init(self, o)
 
+    ---@private
     self.sprite = SpriteLoader.getSprite("collection")
 
+    ---@private
     self.center = {
         x = self.point.x + self.size.w / 2,
         y = self.point.y + self.size.h / 2,
     }
+    ---@private
     self.rotation = 0
+    ---@private
     self.collectionDelayInSeconds = 1
+    ---@private
     self.collectionAmount = 1
+    ---@private
     self.deltaPassed = 0
 end
 

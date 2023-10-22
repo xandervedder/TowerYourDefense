@@ -16,6 +16,7 @@ setmetatable(Image, {
 function Image:init(o)
     Element.init(self, o)
 
+    ---@private
     ---@type love.Image[]
     self.images = o.images
 end

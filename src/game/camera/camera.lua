@@ -3,7 +3,6 @@ local Point = require("src.common.objects.point")
 local Constants = require("src.game.constants")
 
 ---@class Camera
----@overload fun(): Camera
 local Camera = {}
 Camera.__index = Camera
 

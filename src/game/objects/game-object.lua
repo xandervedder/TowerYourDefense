@@ -21,23 +21,30 @@ setmetatable(GameObject, {
 
 --TODO: refactor the o to represent a type.
 function GameObject:init(o)
+    ---@protected
     ---@type number
     self.obstructionRange = o.obstructionRange or 0
+    ---@protected
     ---@type Point
     self.point = o.point or Point(0, 0)
-    ---@type number
-    self.scale = o.scale or 1
+    ---@protected
     ---@type Size
     self.size = o.size or Util.size(self.scale)
+    ---@protected
     ---@type number
     self.speed = o.speed or 1
+    ---@protected
     ---@type love.ImageData
     self.sheetData = nil
-    ---@type love.Image
+    ---@protected
+    ---@type love.Image?
     self.sheet = nil
+
     ---@type string
     ---This is necessary since we cannot get the name of the metatable from lua itself.
     self.type = "GameObject"
+    ---@type number
+    self.scale = o.scale or 1
 end
 
 function GameObject:draw() end
@@ -73,6 +80,7 @@ function GameObject:setSize(scale)
     self.size = Util.size(scale)
 end
 
+---@return number
 function GameObject:getSpeed() return self.speed end
 
 ---Stub method that is used to get images that together can represent a graphical

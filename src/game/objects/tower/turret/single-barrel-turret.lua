@@ -14,6 +14,7 @@ setmetatable(SingleBarrelTurret, {
     end
 })
 
+--Constructor.
 function SingleBarrelTurret:init(o)
     o.q = { x = 0, y = 0 }
 

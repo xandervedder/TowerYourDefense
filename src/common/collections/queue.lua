@@ -15,14 +15,19 @@ setmetatable(Queue, {
 })
 
 ---Constructor.
----@param data table<any>|nil
+---@generic T
+---@param data table<T>|nil
 function Queue:init(data)
-    ---@type table<any>
+    ---@generic T
+    ---@private
+    ---@type table<T>
     self.data = {}
+    ---@private
     ---@type number
     self.first = 1
     -- Last starts at 0 for a reason. When adding the first item and then popping said item
     -- first and last would point to the same thing.
+    ---@private
     ---@type number
     self.last = 0
 
@@ -35,14 +40,16 @@ end
 
 ---Pushes into the queue whilst ensuring that the item
 ---being pushed is inserted in the last position.
----@param data any
+---@generic T
+---@param data T
 function Queue:push(data)
     self.last = self.last + 1
     self.data[self.last] = data
 end
 
 ---Pops the first item off the queue and returns it.
----@return any
+---@generic T
+---@return T
 function Queue:pop()
     -- If the queue runs out of items, return nil; we can't do anything anymore.
     if self.first > self.last then return nil end

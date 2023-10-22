@@ -5,7 +5,6 @@ local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
 local Damageable = require("src.game.objects.damageable")
 
 ---@class Base : Damageable
----@overload fun(): Base
 local Base = {}
 Base.__index = Base
 
@@ -22,12 +21,15 @@ setmetatable(Base, {
 function Base:init(o)
     Damageable.init(self, o, 1000)
 
-    ---@type string
-    self.type = "Base"
+    ---@private
     ---@type Sprite
     self.sprite = SpriteLoader.getSprite("base")
+    ---@private
     ---@type Point
     self.center = self:getMiddle()
+
+    ---@type string
+    self.type = "Base"
 end
 
 ---Draw method of Base.

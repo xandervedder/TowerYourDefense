@@ -11,7 +11,6 @@ local Timer = require("src.common.time.timer")
 ---@field time number
 
 ---@class SpriteAnimator
----@overload fun(defaultState: love.Quad, config: SpriteConfig[]): SpriteAnimator
 local SpriteAnimator = {}
 SpriteAnimator.__index = SpriteAnimator
 

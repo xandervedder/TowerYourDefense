@@ -23,9 +23,12 @@ setmetatable(WaveCount, {
 
 function WaveCount:init(o)
     ---@type integer
+    ---@private
     self.currentWave = 1
+    ---@private
     ---@type string
     self.selector = "wave"
+    ---@private
     ---@type Element
 
     Container.init(self, {
@@ -41,6 +44,7 @@ function WaveCount:init(o)
         }
     })
 
+    ---@private
     self.style = Style({
         color = Color(35, 35, 35, 0.9),
         size = Size(235, 60),

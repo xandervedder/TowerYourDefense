@@ -18,6 +18,7 @@ setmetatable(TowerHotbarItem, {
 function TowerHotbarItem:init(o)
     HotbarItem.init(self, o)
 
+    ---@private
     ---@type Turret
     self.turretType = o.turretType
 end

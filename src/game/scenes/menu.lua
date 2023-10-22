@@ -25,8 +25,10 @@ setmetatable(Menu, {
 })
 
 function Menu:init()
+    ---@private
     self.canvas = self:_getCanvas()
 
+    ---@private
     ---@type Element
     self.element = Container({
         root = true,

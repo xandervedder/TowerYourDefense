@@ -19,13 +19,14 @@ setmetatable(WeightedGraph, {
 ---Constructor
 ---@param width number
 ---@param height number
----@param obstacles Point[]|nil
+---@param obstacles? Point[]
 function WeightedGraph:init(width, height, obstacles)
+    ---@private
     self.width = width
+    ---@private
     self.height = height
-    ---@type Point[]
+    ---@private
     self.obstacles = obstacles or {}
-    self.weights = {}
 end
 
 ---Checks if the point given is within the bounds of the graph.
@@ -60,7 +61,6 @@ function WeightedGraph:neighbours(point)
     ---@type table<Point>
     local neighbours = {}
 
-    -- TODO: This doesn't work as expected, look at this on a later date.
     if (x + y) % 2 == 0 then
         neighbours = {
             Point(x, y + 1),
@@ -87,7 +87,8 @@ function WeightedGraph:neighbours(point)
 end
 
 ---Returns how much it will cost to move from one location to the other.
----Note: in this case we don't do anything special with the cost yet, but it could be used for future functionality.
+---Note: In this case we don't do anything special with the cost yet, but it could be used for future functionality.
+---Note: This could also use weights we previously defined in the constructor.
 ---@param from Point
 ---@param to Point
 ---@return integer

@@ -16,8 +16,10 @@ setmetatable(Tower, {
     end
 })
 
+---@private
 Tower.bulletSize = 0.75
 
+--TODO: I do not like this 'o' construction, low priority for now though.
 ---Constructor
 ---@param o any
 ---@param gameObjects Pool
@@ -25,18 +27,24 @@ function Tower:init(o, gameObjects)
     Damageable.init(self, o, 1000)
 
     -- Attributes of the Tower
-    ---@type TowerBase
-    self.base = o.base or Base({ point = self.point, scale = self.scale })
+
     -- TODO:
+    ---@private
     self.barrel = nil
-    ---@type Turret
-    self.turret = o.turret or SingleBarrelTurret({ point = self.point, })
-    ---@type string
-    self.type = "Tower"
+
     -- TODO:
+    ---@private
     self.shell = nil
+    ---@private
     ---@type Pool
     self.gameObjects = gameObjects
+
+    ---@type string
+    self.type = "Tower"
+    ---@type Turret
+    self.turret = o.turret or SingleBarrelTurret({ point = self.point, })
+    ---@type TowerBase
+    self.base = o.base or Base({ point = self.point, scale = self.scale })
 end
 
 function Tower:draw()

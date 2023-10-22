@@ -24,6 +24,7 @@ function CollectorHotbarItem:init(o)
 
     HotbarItem.init(self, o)
 
+    ---@private
     ---@type table<number, Point>
     self.allowedPoints = o.allowedPoints
 end

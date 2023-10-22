@@ -34,16 +34,21 @@ function Element:init(o)
         end
     end
 
+    ---@protected
     ---@type boolean
     self.root = o.root or false
+    ---@protected
     ---@type Style
     self.style = o.style or Style({})
-    ---@type string
-    self.id = o.id or ""
+    ---@protected
     ---@type table
     self.listeners = {}
+    ---@protected
     ---@type boolean
     self.mouseEntered = false
+
+    ---@type string
+    self.id = o.id or ""
 end
 
 function Element:draw()
@@ -101,7 +106,7 @@ end
 ---Tries to find a matching element with the given selector.
 -- If it cannot do this, it will look at its children for answers.
 ---@param selector string
----@return Element|nil
+---@return Element?
 function Element:querySelector(selector)
     -- If the element that is searched for is this one:
     if self.id == selector then

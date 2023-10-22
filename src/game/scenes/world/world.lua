@@ -56,23 +56,31 @@ function World:init()
     self.mapRenderer = MapRenderer()
     self:setWorldScale()
 
+    ---@private
     ---@type Inventory
     self.inventory = Inventory()
+    ---@private
     ---@type WaveCount
     self.waveCount = WaveCount()
+    ---@private
     ---@type Camera
     self.camera = Camera()
+    ---@private
     ---@type Base
     local base = Base({ point = Util.fromCoordinate(2, 3) })
+    ---@private
     ---@type Pool
     self.gameObjects = Pool()
+    ---@private
     ---@type Mech
     self.mech = Mech({ point = Util.fromCoordinate(3, 3) }, self.camera, self.gameObjects)
     self.gameObjects:add(base)
     self.gameObjects:add(self.mech)
     self.camera:followObject(self.mech)
+    ---@private
     ---@type Pool
     self.points = Pool()
+    ---@private
     ---@type Spawner
     self.spawner = Spawner(
         { point = Util.fromCoordinate(4, 0) },
@@ -82,11 +90,15 @@ function World:init()
         self.gameObjects
     )
     self.gameObjects:add(self.spawner)
+    ---@private
     ---@type Wave
     self.wave = Wave({ self.spawner });
+    ---@private
     self.canvas = love.graphics.newCanvas(Constants.world.w, Constants.world.h)
+    ---@private
     ---@type MegaTowerTool
     self.megaTowerTool = MegaTowerTool({ camera = self.camera, pool = self.gameObjects })
+    ---@private
     ---@type boolean
     self.isGameOver = false
 
@@ -157,6 +169,7 @@ function World:draw()
 
         --! The tool should be rendered to the canvas.
         --! The UI however, should not be rendered to the canvas.
+        ---@diagnostic disable-next-line: undefined-field
         self.ui:querySelector("hotbar"):getTool():draw()
         self.megaTowerTool:draw()
 

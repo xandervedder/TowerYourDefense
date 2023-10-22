@@ -7,8 +7,19 @@ local C = require("src.game.constants")
 --TODO: Move from 'gui' to 'common'
 local Size = require("src.gui.style.property.size")
 
+---@class Tile
+---@field background table<number>
+---@field shrubbery table<number>
+---@field collidable table<number>
+---@field shades table<table<number>>
+
+---@class TileQuad
+---@field background love.Quad?
+---@field shrubbery love.Quad?
+---@field collidable love.Quad?
+---@field shades love.Quad?
+
 ---@class MapRenderer
----@overload fun(): MapRenderer
 local MapRenderer = {}
 MapRenderer.__index = MapRenderer
 MapRenderer.LEVEL_DIRECTORY = "/assets/map/"
@@ -28,13 +39,16 @@ setmetatable(MapRenderer, {
     end
 })
 
----Constructor of MapRenderer.
+---Constructor.
 function MapRenderer:init()
     -- For some reason, we cannot directly insert the string that
     -- comes from the love.filesystem.read() method.
+    ---@private
     self.levelDataString = love.filesystem.read(self.LEVEL_DIRECTORY .. "main.json")
+    ---@private
+    ---@type Tile[][]
     self.levelDataJson = json.decode(self.levelDataString)
-
+    ---@private
     self.sheets = {
         background = love.graphics.newImage(self.TILE_MAPS.BACKGROUND),
         collidable = love.graphics.newImage(self.TILE_MAPS.COLLIDABLE),
@@ -50,12 +64,20 @@ end
 
 ---Prepares the quads before they can be rendered.
 function MapRenderer:prepareQuads()
-    ---@type table
+    ---@type TileQuad[][]
     self.quads = {}
     for _, row in pairs(self.levelDataJson) do
+        ---@type TileQuad[]
         local quadRow = {}
         for _, tile in pairs(row) do
-            local quads = {}
+            ---@type TileQuad
+            local quads = {
+                background = nil,
+                collidable = nil,
+                shades = nil,
+                shrubbery = nil,
+            }
+
             if tile.background ~= nil then
                 quads.background = self:getQuad(self:getTileCoordinates(tile.background), self.sheets.background)
             end
