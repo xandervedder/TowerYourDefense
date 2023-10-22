@@ -72,7 +72,7 @@ elseif commandToRun == "bundle" then
         "\"profiler.*\" " ..
         "\".git/*\" " ..
         "\".DS_Store\"")
-    -- Unfortunately it seems like LÖVE parses requires before the `conf.lua`, but I am not sure abou that.
+    -- Unfortunately it seems like LÖVE parses requires before the `conf.lua`, but I am not sure about that.
     -- If it didn't, this wouldn't be needed when bundling the file.
     os.execute("cd lua_modules/share/lua/5.4/ && zip -q -r ../../../../bin/TowerYourDefense.love .")
     print("Generating love file complete!")
