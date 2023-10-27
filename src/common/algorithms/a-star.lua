@@ -25,7 +25,6 @@ setmetatable(AStar, {
 ---@param start Point
 ---@param goal Point
 function AStar:init(graph, start, goal)
-    ---@private
     ---@type WeightedGraph
     self.graph = graph
     ---@private

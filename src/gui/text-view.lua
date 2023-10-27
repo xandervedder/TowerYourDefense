@@ -16,7 +16,6 @@ setmetatable(TextView, {
 function TextView:init(o)
     Element.init(self, o)
 
-    ---@private
     self.text = o.text or ""
     ---@private
     self.font = love.graphics.newFont(o.fontSize or 20)

@@ -39,7 +39,6 @@ function PlacementTool:init(o)
     ---@private
     ---@type boolean
     self.obstructed = false
-    ---@private
     ---@type Point
     self.mouse = Point(0, 0)
 

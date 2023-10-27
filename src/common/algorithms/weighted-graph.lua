@@ -21,11 +21,8 @@ setmetatable(WeightedGraph, {
 ---@param height number
 ---@param obstacles? Point[]
 function WeightedGraph:init(width, height, obstacles)
-    ---@private
     self.width = width
-    ---@private
     self.height = height
-    ---@private
     self.obstacles = obstacles or {}
 end
 

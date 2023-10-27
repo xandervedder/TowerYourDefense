@@ -43,7 +43,6 @@ function Element:init(o)
     ---@protected
     ---@type table
     self.listeners = {}
-    ---@protected
     ---@type boolean
     self.mouseEntered = false
 

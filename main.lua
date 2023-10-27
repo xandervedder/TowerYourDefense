@@ -1,3 +1,5 @@
+---@diagnostic disable: undefined-field
+
 local Game = require("src.game.game")
 
 --[[

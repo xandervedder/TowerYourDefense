@@ -21,7 +21,6 @@ setmetatable(GameObject, {
 
 --TODO: refactor the o to represent a type.
 function GameObject:init(o)
-    ---@protected
     ---@type number
     self.obstructionRange = o.obstructionRange or 0
     ---@protected
