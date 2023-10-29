@@ -1,17 +1,11 @@
+local defineClass = require("src.common.objects.define-class")
+
 --[[
     Property that is meant to be used for colors.
 ]]
----@class Color
-local Color = {}
-Color.__index = Color
 
-setmetatable(Color, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+---@class Color
+local Color = defineClass()
 
 function Color:init(r, g, b, a)
     ---@type number

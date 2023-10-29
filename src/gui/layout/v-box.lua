@@ -1,20 +1,12 @@
+local defineClass = require("src.common.objects.define-class")
+
 local Element = require("src.gui.element")
 
 --[[
     Layout that aligns elements vertically.
 ]]
 ---@class VBox : Element
-local VBox = {}
-VBox.__index = VBox
-
-setmetatable(VBox, {
-    __index = Element,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local VBox = defineClass(Element)
 
 function VBox:init(o)
     Element.init(self, o)

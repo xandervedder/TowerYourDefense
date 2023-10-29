@@ -1,3 +1,4 @@
+local defineClass = require("src.common.objects.define-class")
 local Point = require("src.common.objects.point")
 
 --[[
@@ -5,16 +6,7 @@ local Point = require("src.common.objects.point")
 ]]--
 
 ---@class WeightedGraph
-local WeightedGraph = {}
-WeightedGraph.__index = WeightedGraph
-
-setmetatable(WeightedGraph, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local WeightedGraph = defineClass()
 
 ---Constructor
 ---@param width number

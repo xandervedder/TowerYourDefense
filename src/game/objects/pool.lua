@@ -1,19 +1,12 @@
+local defineClass = require("src.common.objects.define-class")
+
 --[[
     Represents a pool of objects with multiple useful helper methods.
     Has the ability to temporarily 'delete' entries and is able to restore 'deleted' entries.
 ]]
 
 ---@class Pool
-local Pool = {}
-Pool.__index = Pool
-
-setmetatable(Pool, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local Pool = defineClass()
 
 ---@generic T
 ---@param objects T[]

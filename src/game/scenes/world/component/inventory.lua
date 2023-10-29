@@ -1,3 +1,5 @@
+local defineClass = require("src.common.objects.define-class")
+
 local Publisher = require("src.game.event.publisher")
 
 local Color = require("src.gui.style.property.color")
@@ -8,17 +10,7 @@ local Style = require("src.gui.style.style")
 local TextView = require("src.gui.text-view")
 
 ---@class Inventory : Container
-local Inventory = {}
-Inventory.__index = Inventory
-
-setmetatable(Inventory, {
-    __index = Container,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local Inventory = defineClass(Container)
 
 function Inventory:init()
     -- For now, we will use a single type of material,

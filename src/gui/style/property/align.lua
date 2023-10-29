@@ -1,14 +1,7 @@
----@class Align
-local Align = {}
-Align.__index = Align
+local defineClass = require("src.common.objects.define-class")
 
-setmetatable(Align, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+---@class Align
+local Align = defineClass()
 
 function Align:init(t, r, b, l)
     ---@type boolean

@@ -4,6 +4,10 @@ local Publisher = require("src.game.event.publisher")
 local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
 local World = require("src.game.scenes.world.world")
 
+local HBox = require("src.gui.layout.h-box")
+local Container = require("src.gui.layout.container")
+local Element = require("src.gui.element")
+
 ---@class Game
 local Game = {}
 Game.dt = 0

@@ -1,3 +1,4 @@
+local defineClass = require("src.common.objects.define-class")
 local Point = require("src.common.objects.point")
 
 local Constants = require("src.game.constants")
@@ -6,18 +7,9 @@ local Publisher = require("src.game.event.publisher")
 local Util = require("src.game.util.util")
 
 ---@class PlacementTool
-local PlacementTool = {}
-PlacementTool.__index = PlacementTool
+local PlacementTool = defineClass()
 ---@private
 PlacementTool.RIGHT_MOUSE_BUTTON = 2
-
-setmetatable(PlacementTool, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
 
 ---@param o table
 function PlacementTool:init(o)

@@ -1,17 +1,10 @@
+local defineClass = require("src.common.objects.define-class")
+
 --[[
     Property that is meant to be used for sizes.
 ]]
 ---@class Size
-local Size = {}
-Size.__index = Size
-
-setmetatable(Size, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local Size = defineClass()
 
 function Size:init(w, h)
     ---@type number

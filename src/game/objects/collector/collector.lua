@@ -1,3 +1,5 @@
+local defineClass = require("src.common.objects.define-class")
+
 local C = require("src.game.constants")
 local Event = require("src.game.event.event")
 local GameObject = require("src.game.objects.game-object")
@@ -5,17 +7,7 @@ local Publisher = require("src.game.event.publisher")
 local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
 
 ---@class Collector : GameObject
-local Collector = {}
-Collector.__index = Collector
-
-setmetatable(Collector, {
-    __index = GameObject,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local Collector = defineClass(GameObject)
 
 --Constructor.
 function Collector:init(o)

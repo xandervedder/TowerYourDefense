@@ -1,3 +1,5 @@
+local defineClass = require("src.common.objects.define-class")
+
 local Publisher = require("src.game.event.publisher")
 
 local Container = require("src.gui.layout.container")
@@ -9,19 +11,9 @@ local TextView = require("src.gui.text-view")
 
 
 ---@class WaveCount : Container
-local WaveCount = {}
-WaveCount.__index = WaveCount
+local WaveCount = defineClass(Container)
 
-setmetatable(WaveCount, {
-    __index = Container,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
-
-function WaveCount:init(o)
+function WaveCount:init()
     ---@type integer
     ---@private
     self.currentWave = 1

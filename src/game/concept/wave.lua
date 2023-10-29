@@ -1,3 +1,4 @@
+local defineClass = require("src.common.objects.define-class")
 local Timer = require("src.common.time.timer")
 
 local Event = require("src.game.event.event")
@@ -9,16 +10,7 @@ local Publisher = require("src.game.event.publisher")
 ]]--
 
 ---@class Wave
-local Wave = {}
-Wave.__index = Wave
-
-setmetatable(Wave, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local Wave = defineClass()
 
 ---Constructor of the wave concept.
 ---@param spawners Spawner[]

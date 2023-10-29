@@ -1,20 +1,11 @@
+local defineClass = require("src.common.objects.define-class")
+
 local Collector = require("src.game.objects.collector.collector")
+local HotbarItem = require("src.game.scenes.world.component.hotbar-item.hotbar-item")
 local Util = require("src.game.util.util")
 
-local HotbarItem = require("src.game.scenes.world.component.hotbar-item.hotbar-item")
-
 ---@class CollectorHotbarItem : HotbarItem
-local CollectorHotbarItem = {}
-CollectorHotbarItem.__index = CollectorHotbarItem
-
-setmetatable(CollectorHotbarItem, {
-    __index = HotbarItem,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local CollectorHotbarItem = defineClass(HotbarItem)
 
 function CollectorHotbarItem:init(o)
     ---@type Collector

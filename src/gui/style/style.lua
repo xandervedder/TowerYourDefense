@@ -1,3 +1,4 @@
+local defineClass = require("src.common.objects.define-class")
 local Point = require("src.common.objects.point")
 
 local Align = require("src.gui.style.property.align")
@@ -11,16 +12,7 @@ local Size = require("src.gui.style.property.size")
 ]]--
 
 ---@class Style
-local Style = {}
-Style.__index = Style
-
-setmetatable(Style, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local Style = defineClass()
 
 function Style:init(o)
     ---@type Side

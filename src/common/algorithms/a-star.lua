@@ -1,3 +1,4 @@
+local defineClass = require("src.common.objects.define-class")
 local PriorityQueue = require("src.common.collections.priority-queue")
 
 --[[
@@ -5,20 +6,11 @@ local PriorityQueue = require("src.common.collections.priority-queue")
 ]]--
 
 ---@class AStar
-local AStar = {}
-AStar.__index = AStar
+local AStar = defineClass()
 AStar.START_CHARACTER = '['
 AStar.GOAL_CHARACTER = ']'
 AStar.PATH_CHARACTER = '*'
 AStar.VOID_CHARACTER = '.'
-
-setmetatable(AStar, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
 
 ---Constructor
 ---@param graph WeightedGraph

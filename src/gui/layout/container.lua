@@ -1,17 +1,9 @@
+local defineClass = require("src.common.objects.define-class")
+
 local Element = require("src.gui.element")
 
 ---@class Container : Element
-local Container = {}
-Container.__index = Container
-
-setmetatable(Container, {
-    __index = Element,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local Container = defineClass(Element)
 
 ---Constructor.
 ---@param o table

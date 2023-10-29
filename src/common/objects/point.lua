@@ -1,18 +1,11 @@
+local defineClass = require("src.common.objects.define-class")
+
 --[[
     Class that should be used when representing a coordinate.
 ]]--
 
 ---@class Point
-local Point = {}
-Point.__index = Point
-
-setmetatable(Point, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local Point = defineClass()
 
 ---Constructor.
 ---@param x number

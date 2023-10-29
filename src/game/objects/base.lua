@@ -1,3 +1,5 @@
+local defineClass = require("src.common.objects.define-class")
+
 local Constants = require("src.game.constants")
 local Event = require("src.game.event.event")
 local Publisher = require("src.game.event.publisher")
@@ -5,17 +7,7 @@ local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
 local Damageable = require("src.game.objects.damageable")
 
 ---@class Base : Damageable
-local Base = {}
-Base.__index = Base
-
-setmetatable(Base, {
-    __index = Damageable,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local Base = defineClass(Damageable)
 
 ---Constructor of Base.
 function Base:init(o)

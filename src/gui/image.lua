@@ -1,17 +1,9 @@
+local defineClass = require("src.common.objects.define-class")
+
 local Element = require("src.gui.element")
 
 ---@class Image : Element
-local Image = {}
-Image.__index = Image
-
-setmetatable(Image, {
-    __index = Element,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local Image = defineClass(Element)
 
 function Image:init(o)
     Element.init(self, o)

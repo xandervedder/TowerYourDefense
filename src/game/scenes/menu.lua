@@ -1,3 +1,5 @@
+local defineClass = require("src.common.objects.define-class")
+
 local Event = require("src.game.event.event")
 local Publisher = require("src.game.event.publisher")
 local Scene = require("src.game.scenes.scene")
@@ -12,17 +14,8 @@ local Size = require("src.gui.style.property.size")
 local Style = require("src.gui.style.style")
 local VBox = require("src.gui.layout.v-box")
 
-local Menu = {}
-Menu.__index = Menu
-
-setmetatable(Menu, {
-    __index = Scene,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+---@class Menu : Scene
+local Menu = defineClass(Scene)
 
 function Menu:init()
     ---@private

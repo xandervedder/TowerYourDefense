@@ -1,3 +1,5 @@
+local defineClass = require("src.common.objects.define-class")
+
 local Color = require("src.gui.style.property.color")
 local Container = require("src.gui.layout.container")
 local Image = require("src.gui.image")
@@ -8,17 +10,7 @@ local TextView = require("src.gui.text-view")
 local VBox = require("src.gui.layout.v-box")
 
 ---@class HotbarItem : Container
-local HotbarItem = {}
-HotbarItem.__index = HotbarItem
-
-setmetatable(HotbarItem, {
-    __index = Container,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local HotbarItem = defineClass(Container)
 
 function HotbarItem:init(o)
     o.children = {

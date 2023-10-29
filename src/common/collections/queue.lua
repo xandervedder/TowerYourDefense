@@ -1,18 +1,11 @@
+local defineClass = require("src.common.objects.define-class")
+
 --[[
     Basic implementation of the Queue in Lua.
 ]]--
 
 ---@class Queue
-local Queue = {}
-Queue.__index = Queue
-
-setmetatable(Queue, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local Queue = defineClass()
 
 ---Constructor.
 ---@generic T

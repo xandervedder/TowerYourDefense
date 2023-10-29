@@ -1,20 +1,14 @@
----@class Scene
-local Scene = {}
-Scene.__index = Scene
+local defineClass = require("src.common.objects.define-class")
 
-setmetatable(Scene, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+---@class Scene
+local Scene = defineClass()
 
 function Scene:init(o)
     ---@protected
     self.name = o.name or "unknown"
 end
 
+---@protected
 function Scene:_getCanvas()
     return love.graphics.newCanvas(love.graphics.getDimensions())
 end

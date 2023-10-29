@@ -1,19 +1,11 @@
+local defineClass = require("src.common.objects.define-class")
+
 local Tower = require("src.game.objects.tower.tower")
 
 local HotbarItem = require("src.game.scenes.world.component.hotbar-item.hotbar-item")
 
 ---@class TowerHotbarItem : HotbarItem
-local TowerHotbarItem = {}
-TowerHotbarItem.__index = TowerHotbarItem
-
-setmetatable(TowerHotbarItem, {
-    __index = HotbarItem,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local TowerHotbarItem = defineClass(HotbarItem)
 
 function TowerHotbarItem:init(o)
     HotbarItem.init(self, o)

@@ -1,17 +1,9 @@
+local defineClass = require("src.common.objects.define-class")
+
 local Element = require("src.gui.element")
 
 ---@class TextView : Element
-local TextView = {}
-TextView.__index = TextView
-
-setmetatable(TextView, {
-    __index = Element,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local TextView = defineClass(Element)
 
 function TextView:init(o)
     Element.init(self, o)

@@ -1,3 +1,4 @@
+local defineClass = require("src.common.objects.define-class")
 local Timer = require("src.common.time.timer")
 
 --[[
@@ -11,16 +12,7 @@ local Timer = require("src.common.time.timer")
 ---@field time number
 
 ---@class SpriteAnimator
-local SpriteAnimator = {}
-SpriteAnimator.__index = SpriteAnimator
-
-setmetatable(SpriteAnimator, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local SpriteAnimator = defineClass()
 
 ---Constructor.
 ---@param defaultState love.Quad

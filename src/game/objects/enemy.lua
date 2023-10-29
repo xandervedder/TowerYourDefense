@@ -1,3 +1,4 @@
+local defineClass = require("src.common.objects.define-class")
 local Point = require("src.common.objects.point")
 local Queue = require("src.common.collections.queue")
 
@@ -9,17 +10,7 @@ local Damageable = require("src.game.objects.damageable")
 local Util = require("src.game.util.util")
 
 ---@class Enemy : Damageable
-local Enemy = {}
-Enemy.__index = Enemy
-
-setmetatable(Enemy, {
-    __index = Damageable,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local Enemy = defineClass(Damageable)
 
 ---Constructor
 ---@param o table

@@ -1,3 +1,4 @@
+local defineClass = require("src.common.objects.define-class")
 local Point = require("src.common.objects.point")
 
 local Base = require("src.game.objects.base")
@@ -37,17 +38,7 @@ local Button = require("src.gui.button")
 local TextView = require("src.gui.text-view")
 
 ---@class World : Scene
-local World = {}
-World.__index = World
-
-setmetatable(World, {
-    __index = Scene,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local World = defineClass(Scene)
 
 function World:init()
     Scene.init(self, { name = "World Scene" })
@@ -271,6 +262,7 @@ function World:initUI()
 end
 
 function World:initTopBar()
+    print("top-bar-init")
     ---@type Element
     self.topBar = Container({
         root = true,

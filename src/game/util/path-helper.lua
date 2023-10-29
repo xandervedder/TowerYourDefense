@@ -2,20 +2,14 @@ local AStar = require("src.common.algorithms.a-star")
 local NearestNeighbour = require("src.common.algorithms.nearest-neighbour")
 local WeightedGraph = require("src.common.algorithms.weighted-graph")
 local Queue = require("src.common.collections.queue")
+local defineClass = require("src.common.objects.define-class")
 
 --[[
     Helper class that reduces code duplication.
 ]]--
 
 ---@class PathHelper
-local PathHelper = {}
-PathHelper.__index = PathHelper
-
-setmetatable(PathHelper, {
-    __call = function(cls, ...)
-        return setmetatable({}, cls)
-    end
-})
+local PathHelper = defineClass()
 
 ---Overload for `getPath`, but returns the result in a Queue.
 ---@param width number

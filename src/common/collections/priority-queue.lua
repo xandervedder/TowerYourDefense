@@ -1,18 +1,11 @@
+local defineClass = require("src.common.objects.define-class")
+
 --[[
     Implementation of the PriorityQueue in lua.
 ]]--
 
 ---@class PriorityQueue
-local PriorityQueue = {}
-PriorityQueue.__index = PriorityQueue
-
-setmetatable(PriorityQueue, {
-    __call = function(cls)
-        local self = setmetatable({}, cls)
-        self:init()
-        return self
-    end
-})
+local PriorityQueue = defineClass()
 
 function PriorityQueue:init()
     ---@generic T

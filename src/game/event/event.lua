@@ -1,14 +1,7 @@
----@class Event
-local Event = {}
-Event.__index = Event
+local defineClass = require("src.common.objects.define-class")
 
-setmetatable(Event, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+---@class Event
+local Event = defineClass()
 
 ---Constructor
 ---@generic T

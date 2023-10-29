@@ -1,5 +1,6 @@
 local json = require("lunajson")
 
+local defineClass = require("src.common.objects.define-class")
 local Point = require("src.common.objects.point")
 
 local C = require("src.game.constants")
@@ -20,8 +21,7 @@ local Size = require("src.gui.style.property.size")
 ---@field shades love.Quad?
 
 ---@class MapRenderer
-local MapRenderer = {}
-MapRenderer.__index = MapRenderer
+local MapRenderer = defineClass()
 MapRenderer.LEVEL_DIRECTORY = "/assets/map/"
 MapRenderer.TILE_DIRECTORY = "/assets/graphics/tiles/"
 MapRenderer.TILE_MAPS = {
@@ -30,14 +30,6 @@ MapRenderer.TILE_MAPS = {
     SHADES = MapRenderer.TILE_DIRECTORY .. "shade-tiles.png",
     SHRUBBERY = MapRenderer.TILE_DIRECTORY .. "shrubbery-tiles.png",
 }
-
-setmetatable(MapRenderer, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
 
 ---Constructor.
 function MapRenderer:init()

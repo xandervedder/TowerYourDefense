@@ -1,20 +1,12 @@
+local defineClass = require("src.common.objects.define-class")
+
 local C = require("src.game.constants")
 local Turret = require("src.game.objects.tower.turret.turret")
 
 --! Note: quickly made this one is just for fun, code could be duplicated less...
 
 ---@class TripleBarrelTurret : Turret
-local TripleBarrelTurret = {}
-TripleBarrelTurret.__index = TripleBarrelTurret
-
-setmetatable(TripleBarrelTurret, {
-    __index = Turret,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local TripleBarrelTurret = defineClass(Turret)
 
 --Constructor.
 function TripleBarrelTurret:init(o)

@@ -1,3 +1,4 @@
+local defineClass = require("src.common.objects.define-class")
 local Point = require("src.common.objects.point")
 
 local Constants = require("src.game.constants")
@@ -16,20 +17,10 @@ local PathHelper = require("src.game.util.path-helper")
 ]]--
 
 ---@class Spawner : GameObject
-local Spawner = {}
+local Spawner = defineClass(GameObject)
 ---@type Pool[]
 ---@private
 Spawner.allEnemies = {}
-Spawner.__index = Spawner
-
-setmetatable(Spawner, {
-    __index = GameObject,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
 
 ---Constructor
 ---@param o table

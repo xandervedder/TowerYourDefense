@@ -1,18 +1,10 @@
+local defineClass = require("src.common.objects.define-class")
 local Point = require("src.common.objects.point")
 
 local Constants = require("src.game.constants")
 
 ---@class Camera
-local Camera = {}
-Camera.__index = Camera
-
-setmetatable(Camera, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local Camera = defineClass()
 
 ---Constructor.
 function Camera:init()

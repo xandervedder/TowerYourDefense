@@ -1,19 +1,11 @@
+local defineClass = require("src.common.objects.define-class")
 local Point = require("src.common.objects.point")
 
 local C = require("src.game.constants")
 local Util = require("src.game.util.util")
 
 ---@class MegaTowerTool
-local MegaTowerTool = {}
-MegaTowerTool.__index = MegaTowerTool
-
-setmetatable(MegaTowerTool, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local MegaTowerTool = defineClass()
 
 function MegaTowerTool:init(o)
     ---@private

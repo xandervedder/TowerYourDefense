@@ -1,3 +1,5 @@
+local defineClass = require("src.common.objects.define-class")
+
 local Publisher = require("src.game.event.publisher")
 local PlacementTool = require("src.game.tool.placement-tool")
 
@@ -11,17 +13,7 @@ local Size = require("src.gui.style.property.size")
 local Style = require("src.gui.style.style")
 
 ---@class Hotbar : Container
-local Hotbar = {}
-Hotbar.__index = Hotbar
-
-setmetatable(Hotbar, {
-    __index = Container,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local Hotbar = defineClass(Container)
 
 function Hotbar:init(o)
     o.children = {

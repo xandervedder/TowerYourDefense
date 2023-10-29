@@ -1,3 +1,4 @@
+local defineClass = require("src.common.objects.define-class")
 local Point = require("src.common.objects.point")
 
 local Constants = require("src.game.constants")
@@ -7,18 +8,7 @@ local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
 local Util = require("src.game.util.util")
 
 ---@class Turret : GameObject
-local Turret = {}
-Turret.__index = Turret
-
-setmetatable(Turret, {
-    __index = GameObject,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
-
+local Turret = defineClass(GameObject)
 
 --Constructor.
 function Turret:init(o)
@@ -35,7 +25,6 @@ function Turret:init(o)
     ---@protected
     ---@type Point
     self.center = Point(self.point.x + self.size.w / 2, self.point.y + self.size.h / 2)
-
     ---@protected
     ---@type number
     self.diff = 0

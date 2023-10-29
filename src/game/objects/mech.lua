@@ -1,3 +1,4 @@
+local defineClass = require("src.common.objects.define-class")
 local Point = require("src.common.objects.point")
 local Timer = require("src.common.time.timer")
 
@@ -19,19 +20,9 @@ require("src.game.graphics.love-extensions")
 ]]--
 
 ---@class Mech : Damageable
-local Mech = {}
-Mech.__index = Mech
+local Mech = defineClass(Damageable)
 ---@private
 Mech.MECH_PATH = "/assets/graphics/mech/mech.png"
-
-setmetatable(Mech, {
-    __index = Damageable,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
 
 ---Constructor
 ---@param o any
@@ -47,7 +38,6 @@ function Mech:init(o, camera, gameObjects)
         left = false,
         right = false,
     }
-
     ---@private
     ---@type Camera
     self.camera = camera
@@ -57,7 +47,6 @@ function Mech:init(o, camera, gameObjects)
     ---@private
     ---@type Point
     self.center = self:getMiddle()
-
     ---@private
     ---@type number
     self.shotSpeed = 5

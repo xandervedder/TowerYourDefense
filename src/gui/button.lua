@@ -1,17 +1,9 @@
+local defineClass = require("src.common.objects.define-class")
+
 local Element = require("src.gui.element")
 
 ---@class Button : Element
-local Button = {}
-Button.__index = Button
-
-setmetatable(Button, {
-    __index = Element,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local Button = defineClass(Element)
 
 function Button:init(o)
     Element.init(self, o)

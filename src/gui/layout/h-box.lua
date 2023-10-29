@@ -1,3 +1,4 @@
+local defineClass = require("src.common.objects.define-class")
 local Point = require("src.common.objects.point")
 
 local Element = require("src.gui.element")
@@ -6,17 +7,7 @@ local Element = require("src.gui.element")
     Layout that aligns elements horizontally.
 ]]
 ---@class HBox : Element
-local HBox = {}
-HBox.__index = HBox
-
-setmetatable(HBox, {
-    __index = Element,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local HBox = defineClass(Element)
 
 function HBox:init(o)
     Element.init(self, o)

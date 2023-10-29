@@ -1,3 +1,5 @@
+local defineClass = require("src.common.objects.define-class")
+
 local Style = require("src.gui.style.style")
 
 --- @alias ElementEvent
@@ -12,16 +14,7 @@ local Style = require("src.gui.style.style")
 ]]
 
 ---@class Element
-local Element = {}
-Element.__index = Element
-
-setmetatable(Element, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local Element = defineClass()
 
 ---Constructor.
 ---@param o table

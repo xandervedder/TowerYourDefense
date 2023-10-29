@@ -1,17 +1,11 @@
+local defineClass = require("src.common.objects.define-class")
+
 --[[
     Property that can be used to retrieve sides of something.
 ]]
----@class Side
-local Side = {}
-Side.__index = Side
 
-setmetatable(Side, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+---@class Side
+local Side = defineClass()
 
 function Side:init(t, r, b, l)
     ---@type number

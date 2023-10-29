@@ -1,19 +1,12 @@
+local defineClass = require("src.common.objects.define-class")
+
 --[[
     Property that is meant to be used to assign booleans to a direction, x or y.
 
     ? There has to be a better name for this...
 ]]
 ---@class DirBool
-local DirBool = {}
-DirBool.__index = DirBool
-
-setmetatable(DirBool, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local DirBool = defineClass()
 
 function DirBool:init(x, y)
     ---@type number

@@ -1,18 +1,11 @@
+local defineClass = require("src.common.objects.define-class")
+
 --[[
     Implementation of timer. Usefull for actions that require time.
 ]]--
 
 ---@class Timer
-local Timer = {}
-Timer.__index = Timer
-
-setmetatable(Timer, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local Timer = defineClass()
 
 ---Constructor.
 ---@param seconds? number

@@ -1,3 +1,5 @@
+local defineClass = require("src.common.objects.define-class")
+
 local GameObject = require("src.game.objects.game-object")
 
 --[[
@@ -5,17 +7,7 @@ local GameObject = require("src.game.objects.game-object")
 ]]--
 
 ---@class Damageable : GameObject
-local Damageable = {}
-Damageable.__index = Damageable
-
-setmetatable(Damageable, {
-    __index = GameObject,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local Damageable = defineClass(GameObject)
 
 ---Constructor
 ---@param o any

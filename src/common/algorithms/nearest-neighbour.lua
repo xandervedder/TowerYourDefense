@@ -1,19 +1,12 @@
+local defineClass = require("src.common.objects.define-class")
+
 --[[
     Very simplified version of the nearest neighbour algorithm that will work
     for my use cases.
 ]]
 
 ---@class NearestNeighbour
-local NearestNeighbour = {}
-NearestNeighbour.__index = NearestNeighbour
-
-setmetatable(NearestNeighbour, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local NearestNeighbour = defineClass()
 
 ---Constructor.
 ---@param points Point[]

@@ -1,3 +1,5 @@
+local defineClass = require("src.common.objects.define-class")
+
 local C = require("src.game.constants")
 local GameObject = require("src.game.objects.game-object")
 local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
@@ -12,17 +14,7 @@ local SpriteLoader = require("src.game.graphics.loader.sprite-loader")
 ]]
 -- TODO: rename file and object
 ---@class TowerBase : GameObject
-local Base = {}
-Base.__index = Base
-
-setmetatable(Base, {
-    __index = GameObject,
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local Base = defineClass(GameObject)
 
 --Constructor.
 function Base:init(o)

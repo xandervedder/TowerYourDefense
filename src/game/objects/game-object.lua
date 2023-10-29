@@ -1,3 +1,4 @@
+local defineClass = require("src.common.objects.define-class")
 local Point = require("src.common.objects.point")
 
 local Util = require("src.game.util.util")
@@ -8,16 +9,7 @@ local Util = require("src.game.util.util")
 ]]--
 
 ---@class GameObject
-local GameObject = {}
-GameObject.__index = GameObject
-
-setmetatable(GameObject, {
-    __call = function(cls, ...)
-        local self = setmetatable({}, cls)
-        self:init(...)
-        return self
-    end
-})
+local GameObject = defineClass()
 
 --TODO: refactor the o to represent a type.
 function GameObject:init(o)
